@@ -1,0 +1,17 @@
+RewriteEngine on
+RewriteBase /
+RewriteRule ^posts(.*) https://blog2.logical-dice.com/posts$1/ [L,R=301]
+RewriteRule ^articles(.*) https://blog2.logical-dice.com/posts$1/ [L,R=301]
+RewriteRule ^tags/CircleCI https://blog2.logical-dice.com/tags/circleci/ [L,R=301]
+RewriteRule ^tags/PHP https://blog2.logical-dice.com/tags/php/ [L,R=301]
+RewriteRule ^tags/LinuxMint https://blog2.logical-dice.com/tags/linuxmint/ [L,R=301]
+RewriteRule ^tags/Laravel https://blog2.logical-dice.com/tags/laravel/ [L,R=301]
+RewriteRule ^tags/Mac https://blog2.logical-dice.com/tags/mac/ [L,R=301]
+RewriteRule ^tags/CSS https://blog2.logical-dice.com/tags/css/ [L,R=301]
+RewriteRule ^tags/FuelPHP https://blog2.logical-dice.com/tags/fuelphp/ [L,R=301]
+RewriteRule ^tags/GoogleAppsScript https://blog2.logical-dice.com/tags/googleservice/ [L,R=301]
+RewriteRule ^tags/GoogleOptimize https://blog2.logical-dice.com/tags/googleservice/ [L,R=301]
+RewriteRule ^tags/GoogleCloudPlatform https://blog2.logical-dice.com/tags/googleservice/ [L,R=301]
+RewriteRule ^tags/GoogleAnalytics https://blog2.logical-dice.com/tags/googleservice/ [L,R=301]
+RewriteRule ^tags/GoogleTagManager https://blog2.logical-dice.com/tags/googleservice/ [L,R=301]
+RewriteRule ^tags(.*) https://blog2.logical-dice.com/tags$1/ [L,R=301]
