@@ -13,11 +13,50 @@
   <meta name="robots" content="noindex">
   <title>Logical Dice</title>
   <link rel="icon" href="/favicon.ico">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <link href="main.css" rel="stylesheet">
 </head>
-<body>
-    <div style="width: 100vw;text-align: center;">
-        <img src="/logo-square.jpg" alt="logical dice" style="width: auto;height: 80vh;"/><br/>
-        <img src="/logo-banner.jpg" alt="logical dice" style="width: 70%;height: auto;"/>
-    </div>
+<body class="bg-gray-200">
+    <header class="sticky top-0 w-full  bg-white">
+      <h1 class="h-14"><img src="/logo-banner.jpg" alt="logical dice" class="h-full w-auto"/></h1>
+    </header>
+    <main class="mt-4">
+      <section>
+        <img src="/logo-square.jpg" class="w-1/2 mx-auto my-20"/>
+      </section>
+      <section>
+        <h2 class="text-2xl font-extrabold">会社概要</h2>
+        <table class="w-full text-left mt-3">
+          <tr class="border-t-2 border-gray-400">
+            <th class="p-3 bg-gray-200">商号</th>
+            <td class="p-3">株式会社Logical Dice</td>
+          </tr>
+          <tr class="border-t-2 border-gray-400">
+            <th class="p-3 bg-gray-200">創業</th>
+            <td class="p-3">2014年(平成26年)1月15日</td>
+          </tr>
+          <tr class="border-t-2 border-b-2 border-gray-400">
+            <th class="p-3 bg-gray-200">事業内容</th>
+            <td class="p-3">
+              <ul>
+                <li>アプリケーション開発</li>
+                <li>Web制作</li>
+                <li>システム導入コンサルティング</li>
+              </ul>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-extrabold">その他情報</h2>
+        <div class="p-3">
+          <a href="https://blog2.logical-dice.com" class="underline text-blue-500">技術ブログ</a>
+        </div>
+      </section>
+    </main>
+    <footer class="sticky bottom-0 w-full bg-white">
+      <p class="text-lg text-center p-3">©Logical Dice</p>
+    </footer>
 </body>
 </html>
