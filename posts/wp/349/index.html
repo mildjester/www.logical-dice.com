@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>CentOS 7.3にzabbix 3.2をインストール|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">CentOS 7.3にzabbix 3.2をインストール</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-02-14 00:20:50 &#43;0000 UTC" class="catalogue-time">2017年02月14日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/centos/">CentOS</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/zabbix/">zabbix</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>CentOS 7.3<br>
+zabbix 3.2<br>
+PHP 7.1<br>
+MySQL 14.14<br>
+Apache 2.4</p>
+<hr>
+<p>①zabbixをyumでインストールするためのリポジトリをインストール</p>
+<pre tabindex="0"><code># yum install http://repo.zabbix.com/zabbix/3.2/rhel/7/x86_64/zabbix-release-3.2-1.el7.noarch.rpm
+</code></pre><p>②zabbixの本体をインストール</p>
+<pre tabindex="0"><code># yum install \  
+zabbix-server-mysql \  
+zabbix-web-mysql \  
+zabbix-web \  
+zabbix-agent \  
+zabbix-get \  
+zabbix-sender \  
+zabbix-web-japanese
+</code></pre><p>※MySQLではなくPostgreSQLを使う場合は、上記の『mysql』を『pgsql』にするだけです。</p>
+<p>③MySQLの設定</p>
+<pre tabindex="0"><code># mysql  
+mysql&gt; CREATE USER &#39;zabbix&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;zabbixpassword&#39;;  
+mysql&gt; CREATE DATABASE zabbix CHARACTER SET utf8;  
+mysql&gt; GRANT ALL ON zabbix.* to &#39;zabbix&#39;@&#39;localhost&#39;;  
+mysql&gt; quit  
+# zcat /usr/share/doc/zabbix-server-mysql-3.2.1/create.sql.gz | mysql -uroot zabbix
+</code></pre><p>パスワードは任意のものを入れてください。<br>
+DB名とユーザ名も変えたければ変えても構いません。</p>
+<p>④Zabbixの設定</p>
+<pre tabindex="0"><code># vim /etc/zabbix/zabbix_server.conf  
+以下項目を設定  
+LogFileSize=10  
+DBPassword=zabbixpassword
+</code></pre><p>もし手順③にてDB名とユーザ名も変更していた場合は、ここで該当箇所も修正してください。</p>
+<p>⑤起動</p>
+<pre tabindex="0"><code># systemctl start zabbix-server  
+# systemctl start zabbix-agent  
+# systemctl restart httpd
+</code></pre><p>これでインストールは完了です。<br>
+https://ホスト名/zabbixにアクセスするとzabbixが開き、初期設定が始まります。<br>
+初期ログインのID/PASSは『Admin/zabbix』です。</p>
+<p>ログイン後、右上の人形アイコンで言語やパスワードを変更できます。</p>
+<p>私が実施した時はダッシュボードにて以下のPHPの警告が表示されました。<br>
+『A non well formed numeric value encountered』<br>
+解決策は<a href="/posts/wp/424" target="_blank">コチラ</a>に記載しています。</p>
+<hr>
+<h3 id="その他">その他</h3>
+<p>MacサーバへのZabbixエージェントインストールが難しかったので、別途記事にしました。<br>
+<a href="/posts/wp/624">MacにZabbixエージェントを入れる</a></p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

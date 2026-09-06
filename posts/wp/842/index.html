@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Dockerチートシート|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Dockerチートシート</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-11-28 16:22:31 &#43;0000 UTC" class="catalogue-time">2017年11月28日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/docker/">Docker</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="dockerhubにログイン">DockerHubにログイン</h3>
+<p>まずこれをしておかないとDockerHubにて公開されているイメージを取ってこれない。 <br>
+※要DockerHubアカウント</p>
+<pre tabindex="0"><code>docker login  
+</code></pre><h3 id="dockerイメージ作成">Dockerイメージ作成</h3>
+<p>Dockerfileからイメージを作成する。 <br>
+Dockerfileの作り方そのものは割愛。</p>
+<pre tabindex="0"><code>docker build --no-cache=true -t {好きなイメージ名} {Dockerfileがあるディレクトリパス}  
+</code></pre><h3 id="現在ローカルにあるイメージ確認">現在ローカルにあるイメージ確認</h3>
+<pre tabindex="0"><code>docker images  
+</code></pre><h3 id="イメージからコンテナ作成">イメージからコンテナ作成</h3>
+<pre tabindex="0"><code>docker run -itd -h {好きなホスト名} -v {ホストのディレクトリ}:{コンテナのディレクトリ} --name {好きなコンテナ名} -p {ホスト側ポート}:{コンテナ側ポート}　{イメージ名} {実行コマンド}  
+</code></pre><p>■補足 <br>
+【vオプション】 <br>
+ホストのディレクトリとコンテナのディレクトリを共有するオプション <br>
+例えば<code>-v /home:/home</code>とすると、ホストのhomeディレクトリとコンテナのhomeディレクトリの中身が同期される。</p>
+<p>【pオプション】 <br>
+ホスト側にどのポートにアクセスがあった場合、コンテナのどのポートに流すかを設定する。 <br>
+例えば<code>-p 80:80</code>とすればホストの80ポートへのアクセスはコンテナの80ポートへ流れる。　<br>
+複数ポートを設定したい場合は<code>-p 80:80 -p 443:443</code>のように複数指定する事も可能。</p>
+<p>また、ホスト側が複数IPアドレスを持っている場合などに<code>-p 192.168.1.1:80:80</code>のようにIPアドレスを指定する事も可能。</p>
+<p>【実行コマンド】<br>
+Dockerfileにて実行コマンドを指定していた場合は省略可能。　<br>
+特定のコマンドを実行したい訳でない場合は<code>/bin/bash</code>を指定しておくと無難。　</p>
+<h3 id="コンテナ一覧を確認する">コンテナ一覧を確認する</h3>
+<pre tabindex="0"><code>docker ps -a  
+</code></pre><p>-aオプションをつけないと停止しているコンテナは表示されない。</p>
+<h3 id="ホストからコンテナに入る">ホストからコンテナに入る</h3>
+<pre tabindex="0"><code>docker exec -it {コンテナ名} {実行シェル}  
+</code></pre><p>■補足 <br>
+【実行シェル】<br>
+どのシェルでログインしたいか。 　<br>
+分からなければ<code>bash</code>にしておくと無難。</p>
+<h3 id="コンテナを停止する">コンテナを停止する</h3>
+<pre tabindex="0"><code>docker stop {コンテナ名}  
+</code></pre><h3 id="コンテナを起動する">コンテナを起動する</h3>
+<pre tabindex="0"><code>docker start {コンテナ名}  
+</code></pre><h3 id="コンテナを削除する">コンテナを削除する</h3>
+<p>コンテナが停止している状態で以下を実行。</p>
+<pre tabindex="0"><code>docker rm {コンテナ名}  
+</code></pre><h3 id="ローカルのイメージを削除する">ローカルのイメージを削除する</h3>
+<p>該当イメージを利用しているコンテナが存在しない状態で以下を実行。</p>
+<pre tabindex="0"><code>docker rmi {イメージ名}  
+</code></pre><h3 id="コンテナをバックアップする">コンテナをバックアップする</h3>
+<pre tabindex="0"><code>docker export {コンテナ名} &gt; {任意バックアップ名}.tar  
+</code></pre><h3 id="バックアップからコンテナをリストアする">バックアップからコンテナをリストアする</h3>
+<p>コンテナのリストアは、バックアップしたコンテナのイメージを作成するということ。 <br>
+作成したイメージからコンテナを作ればリストアとなる。</p>
+<pre tabindex="0"><code>cat {バックアップ名}.tar | docker import - {作成するイメージ名}  
+docker run 〜以下略〜  
+</code></pre><h3 id="ホストとコンテナでファイル転送">ホストとコンテナでファイル転送</h3>
+<pre tabindex="0"><code># ホストからコンテナ  
+docker cp {コピー元ファイルパス} {コンテナ名}:{コピー先ファイルパス}  
+# コンテナからホスト  
+docker cp {コンテナ名}:{コピー元ファイルパス} {コピー先ファイルパス}  
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

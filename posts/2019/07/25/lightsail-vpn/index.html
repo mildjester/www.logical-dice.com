@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>LightsailにOpenVPNサーバーを立てる|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">LightsailにOpenVPNサーバーを立てる</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-07-25 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年07月25日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/vpn/">VPN</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">環境</h3>
+<ul>
+<li>Amazon Linux AMI release 2018.03</li>
+<li>openvpn 2.4.4</li>
+</ul>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="https://tech.blog.home.group.jp/archives/549">LightsailでVPN Serverを構築する|memoTech</a></li>
+<li><a href="https://blog.katsubemakito.net/aws/openvpn_server">AmazonLinuxにOpenVPNサーバを構築する|ねこの足跡R</a></li>
+</ul>
+<hr>
+<p>国内のVPNサービスを契約していたのですが<br>
+同時に1デバイスしか接続できないし、回線がめっちゃ遅かったので<br>
+自前でVPNサーバーを立てることにしました。</p>
+<p>AWSのLightsail上にOpenVPNでサーバーを立てて<br>
+Linux Mint, Android, iPhoneで接続できるようにします。</p>
+<h2 id="インスタンス設定">インスタンス設定</h2>
+<h3 id="新規インスタンス作成">新規インスタンス作成</h3>
+<p>Lightsailのページにて『インスタンスの作成』をクリックします。<br>
+<a href="https://lightsail.aws.amazon.com/ls/webapp/home/instances">https://lightsail.aws.amazon.com/ls/webapp/home/instances</a><br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-001.png" /></p>
+<p>インスタンスイメージとして以下を選択します。</p>
+<ul>
+<li>Lunux/Unix</li>
+<li>OSのみ</li>
+<li>Amazon Linux</li>
+</ul>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-002.png" />
+<p>インスタンスプランはVPNの利用予定に合わせて選びます。<br>
+個人でちょっと使う程度であれば最安のプランでよいと思います。<br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-003.png" /></p>
+<p>インスタンス名を適当につけて「インスタンスを作成」をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-004.png" /></p>
+<h3 id="静的ipの設定">静的IPの設定</h3>
+<p>インスタンス一覧画面に戻るので<br>
+先程作成したインスタンスの「︙」から『管理』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-005.png" /></p>
+<p>ネットワーキングタブを開き、「静的IPの作成」をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-006.png" /></p>
+<p>静的IPの設定画面になるので、適用するインスタンス（今作ったインスタンス）と<br>
+静的IPの名前を決めて「作成」をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-007.png" /></p>
+<h3 id="ポート開放">ポート開放</h3>
+<p>対象インスタンスの『ネットワーキング』タブを開きます。<br>
+ファイアウォールの「＋追加」をクリックし、TCPの1194ポートを開きます。<br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-008.png" /></p>
+<h3 id="lightsailへの接続">Lightsailへの接続</h3>
+<p>インスタンス一覧にて再度「︙」から『接続』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-005.png" /></p>
+<p>別ウィンドウでターミナル調のブラウザが立ち上がるので、以降の作業を実施します。<br>
+手元のターミナルからsshで繋いでも良いです。</p>
+<h3 id="lightsailの時刻を日本時間に合わせる">Lightsailの時刻を日本時間に合わせる</h3>
+<p>念の為タイムゾーンを日本にしておきます。</p>
+<pre tabindex="0"><code>sudo cp -p /usr/share/zoneinfo/Japan /etc/localtime
+sudo service rsyslog restart
+sudo service crond restart
+</code></pre><h2 id="openvpn設定">OpenVPN設定</h2>
+<h3 id="openvpnインストール">OpenVPNインストール</h3>
+<p>以下コマンドを実行します。</p>
+<pre tabindex="0"><code>sudo yum install openvpn
+</code></pre><h3 id="認証局の作成">認証局の作成</h3>
+<p>以下コマンドを実行します。</p>
+<pre tabindex="0"><code>wget https://github.com/OpenVPN/easy-rsa/releases/download/v3.0.4/EasyRSA-3.0.4.tgz
+tar -xf EasyRSA-3.0.4.tgz
+sudo mv EasyRSA-3.0.4 /usr/local/EasyRSA
+cd /usr/local/EasyRSA/
+./easyrsa init-pki
+./easyrsa build-ca
+</code></pre><p>実行後に以下の質問をされるので入力してください。</p>
+<table>
+	<thead>
+			<tr>
+					<th>入力項目</th>
+					<th>入力内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Enter PEM pass phase:</td>
+					<td>適当なパスフレーズ</td>
+			</tr>
+			<tr>
+					<td>Verifying - Enter PEM pass phrase:</td>
+					<td>上と同じもの</td>
+			</tr>
+			<tr>
+					<td>Common Name (eg: your user, host, or server name) [Easy-RSA CA]:</td>
+					<td>適当なドメイン(例：xxxxx.com)</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="dhパラメータを生成">DHパラメータを生成</h3>
+<pre tabindex="0"><code>./easyrsa gen-dh
+</code></pre><h3 id="サーバー用の証明書秘密鍵を生成">サーバー用の証明書＆秘密鍵を生成</h3>
+<pre tabindex="0"><code>./easyrsa build-server-full server nopass
+</code></pre><p>実行後にパスフレーズを聞かれるので、さきほど設定したパスフレーズを入力してください。</p>
+<h3 id="クライアント用の証明書秘密鍵を生成">クライアント用の証明書＆秘密鍵を生成</h3>
+<p>以下コマンドを接続する利用者分実施します。<br>
+同じ利用者でも、PCとスマホの両方から同時接続するのであれば別クライアントとして証明書＆秘密鍵を生成する必要があります。</p>
+<pre tabindex="0"><code>./easyrsa build-client-full {クライアント名} nopass
+#例） ./easyrsa build-client-full client1 nopass
+</code></pre><p>実行後にパスフレーズを聞かれるので、さきほど設定したパスフレーズを入力してください。
+クライアント名は接続者が識別できるような任意の名前にしてください。</p>
+<h3 id="vpnサーバーのipアドレスネットマスクの確認">VPNサーバーのIPアドレス＆ネットマスクの確認</h3>
+<p>以下のコマンドを実行します。</p>
+<pre tabindex="0"><code>ip a
+</code></pre><p>この出力結果のeth0のinetを確認しておく。<br>
+（以下のxxx.xxx.xxx.xxx/xxの部分）</p>
+<pre tabindex="0"><code>2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 9001 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 06:7a:be:17:01:aa brd ff:ff:ff:ff:ff:ff
+    inet xxx.xxx.xxx.xxx/xx brd 172.26.15.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::47a:beff:fe17:1aa/64 scope link 
+       valid_lft forever preferred_lft forever
+</code></pre><h3 id="設定ファイル修正">設定ファイル修正</h3>
+<p>生成したサーバー用ファイルをOpenVPNのディレクトリへコピーします。</p>
+<pre tabindex="0"><code>sudo cp pki/ca.crt /etc/openvpn/.
+sudo cp pki/issued/server.crt /etc/openvpn/.
+sudo cp pki/private/server.key /etc/openvpn/.
+sudo cp pki/dh.pem /etc/openvpn/dh2048.pem
+</code></pre><p>※dhだけファイル名を変更しています</p>
+<p>次に設定ファイルを編集します。</p>
+<pre tabindex="0"><code>sudo cp /usr/share/doc/openvpn-2.4.4/sample/sample-config-files/server.conf /etc/openvpn/server.conf
+sudo vim /etc/openvpn/server.conf
+</code></pre><p>編集後の設定は以下のようになります。<br>
+<code>push &quot;route xxx.xxx.xxx.xxx yyy.yyy.yyy.yyy&quot;</code> の部分は<br>
+さきほど確認したVPNサーバーのIPアドレス＆サブネットマスクにします。</p>
+<pre tabindex="0"><code>$ grep -v &#34;^$&#34; /etc/openvpn/server.conf | grep -v &#34;^#&#34; | grep -v &#34;^;&#34;
+port 1194
+proto tcp
+dev tun
+ca ca.crt
+cert server.crt
+key server.key  # This file should be kept secret
+dh dh2048.pem
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+push &#34;redirect-gateway def1 bypass-dhcp&#34;
+push &#34;route xxx.xxx.xxx.xxx yyy.yyy.yyy.yyy&#34;
+push &#34;dhcp-option DNS 208.67.222.222&#34;
+push &#34;dhcp-option DNS 208.67.220.220&#34;
+keepalive 10 120
+tls-auth ta.key 0 # This file is secret
+cipher AES-256-CBC
+persist-key
+persist-tun
+status /var/log/openvpn/openvpn-status.log
+log         /var/log/openvpn/openvpn.log
+log-append  /var/log/openvpn/openvpn.log
+verb 3
+explicit-exit-notify 0
+</code></pre><p>元のサンプルファイルとの差分は以下のようになっています</p>
+<pre tabindex="0"><code>$ diff /usr/share/doc/openvpn-2.4.4/sample/sample-config-files/server.conf /etc/openvpn/server.conf
+35,36c35,36
+&lt; ;proto tcp
+&lt; proto udp
+---
+&gt; proto tcp
+&gt; ;proto udp
+192c192,193
+&lt; ;push &#34;redirect-gateway def1 bypass-dhcp&#34;
+---
+&gt; push &#34;redirect-gateway def1 bypass-dhcp&#34;
+&gt; push &#34;route xxx.xxx.xxx.xxx yyy.yyy.yyy.yyy&#34;
+200,201c201,202
+&lt; ;push &#34;dhcp-option DNS 208.67.222.222&#34;
+&lt; ;push &#34;dhcp-option DNS 208.67.220.220&#34;
+---
+&gt; push &#34;dhcp-option DNS 208.67.222.222&#34;
+&gt; push &#34;dhcp-option DNS 208.67.220.220&#34;
+287c288
+&lt; status openvpn-status.log
+---
+&gt; status /var/log/openvpn/openvpn-status.log
+296,297c297,298
+&lt; ;log         openvpn.log
+&lt; ;log-append  openvpn.log
+---
+&gt; log         /var/log/openvpn/openvpn.log
+&gt; log-append  /var/log/openvpn/openvpn.log
+315c316
+&lt; explicit-exit-notify 1
+---
+&gt; explicit-exit-notify 0
+</code></pre><p>設定したログ出力ディレクトリも作成しておきます。</p>
+<pre tabindex="0"><code>sudo mkdir /var/log/openvpn
+sudo chmod 0600 /var/log/openvpn
+</code></pre><h3 id="takeyの作成">ta.keyの作成</h3>
+<pre tabindex="0"><code>sudo openvpn --genkey --secret /etc/openvpn/ta.key
+</code></pre><h3 id="パケット転送を有効にする">パケット転送を有効にする</h3>
+<pre tabindex="0"><code>sudo sed -i -e &#34;s/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g&#34; /etc/sysctl.conf
+sudo sysctl -p
+</code></pre><h3 id="ルーティングを変更する">ルーティングを変更する</h3>
+<pre tabindex="0"><code>sudo iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+sudo service iptables save
+</code></pre><h3 id="openvpnを起動">OpenVPNを起動</h3>
+<pre tabindex="0"><code>sudo chkconfig openvpn on
+sudo service openvpn start
+</code></pre><h2 id="クライアントの設定">クライアントの設定</h2>
+<p>VPNサーバーで生成したファイルのうち、クライアントの設定用に必要なファイルは以下4点です。</p>
+<ul>
+<li>/usr/local/EasyRSA/pki/ca.crt</li>
+<li>/usr/local/EasyRSA/pki/issued/{クライアント名}.crt</li>
+<li>/usr/local/EasyRSA/pki/private/{クライアント名}.key</li>
+<li>/etc/openvpn/ta.key</li>
+</ul>
+<p>また、AndroidやiPhoneで設定するには拡張子ovpnのファイルが必要なので作成しておく。<br>
+(hogehoge.ovpn)</p>
+<p>ovpnファイルに記載する内容は以下の通りです。<br>
+証明書や鍵の情報はovpnファイルに埋め込んでしまった方が便利なので、埋め込んでしまいます。<br>
+※xxx.xxx.xxx.xxxはVPNサーバーのグローバルIPアドレスに置き換えてください。</p>
+<pre tabindex="0"><code>client
+dev tun
+proto tcp
+remote xxx.xxx.xxx.xxx 1194
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+key-direction 1
+cipher AES-256-CBC
+verb 3
+&lt;ca&gt;
+〜上記ca.crtの中身をそのまま貼り付ける〜
+&lt;/ca&gt;
+&lt;key&gt;
+〜上記{クライアント名}.keyの中身をそのまま貼り付ける〜
+&lt;/key&gt;
+&lt;cert&gt;
+〜上記{クライアント名}.crtの中身をそのまま貼り付ける〜
+&lt;/cert&gt;
+&lt;tls-auth&gt;
+〜上記ta.keyの中身をそのまま貼り付ける〜
+&lt;/tls-auth&gt;
+</code></pre><h3 id="linux-mint">Linux Mint</h3>
+<p>標準でネットワーク設定画面よりOpenVPNの設定ができるので<br>
+そこで上記ファイルの設定をすれば接続できるようになります。</p>
+<p>設定画面のキャプチャを貼っておきます。<br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-009.png" /><br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-010.png" /><br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-011.png" /><br>
+<img src="https://www.logical-dice.com/images/2019/07/lightsail-vpn-012.png" /></p>
+<h3 id="android">Android</h3>
+<p>ovpnファイルをAndroid端末にメール添付などで送付しておきます。</p>
+<p>GooglePlayにてOpenVPNアプリをインストールします。<br>
+<a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn">https://play.google.com/store/apps/details?id=net.openvpn.openvpn</a></p>
+<p>インストールしたOVPNアプリを開き、『OVPN Profile』を開きます。<br>
+するとovpnファイルの選択画面になるので、ovpnファイルを選択して「IMPORT」をタップします。</p>
+<p>次の画面で「ADD」をタップします。</p>
+<p>これで設定は完了です。<br>
+作成された接続のスイッチをONにすればVPN接続が完了します。</p>
+<h3 id="iphone">iPhone</h3>
+<p>ovpnファイルをiPhone端末にメール添付などで送付しておきます。</p>
+<p>AppStoreにてOpenVPNアプリをインストールします。<br>
+<a href="https://apps.apple.com/jp/app/openvpn-connect/id590379981">https://apps.apple.com/jp/app/openvpn-connect/id590379981</a></p>
+<p>メーラーにて送付してあるovpnファイルをダウンロードして、そのまま開きます。<br>
+すると開き方の選択肢にインストールしたOpenVPNアプリがあるので、それを選択します。</p>
+<p>OpenVPNアプリが開き、さきほどダウンロードしたovpnファイルが表示されるので「ADD」をタップします。</p>
+<p>次の画面でも「ADD」をタップします。<br>
+警告ポップアップが出ますが「Allow」をタップして進んでください。</p>
+<p>これで設定は完了です。<br>
+作成された接続のスイッチをONにすればVPN接続が完了します。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

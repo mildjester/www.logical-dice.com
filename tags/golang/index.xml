@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Golang on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/golang/</link>
+		<description>Recent content in Golang on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Fri, 29 Sep 2017 19:11:15 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Atom IDEの環境構築（PHP、Go）</title>
+				<link>https://www.logical-dice.com/posts/wp/708/</link>
+				<pubDate>Fri, 29 Sep 2017 19:11:15 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/708/</guid>
+				<description>■環境macOS Sierra 10.12.6Atom 1.21.0-beta2■参考にしたサイト公式サイトhttps://id&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【golang】mapの要素順は変動する</title>
+				<link>https://www.logical-dice.com/posts/wp/491/</link>
+				<pubDate>Sat, 08 Apr 2017 12:22:59 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/491/</guid>
+				<description>■環境OS X El Capitan 10.11.6go 1.8 darwin/amd64タイトルの件、ちょっと引っかかったので&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【golang】NetBeansでgo言語を使えるようにする</title>
+				<link>https://www.logical-dice.com/posts/wp/223/</link>
+				<pubDate>Wed, 25 May 2016 23:06:28 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/223/</guid>
+				<description>元々NetBeansでPHPをやっているので同じIDEでgoも使うために設定してみました。■環境Ubuntu 16.04NetB&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

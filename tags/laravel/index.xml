@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Laravel on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/laravel/</link>
+		<description>Recent content in Laravel on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Sat, 19 Jun 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/laravel/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>【Laravel】モデルをcreateしてもレスポンスをHTTP 200にする</title>
+				<link>https://www.logical-dice.com/posts/2021/06/19/laravel-create-http200/</link>
+				<pubDate>Sat, 19 Jun 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/06/19/laravel-create-http200/</guid>
+				<description>モデルをcreateして返却しても201は返さない方法です</description>
+			</item>
+			<item>
+				<title>【Laravel】JTIを指定してJWTトークンを無効化する</title>
+				<link>https://www.logical-dice.com/posts/2021/04/12/laravel-jwt-clear/</link>
+				<pubDate>Mon, 12 Apr 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/04/12/laravel-jwt-clear/</guid>
+				<description>JTIを指定してJWTトークンを無効化する方法です</description>
+			</item>
+			<item>
+				<title>【Laravel】Observerが実行されない</title>
+				<link>https://www.logical-dice.com/posts/2021/02/21/larave-observer-stop/</link>
+				<pubDate>Sun, 21 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/21/larave-observer-stop/</guid>
+				<description>Laravelで設定したObserverの処理が実行されない事があったので、その際の調査メモです。</description>
+			</item>
+			<item>
+				<title>LaravelのQueue内でAuth::user()が取れたり取れなかったりする</title>
+				<link>https://www.logical-dice.com/posts/2021/01/13/laravel-auth-user/</link>
+				<pubDate>Wed, 13 Jan 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/01/13/laravel-auth-user/</guid>
+				<description>LaravelのAuth::user()をキューで呼び出すと、環境により値が取れたりnullになったりするという事象に遭遇したので、その際のメモです。</description>
+			</item>
+			<item>
+				<title>【Laravel】migrateで『Class &#39;CreateFoooTable&#39; not found』が発生する</title>
+				<link>https://www.logical-dice.com/posts/wp/520/</link>
+				<pubDate>Tue, 11 Apr 2017 16:25:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/520/</guid>
+				<description>■環境Laravel 5.1Laravelの「migrate:rollback」や「migrate:refresh」をしようとし&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【PHP】Laravel5でカスタムバリデーションを追加する</title>
+				<link>https://www.logical-dice.com/posts/wp/512/</link>
+				<pubDate>Tue, 11 Apr 2017 15:11:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/512/</guid>
+				<description>■環境Laravel 5.1Laravel5でカスタムバリデーションを追加した際の手順です。まず、サービスプロバイダーを作成しま&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

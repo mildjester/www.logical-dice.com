@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Posts on Logical Dice Techblog</title>
+		<link>https://www.logical-dice.com/en/posts/</link>
+		<description>Recent content in Posts on Logical Dice Techblog</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 12 Dec 2024 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/en/posts/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Using AWS CLI to Search Multiple Files with S3 Select</title>
+				<link>https://www.logical-dice.com/en/posts/2024/12/12/aws-cli-s3select/</link>
+				<pubDate>Thu, 12 Dec 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/12/12/aws-cli-s3select/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;aws-cli 2.7.14&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;&#xA;&lt;p&gt;I needed to search through CloudFront logs stored in S3.&lt;br&gt;&#xA;Since Athena was not available, I used S3 Select for the search.&lt;/p&gt;&#xA;&lt;p&gt;However, S3 Select can only search one file at a time.&lt;br&gt;&#xA;To handle multiple files, I integrated AWS CLI into a shell script.&lt;/p&gt;&#xA;&lt;h2 id=&#34;steps&#34;&gt;Steps&lt;/h2&gt;&#xA;&lt;p&gt;Here are the conditions:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;The S3 bucket name is target-bucket-name.&lt;/li&gt;&#xA;&lt;li&gt;Files are generated in the logs-dir directory with the format AABBCCDDEE123456.YYYY-MM-DD-HH.abcdefg&amp;hellip;.&lt;/li&gt;&#xA;&lt;li&gt;The AWS CLI profile is named my-aws-profile.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;Below is the completed script:&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Downgrading the AmazonLinux2023 kernel</title>
+				<link>https://www.logical-dice.com/en/posts/2024/08/24/al2023-kernel-downgrade/</link>
+				<pubDate>Sat, 24 Aug 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/08/24/al2023-kernel-downgrade/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Amazon Linux 2023.5.20240819&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;&#xA;&lt;p&gt;I upgraded the kernel of AmazonLinux2023 and downgraded some tools that stopped working.&lt;br&gt;&#xA;This is a record of that operating procedure.&lt;/p&gt;&#xA;&lt;h2 id=&#34;procedure&#34;&gt;Procedure&lt;/h2&gt;&#xA;&lt;p&gt;First, check the current kernel status.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$uname -r&#xA;6.1.102-111.182.amzn2023.x86_64&#xA;&#xA;$ sudo dnf list kernel&#xA;kernel.x86_64   6.1.92-99.174 amzn2023     @amazonlinux&#xA;kernel.x86_64   6.1.96-102.177.amzn2023    @amazonlinux&#xA;kernel.x86_64   6.1.102-111.182.amzn2023   @amazonlinux&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It is currently at 6.1.102 and will downgrade to 6.1.96.&lt;/p&gt;&#xA;&lt;h3 id=&#34;probably-the-shortest-way&#34;&gt;Probably the shortest way.&lt;/h3&gt;&#xA;&lt;p&gt;First, downgrade and restart.&lt;br&gt;&#xA;You can revert to a specific version by specifying “package name - version”.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Allow python commands to be used on Windows without administrative privileges</title>
+				<link>https://www.logical-dice.com/en/posts/2024/08/07/python-on-secure-windows/</link>
+				<pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/08/07/python-on-secure-windows/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Windows 11&lt;/li&gt;&#xA;&lt;li&gt;git bash&lt;/li&gt;&#xA;&lt;li&gt;Python 3.12.4&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;background&#34;&gt;Background&lt;/h2&gt;&#xA;&lt;p&gt;The PC I use for work does not get administrator rights, but I needed to use Python.&lt;br&gt;&#xA;I prepared an environment where I can use Python without administrator rights.&lt;/p&gt;&#xA;&lt;h2 id=&#34;procedure&#34;&gt;Procedure&lt;/h2&gt;&#xA;&lt;h3 id=&#34;download-embedded-python&#34;&gt;Download Embedded Python&lt;/h3&gt;&#xA;&lt;p&gt;You can download Python from the following site and download the “Windows embeddable package”.&lt;br&gt;&#xA;&lt;a href=&#34;https://www.python.org/downloads/release/python-3124/&#34;&gt;https://www.python.org/downloads/release/python-3124/&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;Unzip the downloaded ZIP file to a folder of your choice and modify the &lt;code&gt;python312._pth&lt;/code&gt; in it.&lt;br&gt;&#xA;Simply uncomment one line.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Scrum&#39;s story point about “not estimating by the hour” is</title>
+				<link>https://www.logical-dice.com/en/posts/2024/07/25/story-point-knowledge/</link>
+				<pubDate>Thu, 25 Jul 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/07/25/story-point-knowledge/</guid>
+				<description>&lt;h2 id=&#34;background&#34;&gt;Background&lt;/h2&gt;&#xA;&lt;p&gt;I usually work as a scrum master in scrum development.&lt;/p&gt;&#xA;&lt;p&gt;I have the developers estimate in story points.&lt;br&gt;&#xA;Story points are not estimated in “man-hours”, but instead in “difficulty” or “effort”.&lt;/p&gt;&#xA;&lt;p&gt;However, members were having trouble with this expression because it was so fluffy.&lt;br&gt;&#xA;Different members have different interpretations, and although we don&amp;rsquo;t estimate in man-hours to begin with, we sometimes determine which tickets can be implemented in a sprint based on story points,&lt;br&gt;&#xA;In the end, everyone was thinking in terms of relative man-hours for each ticket, and it was very agonizing.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】Bypassing MFA (Multi-Factor Authentication) to Clone a Repository from CodeCommit</title>
+				<link>https://www.logical-dice.com/en/posts/2024/06/06/aws-codecommit-mfa/</link>
+				<pubDate>Thu, 06 Jun 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/06/06/aws-codecommit-mfa/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;MacBook Pro (Sonoma 14.5, M1 chip)&lt;/li&gt;&#xA;&lt;li&gt;aws-cli/2.15.14&lt;/li&gt;&#xA;&lt;li&gt;aws-mfa 0.0.12&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;steps&#34;&gt;Steps&lt;/h2&gt;&#xA;&lt;p&gt;This guide explains how to clone a repository from CodeCommit in an environment where MFA authentication is required for AWS access.&lt;br&gt;&#xA;Most search results focused on disabling MFA for CodeCommit, which was not helpful, so I decided to document the process.&lt;/p&gt;&#xA;&lt;h3 id=&#34;installing-aws-cli&#34;&gt;Installing AWS CLI&lt;/h3&gt;&#xA;&lt;p&gt;If AWS CLI is not installed, refer to the following page for installation:&lt;br&gt;&#xA;&lt;a href=&#34;https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html&#34;&gt;https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h3 id=&#34;installing-aws-mfa&#34;&gt;Installing aws-mfa&lt;/h3&gt;&#xA;&lt;p&gt;There is a tool that makes MFA authentication easier when using AWS from the command line:&lt;br&gt;&#xA;&lt;a href=&#34;https://github.com/broamski/aws-mfa&#34;&gt;https://github.com/broamski/aws-mfa&lt;/a&gt;&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】Using Paramiko for SFTP Communication in Lambda</title>
+				<link>https://www.logical-dice.com/en/posts/2023/11/03/aws-lambda-use-paramiko/</link>
+				<pubDate>Fri, 03 Nov 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2023/11/03/aws-lambda-use-paramiko/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;MacBook Air (M1 chip)&lt;/li&gt;&#xA;&lt;li&gt;AWS SAM version 1.99.0&lt;/li&gt;&#xA;&lt;li&gt;Python 3.9&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;steps&#34;&gt;Steps&lt;/h2&gt;&#xA;&lt;p&gt;To retrieve files via SFTP from another server, we use the Paramiko library.&lt;br&gt;&#xA;Since AWS Lambda does not include Paramiko by default, we will use a Lambda layer.&lt;/p&gt;&#xA;&lt;p&gt;Lambda layers can be built using Docker, but for simplicity, we will create one using AWS SAM.&lt;/p&gt;&#xA;&lt;h3 id=&#34;-install-aws-sam&#34;&gt;① Install AWS SAM&lt;/h3&gt;&#xA;&lt;p&gt;Run the following commands on Mac to install AWS SAM:&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】Setting Up a VPN Server in India Using Lightsail</title>
+				<link>https://www.logical-dice.com/en/posts/2023/07/04/aws-lightsail-vpn-india/</link>
+				<pubDate>Tue, 04 Jul 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2023/07/04/aws-lightsail-vpn-india/</guid>
+				<description>Built a VPN server using AWS Lightsail to obtain an Indian IP address.</description>
+			</item>
+			<item>
+				<title>Trying Out Vite</title>
+				<link>https://www.logical-dice.com/en/posts/2023/02/11/vite-tutorial/</link>
+				<pubDate>Sat, 11 Feb 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2023/02/11/vite-tutorial/</guid>
+				<description>Notes from when I rebuilt an old site using Vite.</description>
+			</item>
+			<item>
+				<title>【AWS】S3 Redirect Not Working</title>
+				<link>https://www.logical-dice.com/en/posts/2023/01/29/aws-s3-cloudfront-not-redirect/</link>
+				<pubDate>Sun, 29 Jan 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2023/01/29/aws-s3-cloudfront-not-redirect/</guid>
+				<description>Redirect settings on AWS S3 web hosting do not work when requests are received via CloudFront.</description>
+			</item>
+			<item>
+				<title>【AWS】Auto Scaling Instances Not Becoming InService</title>
+				<link>https://www.logical-dice.com/en/posts/2022/05/03/ec2-not-inservice/</link>
+				<pubDate>Tue, 03 May 2022 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2022/05/03/ec2-not-inservice/</guid>
+				<description>Investigation notes when the lifecycle of EC2 instances launched by Auto Scaling did not become &amp;lsquo;InService&amp;rsquo;.</description>
+			</item>
+			<item>
+				<title>【Laravel】Returning HTTP 200 After Creating a Model</title>
+				<link>https://www.logical-dice.com/en/posts/2021/06/19/laravel-create-http200/</link>
+				<pubDate>Sat, 19 Jun 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/06/19/laravel-create-http200/</guid>
+				<description>How to avoid returning 201 when creating and returning a model.</description>
+			</item>
+			<item>
+				<title>Differences Between lodash&#39;s debounce and throttle</title>
+				<link>https://www.logical-dice.com/en/posts/2021/06/06/lodash-debounce-vs-throttle/</link>
+				<pubDate>Sun, 06 Jun 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/06/06/lodash-debounce-vs-throttle/</guid>
+				<description>Notes on investigating the differences between debounce and throttle.</description>
+			</item>
+			<item>
+				<title>【Laravel】Invalidating JWT Tokens by Specifying JTI</title>
+				<link>https://www.logical-dice.com/en/posts/2021/04/12/laravel-jwt-clear/</link>
+				<pubDate>Mon, 12 Apr 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/04/12/laravel-jwt-clear/</guid>
+				<description>How to invalidate JWT tokens by specifying JTI.</description>
+			</item>
+			<item>
+				<title>Connecting via a Two-Step SSH Tunnel with MySQL Workbench on Windows</title>
+				<link>https://www.logical-dice.com/en/posts/2021/03/07/windows-localforward-mysql-workbench/</link>
+				<pubDate>Sun, 07 Mar 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/03/07/windows-localforward-mysql-workbench/</guid>
+				<description>How to connect to a database from Windows 10&amp;rsquo;s MySQL Workbench via a two-step SSH connection.</description>
+			</item>
+			<item>
+				<title>【Laravel】Observer Not Executing</title>
+				<link>https://www.logical-dice.com/en/posts/2021/02/21/larave-observer-stop/</link>
+				<pubDate>Sun, 21 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/02/21/larave-observer-stop/</guid>
+				<description>Investigation notes when the processing of an Observer configured in Laravel did not execute.</description>
+			</item>
+			<item>
+				<title>Using Howdy for Face Recognition on Ubuntu</title>
+				<link>https://www.logical-dice.com/en/posts/2021/02/17/ubuntu-howdy/</link>
+				<pubDate>Wed, 17 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/02/17/ubuntu-howdy/</guid>
+				<description>Configuration for enabling face recognition on Ubuntu 20.10.</description>
+			</item>
+			<item>
+				<title>Setting Up a Multifunction Mouse on Ubuntu</title>
+				<link>https://www.logical-dice.com/en/posts/2021/02/14/ubuntu-mouse-keymap/</link>
+				<pubDate>Sun, 14 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/02/14/ubuntu-mouse-keymap/</guid>
+				<description>Notes on button mapping for a multifunction mouse on Ubuntu 20.10.</description>
+			</item>
+			<item>
+				<title>Initial Setup for Ubuntu 20.10</title>
+				<link>https://www.logical-dice.com/en/posts/2021/02/11/ubuntu-20-10-initialize/</link>
+				<pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/02/11/ubuntu-20-10-initialize/</guid>
+				<description>Notes on installing Ubuntu 20.10 on a Thinkpad T480.</description>
+			</item>
+			<item>
+				<title>Checking Only Modified Files with PHP_CodeSniffer</title>
+				<link>https://www.logical-dice.com/en/posts/2021/02/06/phpcs-git-diff/</link>
+				<pubDate>Sat, 06 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/02/06/phpcs-git-diff/</guid>
+				<description>How to check only the modified files with phpcs using git diff.</description>
+			</item>
+	</channel>
+</rss>

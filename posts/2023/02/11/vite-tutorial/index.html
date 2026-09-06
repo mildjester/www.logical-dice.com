@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Viteを使ってみる|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Viteを使ってみる</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2023-02-11 00:00:00 &#43;0000 UTC" class="catalogue-time">2023年02月11日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/vite/">Vite</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>Viteとはwebpackのようにjsやcssをコンパイルするツールです。<br>
+Vue.jsを作ったEvan Youさんが作ったらしく、Vue.js同様に楽に使い始められそうです。<br>
+<a href="https://ja.vitejs.dev/">https://ja.vitejs.dev/</a></p>
+<p>放置していたサイトがコンパイルできなくなっていたので、Viteでコンパイルするよう作り替えてみました。<br>
+大した実装はしていないので、条件的には1ページだけのサイトでjsとsassがコンパイルできれば良いサイトです。</p>
+<h2 id="viteプロジェクトの作成">Viteプロジェクトの作成</h2>
+<p>まず、以下コマンドでViteプロジェクトを新規作成します。</p>
+<pre tabindex="0"><code>$ npm create vite@latest
+</code></pre><p>続けていいか聞かれるので「y」と入力します。</p>
+<pre tabindex="0"><code>Ok to proceed? (y) y
+</code></pre><p>プロジェクト名を入力します。<br>
+本例では「hogehoge-prj」。</p>
+<pre tabindex="0"><code>✔ Project name: … hogehoge-prj
+</code></pre><p>次にフレームワークを聞かれます。<br>
+当サイトはフレームワークを利用していなかったので「Vanilla」を選択します。<br>
+※上下キーで選択</p>
+<pre tabindex="0"><code>? Select a framework: › - Use arrow-keys. Return to submit.
+❯   Vanilla
+    Vue
+    React
+    Preact
+    Lit
+    Svelte
+    Others
+</code></pre><p>次にJavaScriptかTypeScriptか選択します。<br>
+当サイトは「JavaScript」です。<br>
+※上下キーで選択</p>
+<pre tabindex="0"><code>? Select a variant: › - Use arrow-keys. Return to submit.
+❯   JavaScript
+    TypeScript
+</code></pre><p>これでプロジェクトが作成され、以下メッセージが表示されます。</p>
+<pre tabindex="0"><code>Scaffolding project in /Users/goro/workspace/hogehoge-prj...
+
+Done. Now run:
+
+  cd hogehoge-prj
+  npm install
+  npm run dev
+</code></pre><p>上記メッセージ通りにコマンドを打つとデフォルト状態でページが立ち上がります。</p>
+<pre tabindex="0"><code> VITE v4.1.1  ready in 170 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h to show help
+</code></pre><p>こんな感じのクリックしただけカウントアップするページが表示されます。<br>
+<img src="https://www.logical-dice.com/posts/2023/02/11/vite-tutorial001.png"/></p>
+<p>ファイルとしては以下が生成されています。</p>
+<pre tabindex="0"><code>counter.js
+index.html
+javascript.svg
+main.js
+node_modules/
+package-lock.json
+package.json
+public/
+style.css
+</code></pre><h2 id="sassのインストール">sassのインストール</h2>
+<p>Viteはそのままではsassに対応していないようなので別途インストールします。</p>
+<pre tabindex="0"><code>$ npm add -D sass
+</code></pre><h2 id="既存サイトをviteに取り込む">既存サイトをViteに取り込む</h2>
+<p>生成したViteプロジェクトに既存のサイトを反映させます。</p>
+<h3 id="indexhtmlの修正">index.htmlの修正</h3>
+<p>まず、<code>index.html</code>にページのテンプレート（html部分）を反映します。<br>
+jsの読み込みはbodyの最後で<code>main.js</code>を読み込むように記載するのみです。<br>
+cssに関してはコンパイルするものは記載する必要ありません。後述の<code>public</code>ディレクトリに置かれたcssファイルは読み込む記載をする必要があります。</p>
+<p>以下はデフォルトのindex.html</p>
+<pre tabindex="0"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&#34;UTF-8&#34; /&gt;
+    &lt;link rel=&#34;icon&#34; type=&#34;image/svg+xml&#34; href=&#34;/vite.svg&#34; /&gt;
+    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34; /&gt;
+    &lt;title&gt;Vite App&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&#34;app&#34;&gt;&lt;/div&gt;
+    &lt;script type=&#34;module&#34; src=&#34;/main.js&#34;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h3 id="mainjsの修正">main.jsの修正</h3>
+<p>次に<code>main.js</code>にて必要なjsファイルやsassファイル、画像ファイルをimportします。<br>
+デフォルトではindex.htmlに<code>&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;</code>があるので、そこにjsにてHTMLを流し込んでいます。<br>
+固定な部分についてはJSで流し込まずにindex.htmlに直接記載してしまっても良さそうです。<br>
+既存サイトを取り込む際は必要な処理が他JSに全て書かれていると思うので、<code>main.js</code>にはimportだけ記載すれば良いです。</p>
+<p>以下はデフォルトのmain.js</p>
+<pre tabindex="0"><code>import &#39;./style.css&#39;
+import javascriptLogo from &#39;./javascript.svg&#39;
+import { setupCounter } from &#39;./counter.js&#39;
+
+document.querySelector(&#39;#app&#39;).innerHTML = `
+  &lt;div&gt;
+    &lt;a href=&#34;https://vitejs.dev&#34; target=&#34;_blank&#34;&gt;
+      &lt;img src=&#34;/vite.svg&#34; class=&#34;logo&#34; alt=&#34;Vite logo&#34; /&gt;
+    &lt;/a&gt;
+    &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript&#34; target=&#34;_blank&#34;&gt;
+      &lt;img src=&#34;${javascriptLogo}&#34; class=&#34;logo vanilla&#34; alt=&#34;JavaScript logo&#34; /&gt;
+    &lt;/a&gt;
+    &lt;h1&gt;Hello Vite!&lt;/h1&gt;
+    &lt;div class=&#34;card&#34;&gt;
+      &lt;button id=&#34;counter&#34; type=&#34;button&#34;&gt;&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;p class=&#34;read-the-docs&#34;&gt;
+      Click on the Vite logo to learn more
+    &lt;/p&gt;
+  &lt;/div&gt;
+`
+
+setupCounter(document.querySelector(&#39;#counter&#39;))
+</code></pre><p>ここでimportしたファイルはCacheBusting対応（キャッシュ対策でファイル名にランダムな文字列が付く）されます。<br>
+画像ファイルに関しては上記デフォルトファイル内の<code>src=&quot;${javascriptLogo}&quot;</code>でCacheBustingされたファイル名が読み込まれます。</p>
+<h3 id="その他固定ファイルの配置">その他固定ファイルの配置</h3>
+<p>生成されている<code>public</code>ディレクトリ配下に置かれたファイルやディレクトリはそのままDocumentRootに置かれます。<br>
+コンパイルする必要の無いjs/cssファイルやCacheBustingをしない画像ファイルはここにおきます。</p>
+<h3 id="不要ファイルの削除">不要ファイルの削除</h3>
+<p>以下のファイルは不要なので削除してしまいます。</p>
+<ul>
+<li>counter.js</li>
+<li>javascript.svg</li>
+<li>public/vite.svg</li>
+</ul>
+<hr>
+<p>これでViteを使ったサイト構築は完了です。<br>
+<code>npm run dev</code>コマンドでローカルで動かせますし、<code>npm run build</code>でコンパイルしたファイルがdistディレクトリに出力されます。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

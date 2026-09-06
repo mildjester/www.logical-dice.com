@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>NetBeans on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/netbeans/</link>
+		<description>Recent content in NetBeans on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Fri, 13 Oct 2017 11:05:07 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/netbeans/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>【Mac】NetBeansのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/737/</link>
+				<pubDate>Fri, 13 Oct 2017 11:05:07 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/737/</guid>
+				<description>■環境macOS Sierra 10.12.6NetBeans 8.2コードの補完やFTP機能を標準装備していたりと無料のIDE&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【golang】NetBeansでgo言語を使えるようにする</title>
+				<link>https://www.logical-dice.com/posts/wp/223/</link>
+				<pubDate>Wed, 25 May 2016 23:06:28 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/223/</guid>
+				<description>元々NetBeansでPHPをやっているので同じIDEでgoも使うために設定してみました。■環境Ubuntu 16.04NetB&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】JDKとNetBeans IDEのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/69/</link>
+				<pubDate>Wed, 16 Sep 2015 23:18:43 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/69/</guid>
+				<description>開発環境としてUbuntuにJDKとNetBeansをインストールします。■環境Ubuntu 15.04openjdk 8Net&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

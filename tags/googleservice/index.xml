@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>GoogleService on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/googleservice/</link>
+		<description>Recent content in GoogleService on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Mon, 25 Jan 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/googleservice/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Googleフォームを使って迷子札を作る</title>
+				<link>https://www.logical-dice.com/posts/2021/01/25/lost-tag-qr/</link>
+				<pubDate>Mon, 25 Jan 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/01/25/lost-tag-qr/</guid>
+				<description>子供に持たせる迷子札をGoogleフォームを使って作ってみました。</description>
+			</item>
+			<item>
+				<title>GASでGmailをSlackに転送する</title>
+				<link>https://www.logical-dice.com/posts/2020/03/10/gas-gmail-slack/</link>
+				<pubDate>Tue, 10 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/10/gas-gmail-slack/</guid>
+				<description>Google Apps Scriptを使ってGmailで受信したメールをSlackに通知する方法です。</description>
+			</item>
+			<item>
+				<title>Google Analyticsから直近のページ閲覧数を取得する</title>
+				<link>https://www.logical-dice.com/posts/2020/03/05/get-google-analytics-report/</link>
+				<pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/05/get-google-analytics-report/</guid>
+				<description>Google Analyticsから直近のページ閲覧数を取得する方法です。</description>
+			</item>
+			<item>
+				<title>Google Optimizeでセッション情報が必要なページを触る</title>
+				<link>https://www.logical-dice.com/posts/2019/03/07/google-optimize-interactive/</link>
+				<pubDate>Thu, 07 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/07/google-optimize-interactive/</guid>
+				<description>Google Optimizeでログイン後のページなどのセッション情報が必要なページを触る際の手順です。</description>
+			</item>
+			<item>
+				<title>Google Tag Managerで発火しない時</title>
+				<link>https://www.logical-dice.com/posts/wp/1755/</link>
+				<pubDate>Mon, 26 Nov 2018 23:38:42 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1755/</guid>
+				<description>Google Tag　Managerを使ってトリガーを設定したはずが思い通りにGoogle Analytics上で集計できない時&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Google Tag Managerの基本設定</title>
+				<link>https://www.logical-dice.com/posts/wp/1741/</link>
+				<pubDate>Mon, 26 Nov 2018 22:32:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1741/</guid>
+				<description>Google AnalyticsをGoogle Tag Managerに切り替えた際のメモです。前提条件としてGoogle An&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Google Cloud Platformにインスタンス作成</title>
+				<link>https://www.logical-dice.com/posts/wp/721/</link>
+				<pubDate>Sun, 08 Oct 2017 00:10:11 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/721/</guid>
+				<description>参考https://www.topgate.co.jp/category/gcpインスタンス立ち上げ① 左メニューの「Compu&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

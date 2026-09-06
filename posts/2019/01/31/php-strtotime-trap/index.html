@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【PHP】strtotimeの罠|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【PHP】strtotimeの罠</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-01-31 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年01月31日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/php/">PHP</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>今日相談を受けた事象が面白かったので記事にします。</p>
+<h2 id="事象">事象</h2>
+<p>既存のPHPで来月の年月を取得する処理があり<br>
+リリース時は正常に動いていたのに、今日(1/31)見たら年月がズレていたようです。</p>
+<p>ソースコードを見せて貰ったら以下のようになっていました。</p>
+<pre tabindex="0"><code>echo date(&#39;Ym&#39;, strtotime(date(&#39;Ym-1&#39;) . &#39; + 1 month&#39;));
+</code></pre><h2 id="原因">原因</h2>
+<p>まず、<code>date('Ym-1')</code> がおかしいですね。<br>
+<code>date('Ym01')</code>とか<code>date('Y-m-01')</code>とかにするべきですね。</p>
+<p>では、なぜリリース時に正常に動いていたのか。<br>
+ここでやっとタイトルの「strtotimeの罠」が関わってきます。</p>
+<pre tabindex="0"><code>strtotime(date(&#39;Ym-1&#39;) . &#39; + 1 month&#39;)
+</code></pre><p>これは、2019/1/31であれば</p>
+<pre tabindex="0"><code>strtotime(&#39;201901-1 + 1 month&#39;)
+</code></pre><p>と、なります。</p>
+<p>ここでstrtotime様はこう考えます。</p>
+<blockquote>
+<p>201901-1？なんやそれ、知らんわ<br>
+とりあえず今日の日付から+1monthしとこ<br>
+今日は1/31だから1ヶ月後は2/31・・・ってそんな日無いわ！<br>
+よっしゃ！繰り上げで3/3にしとこ！</p>
+</blockquote>
+<p>エラーになどしません。<br>
+PHPらしいですね。</p>
+<p>これにより、1/31に実行すると3月を返してしまい、1ヶ月ズレてしまいます。</p>
+<p>もしリリース日やテスト日が月の上旬〜中旬であれば<br>
+strtotime様の月繰り上げが発生しないので<br>
+出力が年月だけだと不具合に気づきません。</p>
+<p>この不具合はテストやってもなかなか出てこないと思うので<br>
+実装段階で気を付けないといけないですね。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

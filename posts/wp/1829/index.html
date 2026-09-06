@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Linux Mint 19.1 MATEをUSBメモリからインストール|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Linux Mint 19.1 MATEをUSBメモリからインストール</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-12-20 16:25:54 &#43;0000 UTC" class="catalogue-time">2018年12月20日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>PCを再構築する必要があったので、Linux Mintの最新バージョンを入れて見ました<br>
+インストール準備をした作業環境はMacで、USBメモリにイメージを焼いてインストールしています</p>
+<h2 id="osイメージのダウンロード">OSイメージのダウンロード</h2>
+<p>今回選んだのは『Linux Mint 19.1 &ldquo;Tessa&rdquo; - MATE (64-bit)』です<br>
+こちらからダウンロードできます（とりあえず近そうなTaiwanなどからDL）<br>
+<a href="https://linuxmint.com/edition.php?id=263" rel="noopener" target="_blank"><a href="https://linuxmint.com/edition.php?id=263">https://linuxmint.com/edition.php?id=263</a></a></p>
+<h2 id="インストールメディアusbの作成">インストールメディア(USB)の作成</h2>
+<p>まずMacにUSBメモリを刺し、ターミナルで<code>diskutil list</code>を実行します<br>
+これでUSBメモリのdisk番号を調べます（NAMEやSIZEを見る）<br>
+私の場合は <code>/dev/disk2</code> がUSBメモリでした</p>
+<pre tabindex="0"><code>$ diskutil list
+/dev/disk0 (internal):  
+   #:                       TYPE NAME                    SIZE       IDENTIFIER  
+   0:      GUID_partition_scheme                         121.3 GB   disk0  
+   1:                        EFI EFI                     314.6 MB   disk0s1  
+   2:                 Apple_APFS Container disk1         121.0 GB   disk0s2  
+  
+/dev/disk1 (synthesized):  
+   #:                       TYPE NAME                    SIZE       IDENTIFIER  
+   0:      APFS Container Scheme -                      +121.0 GB   disk1  
+                                 Physical Store disk0s2  
+   1:                APFS Volume Macintosh HD            70.2 GB    disk1s1  
+   2:                APFS Volume Preboot                 69.6 MB    disk1s2  
+   3:                APFS Volume Recovery                1.6 GB     disk1s3  
+   4:                APFS Volume VM                      1.1 GB     disk1s4  
+  
+/dev/disk2 (external, physical):  
+   #:                       TYPE NAME                    SIZE       IDENTIFIER  
+   0:      GUID_partition_scheme                        *2.0 GB     disk2  
+   1:       Microsoft Basic Data MINT19_1                2.0 GB     disk2s1  
+</code></pre><p>対象ディスクをフォーマットします<br>
+以下の <code>HOGEHOGE</code> の部分はフォーマット後のUSBメモリの名前ですので<br>
+任意のものを入れてください</p>
+<pre tabindex="0"><code>$ diskutil eraseDisk MS-DOS HOGEHOGE /dev/disk2  
+</code></pre><p>フォーマットが終わったらアンマウントし、isoイメージを焼きます<br>
+（ddコマンドで結構待ちます）</p>
+<pre tabindex="0"><code>$ diskutil unmountDisk /dev/disk2  
+Unmount of all volumes on disk2 was successful  
+$ cd ~/Downloads   #isoイメージをDLした場所に読み替えてください  
+$ sudo dd if=linuxmint-19.1-mate-64bit.iso of=/dev/rdisk2 bs=32m  
+dd: /dev/rdisk2: short write on character device  
+dd: /dev/rdisk2: Input/output error  
+60+1 records in  
+60+1 records out  
+2029518848 bytes transferred in 907.854818 secs (2235510 bytes/sec)  
+</code></pre><p>※注意<br>
+ofで指定しているdiskを<code>disk2</code>ではなく<code>rdisk2</code>にしています（頭にrを付けている）<br>
+こうすると処理が早くなるようです<br>
+また、bs(バッファサイズ)のベストな値は環境により変わります<br>
+よく分からなければ32mで良いと思います</p>
+<p>ddコマンドが完了したらDiskを取り出してインストールメディアの作成完了です</p>
+<h2 id="osインストール">OSインストール</h2>
+<p>Linux MintをインストールするPCにUSBメモリを刺して起動し、BIOS設定を開きます。<br>
+BIOS設定の起動方法はメーカーにより違うと思うので各自確認してください。</p>
+<p>BIOS設定のブート順序設定にて1番目にUSBメモリを指定してBIOS設定を閉じます。<br>
+BIOS設定画面が閉じるとPC再度起動し、Linux Mintを起動することができます。</p>
+<p>ここで起動しているLinux MintはOSイメージの中にある仮の環境なので、<br>
+デスクトップにあるインストーラーを実行してHDDやSSDにOSインストールします。</p>
+<p>これでOSインストールは完了です。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Connecting via a Two-Step SSH Tunnel with MySQL Workbench on Windows|Logical Dice Techblog</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice Techblog" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/en/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice Techblog" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Connecting via a Two-Step SSH Tunnel with MySQL Workbench on Windows</h1>
+		<div class="post-info">
+				<p class="publish-date">posted: <time datetime="2021-03-07 00:00:00 &#43;0000 UTC" class="catalogue-time">2021-03-07</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/windows/">Windows</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="environment">Environment</h2>
+<ul>
+<li>Windows 10</li>
+<li>MySQL Workbench 8.0</li>
+<li>WSL2 (Ubuntu 20.04)</li>
+</ul>
+<hr>
+<h2 id="objective">Objective</h2>
+<p>Assume an environment where connecting to a DB from a work PC requires passing through two SSH connections.<br>
+<img src="https://www.logical-dice.com/images/2021/03/windows-localforward-mysql-workbench-001.png"/></p>
+<p>In this environment, we will connect to the DB from the work PC (Windows) using MySQL Workbench.</p>
+<p>Basic SSH operations are assumed to be performed using commands on WSL.<br>
+If you perform SSH operations on Windows, please replace the SSH configuration path mentioned later with the Windows equivalent.
+(e.g., SSH commands, private key paths)</p>
+<h2 id="problematic-pattern">Problematic Pattern</h2>
+<p>If you have the following configuration in <code>~/.ssh/config</code> on WSL, you can SSH into the application server:</p>
+<pre tabindex="0"><code>Host fumidai-server
+    HostName 111.111.111.111
+    User my-user
+    IdentityFile ~/.ssh/id_rsa_hoge
+    IdentitiesOnly yes
+
+Host app-server
+    HostName 222.222.222.222
+    User my-user
+    ProxyCommand ssh -W %h:%p fumidai-server
+    IdentityFile ~/.ssh/id_rsa_hoge
+    ForwardAgent yes
+</code></pre><p>*Please replace HostName, User, and IdentityFile as appropriate.</p>
+<p>With the ProxyCommand setting specified here,<br>
+SSHing to <code>app-server</code> will be done via <code>fumidai-server</code>.</p>
+<p>However, if you try to connect using MySQL Workbench&rsquo;s <code>TCP/IP over SSH</code> by specifying <code>app-server</code> for the<br>
+<code>fumidai-server</code> ⇒ <code>app-server</code> ⇒ DB<br>
+connection, it will fail.<br>
+(This works on Mac and Ubuntu, but not on Windows for some reason.)</p>
+<h2 id="effective-pattern">Effective Pattern</h2>
+<p>Instead of using MySQL Workbench&rsquo;s <code>TCP/IP over SSH</code>,<br>
+we will first set up SSH Local Forwarding to connect to the DB, and then connect MySQL Workbench.</p>
+<p>First, configure <code>~/.ssh/config</code> as follows:</p>
+<pre tabindex="0"><code>Host fumidai-server
+    HostName 111.111.111.111
+    User my-user
+    IdentityFile ~/.ssh/id_rsa_hoge
+    IdentitiesOnly yes
+
+Host app-server-localforward
+    HostName 222.222.222.222
+    User my-user
+    ProxyCommand ssh -W %h:%p fumidai-server
+    IdentityFile ~/.ssh/id_rsa_hoge
+    GatewayPorts yes
+    LocalForward 53306 hogehoge.ap-northeast-1.rds.amazonaws.com:3306
+</code></pre><p>The difference from the previous configuration is the addition of <code>GatewayPorts</code> and <code>LocalForward</code> settings.<br>
+Now, if you SSH into <code>app-server-localforward</code>, local port 53306 will be forwarded to<br>
+the DB&rsquo;s port 3306.<br>
+*Please replace the DB hostname as appropriate.</p>
+<p>Configure the MySQL Workbench connection settings as follows.<br>
+It is not necessary to load the SSH configuration file.</p>
+<table>
+	<thead>
+			<tr>
+					<th>Item</th>
+					<th>Content</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Connection Method</td>
+					<td>Standard (TCP/IP)</td>
+			</tr>
+			<tr>
+					<td>Hostname</td>
+					<td>127.0.0.1</td>
+			</tr>
+			<tr>
+					<td>Port</td>
+					<td>53306</td>
+			</tr>
+			<tr>
+					<td>Username</td>
+					<td>DB user</td>
+			</tr>
+			<tr>
+					<td>Password</td>
+					<td>DB password</td>
+			</tr>
+	</tbody>
+</table>
+<p>The configuration is now complete.</p>
+<p>To connect, follow these steps:<br>
+① Connect to <code>app-server-localforward</code> using the SSH command.<br>
+② Connect to the DB with MySQL Workbench.</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

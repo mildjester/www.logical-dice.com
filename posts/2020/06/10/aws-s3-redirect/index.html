@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>AWS S3を使ったリダイレクトの方法|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">AWS S3を使ったリダイレクトの方法</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-06-10 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年06月10日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>AWS S3上に置いていた静的コンテンツを部分的に別サーバー等に移設した際など<br>
+特定のパスへのアクセスを別サーバー等にリダイレクトする設定です。</p>
+<p>対象のS3の<br>
+「プロパティ」＞「Static website hosting」＞「このバケットを使用してウェブサイトをホストする」<br>
+にリダイレクトルールという欄があるので、以下のように設定します。</p>
+<p>この例では①〜③のリダイレクトルール(RoutingRule)を設定しています。</p>
+<pre tabindex="0"><code>&lt;RoutingRules&gt;
+  &lt;RoutingRule&gt;　　　・・・①
+    &lt;Condition&gt;
+      &lt;KeyPrefixEquals&gt;kokojanai_dokoka.html&lt;/KeyPrefixEquals&gt;
+    &lt;/Condition&gt;
+    &lt;Redirect&gt;
+      &lt;Protocol&gt;https&lt;/Protocol&gt;
+      &lt;HostName&gt;new-server.co.jp&lt;/HostName&gt;
+      &lt;ReplaceKeyWith&gt;kokodayo.html&lt;/ReplaceKeyWith&gt;
+    &lt;/Redirect&gt;
+  &lt;/RoutingRule&gt;
+  &lt;RoutingRule&gt;　　　・・・②
+    &lt;Condition&gt;
+      &lt;HttpErrorCodeReturnedEquals&gt;403&lt;/HttpErrorCodeReturnedEquals&gt;
+    &lt;/Condition&gt;
+    &lt;Redirect&gt;
+      &lt;Protocol&gt;https&lt;/Protocol&gt;
+      &lt;HostName&gt;new-server.co.jp&lt;/HostName&gt;
+    &lt;/Redirect&gt;
+  &lt;/RoutingRule&gt;
+  &lt;RoutingRule&gt;　　　・・・③
+    &lt;Condition&gt;
+      &lt;HttpErrorCodeReturnedEquals&gt;404&lt;/HttpErrorCodeReturnedEquals&gt;
+    &lt;/Condition&gt;
+    &lt;Redirect&gt;
+      &lt;Protocol&gt;https&lt;/Protocol&gt;
+      &lt;HostName&gt;new-server.co.jp&lt;/HostName&gt;
+    &lt;/Redirect&gt;
+  &lt;/RoutingRule&gt;
+&lt;/RoutingRules&gt;
+</code></pre><hr>
+<h3 id="特定パスへのアクセス">①特定パスへのアクセス</h3>
+<p>特定のパスへアクセスがあった際にパスを書き換えてリダイレクトします。<br>
+S3から新サーバー等に移設した際にパスが変わった場合などに使えます。</p>
+<p>設定する値は以下の通りです。</p>
+<table>
+	<thead>
+			<tr>
+					<th>設定項目</th>
+					<th>設定値</th>
+					<th>サンプル値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>KeyPrefixEquals</td>
+					<td>このパスにアクセスがあったらリダイレクトします。</td>
+					<td>kokojanai_dokoka.html</td>
+			</tr>
+			<tr>
+					<td>Protocol</td>
+					<td>リダイレクト先のプロトコルです</td>
+					<td>https</td>
+			</tr>
+			<tr>
+					<td>HostName</td>
+					<td>リダイレクト先のホスト名です</td>
+					<td>new-server.co.jp</td>
+			</tr>
+			<tr>
+					<td>ReplaceKeyWith</td>
+					<td>KeyPrefixEqualsの値をこの値で置き換えます。</td>
+					<td>kokoday.html</td>
+			</tr>
+	</tbody>
+</table>
+<p>サンプルではS3にs3-sample.co.jpというDNSを割り振って使っていたとすると<br>
+<code>https://s3-sample.co.jp/kokojanai_dokoka.html</code>へのアクセスは<br>
+<code>https://new-server.co.jp/kokodayo.html</code>へリダイレクトされます。</p>
+<hr>
+<h3 id="-s3上に存在しないパスへのアクセス">②③ S3上に存在しないパスへのアクセス</h3>
+<p>S3上に存在しないパスへアクセスがあった場合に別サーバー等へ同パスのままリダイレクトします。<br>
+S3から新サーバー等に同パスのまま移設した際に使えます。<br>
+②と③は<code>HttpErrorCodeReturnedEquals</code>以外は同じです。</p>
+<table>
+	<thead>
+			<tr>
+					<th>設定項目</th>
+					<th>設定値</th>
+					<th>サンプル値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>HttpErrorCodeReturnedEquals</td>
+					<td>S3の応答HTTPコードが何だったらリダイレクトするか</td>
+					<td>403 および 404※</td>
+			</tr>
+			<tr>
+					<td>Protocol</td>
+					<td>リダイレクト先のプロトコルです</td>
+					<td>https</td>
+			</tr>
+			<tr>
+					<td>HostName</td>
+					<td>リダイレクト先のホスト名です</td>
+					<td>new-server.co.jp</td>
+			</tr>
+	</tbody>
+</table>
+<p>※S3上に存在しないパスの場合404だけじゃなく403を返すパターンもあるようなので念の為両方書いています。</p>
+<p>サンプルではS3にs3-sample.co.jpというDNSを割り振って使っていたとすると<br>
+<code>https://s3-sample.co.jp/hoge.html</code>へのアクセスは<br>
+<code>https://new-server.co.jp/hoge.html</code>へリダイレクトされます。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

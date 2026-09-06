@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Javascript on Logical Dice Techblog</title>
+		<link>https://www.logical-dice.com/en/tags/javascript/</link>
+		<description>Recent content in Javascript on Logical Dice Techblog</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Sun, 06 Jun 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/en/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Differences Between lodash&#39;s debounce and throttle</title>
+				<link>https://www.logical-dice.com/en/posts/2021/06/06/lodash-debounce-vs-throttle/</link>
+				<pubDate>Sun, 06 Jun 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/06/06/lodash-debounce-vs-throttle/</guid>
+				<description>Notes on investigating the differences between debounce and throttle.</description>
+			</item>
+	</channel>
+</rss>

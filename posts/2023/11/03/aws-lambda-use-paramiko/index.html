@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【AWS】lambdaでparamikoを使ってSFTP通信する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【AWS】lambdaでparamikoを使ってSFTP通信する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2023-11-03 00:00:00 &#43;0000 UTC" class="catalogue-time">2023年11月03日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>MacBook Air M1チップ</li>
+<li>AWS SAM version 1.99.0</li>
+<li>python 3.9</li>
+</ul>
+<hr>
+<h2 id="手順">手順</h2>
+<p>他サーバーよりSFTPでファイルを取得する処理を作るためにparamikoを利用します。<br>
+AWS lambdaでparamikoを利用するためにレイヤーを利用します。</p>
+<p>lambdaのレイヤーはDockerなどを使って構築する方法もありますが<br>
+簡易に作成したかったのでAWS SAMを利用してレイヤーの作成をしました。</p>
+<h3 id="aws-samをインストールする">①AWS SAMをインストールする</h3>
+<p>Macにて以下コマンドを実行してAWS SAMをインストールします。</p>
+<pre tabindex="0"><code>$ brew tap aws/tap
+$ brew install aws-sam-cli
+</code></pre><p>この記事を書いている時点でインストールできたのはバージョン1.99.0でした。</p>
+<pre tabindex="0"><code>$ sam --version
+SAM CLI, version 1.99.0
+</code></pre><h3 id="aws-sam用のファイルを作成する">②AWS SAM用のファイルを作成する。</h3>
+<p>以下構成でファイルを作成します。<br>
+<code>paramiko-layer</code>ディレクトリは変えても良いです。</p>
+<pre tabindex="0"><code>(current dir)
+    ├── paramiko-layer
+    │   └── requirements.txt
+    └── template.yaml
+</code></pre><p>各ファイルの中身は以下です。</p>
+<p>【requirements.txt】<br>
+インストールするライブラリを記載します</p>
+<pre tabindex="0"><code>paramiko
+</code></pre><p>【template.yaml】<br>
+ここで記載する<code>ContentUri</code>はrequirements.txtを配置しているディレクトリにします。<br>
+また<code>python3.9</code>、<code>x86_64</code>の部分は作成するlambdaに合わせて読み替えてください。</p>
+<pre tabindex="0"><code>Resources:
+  ParamikoLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: &#39;paramiko-layer/&#39;
+      CompatibleRuntimes:
+        - python3.9
+      CompatibleArchitectures:
+        - x86_64
+    Metadata:
+      BuildMethod: python3.9
+</code></pre><h3 id="レイヤーをビルドする">③レイヤーをビルドする</h3>
+<p>template.yamlがあるディレクトリにて以下コマンドを実行します。<br>
+<code>ParamikoLayer</code>は変えても良いです。</p>
+<pre tabindex="0"><code>sam build ParamikoLayer
+</code></pre><p>これにより現在のディレクトリ配下に<code>.aws-sam</code>ディレクトリが作成され、ビルドされたファイルができあがります。<br>
+これをCLI上のコマンドでlambdaのレイヤーにデプロイすることもできますが、今回はZIPをアップする方法でデプロイしてみます。</p>
+<p>生成されたpythonディレクトリ配下にあるファイルを以下コマンドで圧縮します。</p>
+<pre tabindex="0"><code>cd .aws-sam/build/ParamikoLayer/
+zip -r paramiko-layer.zip python/*
+</code></pre><p>作成したparamiko-layer.zipをAWSマネジメントコンソールでアップロードします。<br>
+lambdaのレイヤーページを開き、『レイヤーの作成』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2023/aws-lambda-use-paramiko001.png" style="width:700px;"/></p>
+<p>以下入力して『作成』をクリックする。</p>
+<img src="https://www.logical-dice.com/images/2023/aws-lambda-use-paramiko002.png" style="width:700px;"/>  
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>名前</td>
+					<td>任意のレイヤーの名前</td>
+			</tr>
+			<tr>
+					<td>説明</td>
+					<td>空で良いです。必要ならレイヤーの説明を記載してください。</td>
+			</tr>
+			<tr>
+					<td>アップロード</td>
+					<td>ラジオで『.zipファイルをアップロード』を選択し、『アップロード』よりさきほど生成したzipを選択する。</td>
+			</tr>
+			<tr>
+					<td>互換性のあるアーキテクチャ</td>
+					<td>template.yamlに記載したものと合わせてください。</td>
+			</tr>
+			<tr>
+					<td>互換性のあるランタイム</td>
+					<td>template.yamlに記載したものと合わせてください。</td>
+			</tr>
+			<tr>
+					<td>ライセンス</td>
+					<td>空で良いです。何かしらレイヤーにライセンスをつける場合は記載してください。</td>
+			</tr>
+	</tbody>
+</table>
+<p>あとはlambda関数で上記レイヤーを設定し、paramikoを利用するだけです。<br>
+実装サンプルとしては以下のようになります。</p>
+<pre tabindex="0"><code>import paramiko
+
+def lambda_handler(event, context):
+    sshClinet = paramiko.SSHClient()
+    policy = paramiko.client.MissingHostKeyPolicy()
+    sshClinet.set_missing_host_key_policy(policy)
+    sshClinet.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    sshClinet.connect(&#39;接続先ホスト名&#39;, &#39;接続先ポート&#39;, &#39;接続先ユーザー名&#39;, &#39;接続先パスワード&#39;)
+
+    sftpClient = sshClinet.open_sftp()
+    sftpClient.get(&#39;取得するファイルのパスとファイル名&#39;, &#39;接続元(lambda)の配置先パスとファイル名&#39;)
+
+    〜後続処理を記載〜
+</code></pre><hr>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://qiita.com/nakamurahiro/items/706aa8eaf7fc15a9996b">Lambdaで絶対にエラーならないレイヤーの作成方法 #AWS - Qiita</a></li>
+</ul>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

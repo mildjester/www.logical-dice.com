@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>ThinkpadにHDMIケーブルを接続したままUbuntu 20.04を起動する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">ThinkpadにHDMIケーブルを接続したままUbuntu 20.04を起動する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-06-01 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年06月01日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/ubuntu/">ubuntu</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<p>ubuntu 20.04 LTS</p>
+<hr>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://bugs.launchpad.net/ubuntu/&#43;source/linux/&#43;bug/1874194">ubuntu バグフォーラム</a></li>
+<li><a href="https://wiki.ubuntu.com/Kernel/KernelBootParameters">ubuntu wiki</a></li>
+</ul>
+<hr>
+<p><a href="/posts/2020/05/17/update-ubuntu-20-04/">前回の記事</a>にてUbuntuを20.04にアップデートしたら
+HDMIケーブルを挿したままPCを起動する事ができなくなった話を書きました。<br>
+Linuxカーネルを書き換えれば動くような話もあったのですが、それはやりたくなかったので放置していました。</p>
+<p>2020/6/1現在、ubuntu公式の対応はまだされていないようなのですが、
+<a href="https://bugs.launchpad.net/ubuntu/&#43;source/linux/&#43;bug/1874194">ubuntuのバグ報告フォーラム</a>にて
+『quiet splashを無効化したらいけた！』という書き込みが5/29にされていました。<br>
+試してみたら確かに動いたので手順を記載します。</p>
+<h2 id="grub設定を変更する">grub設定を変更する</h2>
+<p>以下のコマンドにてgrubの設定をいじります。</p>
+<pre tabindex="0"><code>$ sudo gedit /etc/default/grub
+</code></pre><p>設定ファイルがテキストエディタで開くので、<code>quiet splash</code>の行をコメントアウトします。<br>
+コメントアウト後は保存して閉じます。</p>
+<pre tabindex="0"><code>〜省略〜
+GRUB_DEFAULT=0
+GRUB_TIMEOUT_STYLE=hidden
+GRUB_TIMEOUT=10
+GRUB_DISTRIBUTOR=`lsb_release -i -s 2&gt; /dev/null || echo Debian`
+#GRUB_CMDLINE_LINUX_DEFAULT=&#34;quiet splash&#34;　　　　←この行を#でコメントアウトする
+GRUB_CMDLINE_LINUX=&#34;&#34;
+〜省略〜
+</code></pre><h2 id="grub設定の反映">grub設定の反映</h2>
+<p>以下のupdate-grubコマンドでgrub設定を反映させます。<br>
+しばらく処理が走るので完了するのを待ちます。</p>
+<pre tabindex="0"><code>$ sudo update-grub
+Sourcing file `/etc/default/grub&#39;
+Sourcing file `/etc/default/grub.d/init-select.cfg&#39;
+Generating grub configuration file ...
+Linux イメージを見つけました: /boot/vmlinuz-5.4.0-33-generic
+Found initrd image: /boot/initrd.img-5.4.0-33-generic
+Linux イメージを見つけました: /boot/vmlinuz-5.4.0-31-generic
+Found initrd image: /boot/initrd.img-5.4.0-31-generic
+Found Windows Boot Manager on /dev/nvme0n1p1@/EFI/Microsoft/Boot/bootmgfw.efi
+Adding boot menu entry for UEFI Firmware Settings
+</code></pre><p>これで設定完了です。<br>
+次回起動時からHDMIを挿したまま起動しても問題なくOSが立ち上がります。</p>
+<p>なお、quiet splashを無効にしたのでPC起動／停止時に出ていたLenovoとubuntuの両ロゴが表示されるLoading画面は出なくなります。<br>
+代わりに現在の処理状況がテキストでババーッと流れるので、驚かないでください。<br>
+(昔ながらのLinuxの起動／停止画面と同じ感じになる)</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

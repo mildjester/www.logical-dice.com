@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>プログラミング向けフォントのインストール|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">プログラミング向けフォントのインストール</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-04-13 21:21:39 &#43;0000 UTC" class="catalogue-time">2018年04月13日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/mac/">Mac</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/ubuntu/">ubuntu</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>Linux Mint 18.3 cinnamon 64bit<br>
+ubuntu 19.10<br>
+macOS High Sierra 10.13.1<br>
+(LinuxでもMacでも基本的に同じ操作でいけるはずです)</p>
+<hr>
+<h2 id="フォントのインストール">■フォントのインストール</h2>
+<p>プログラミングに向いていると評判の日本語対応フォント『Ricty Diminished』をインストールします。<br>
+確かに見やすいです。文字幅や文字の見分けやすさ（オーとゼロに違いとか）の点で良いです。</p>
+<p>まずはフォント一式をダウンロードします。<br>
+ダウンロードする圧縮ファイルはこちらのページから確認できます。<br>
+※(2019/11/14追記) URLが変わっていたので修正しました<br>
+<a href="http://www.yusa.lab.uec.ac.jp/~yusa/ricty_diminished.html" rel="noopener" target="_blank"><a href="http://www.yusa.lab.uec.ac.jp/~yusa/ricty_diminished.html">http://www.yusa.lab.uec.ac.jp/~yusa/ricty_diminished.html</a></a></p>
+<pre tabindex="0"><code>$ wget http://www.yusa.lab.uec.ac.jp/~yusa/ricty_diminished/ricty_diminished-4.1.1.tar.gz
+$ tar xf ricty_diminished-4.1.1.tar.gz  
+</code></pre><p>次にダウンロードしたフォントをフォントディレクトリへ移動します。<br>
+【Macの場合】</p>
+<pre tabindex="0"><code>$ mv RictyDiminished*.ttf ~/Library/Fonts/.  
+$ brew install fontconfig  
+</code></pre><p>【ubuntu, Linux Mintの場合】</p>
+<pre tabindex="0"><code>$ mkdir -p ~/.fonts  
+$ mv RictyDiminished*.ttf ~/.fonts/.  
+</code></pre><p>最後にフォントを読み込みます</p>
+<pre tabindex="0"><code>$ fc-cache -vf  
+$ rm -f ricty_diminished-4.1.1.tar.gz  
+</code></pre><p>これでIDEなどで<code>Ricty Diminished</code>を指定すれば反映されます。<br>
+少しオシャレ（？）な<code>Ricty Diminished Discord</code>というフォントも指定できるようになりますので、お好みの方を選べば良いと思います。</p>
+<h2 id="おまけ">■おまけ</h2>
+<p>『Cica』というフォントも評価が良いので紹介しておきます。<br>
+<a href="https://github.com/miiton/Cica" rel="noopener" target="_blank"><a href="https://github.com/miiton/Cica">https://github.com/miiton/Cica</a></a></p>
+<p>Ricty同様に文字幅や文字の見分けやすさが良く、Rictyと比べると少し丸みを帯びていて可愛いです。</p>
+<p>以下の手順でインストールできます。</p>
+<pre tabindex="0"><code>$ wget https://github.com/miiton/Cica/releases/download/v2.1.0/Cica_v2.1.0.zip  
+$ unzip Cica_v2.1.0.zip  
+$ mkdir -p ~/.fonts  
+$ mv Cica-*.ttf ~/.fonts/.  
+$ sudo fc-cache -fv  
+$ rm -f Cica_v2.1.0.zip  
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

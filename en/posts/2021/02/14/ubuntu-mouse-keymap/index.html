@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Setting Up a Multifunction Mouse on Ubuntu|Logical Dice Techblog</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice Techblog" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/en/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice Techblog" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Setting Up a Multifunction Mouse on Ubuntu</h1>
+		<div class="post-info">
+				<p class="publish-date">posted: <time datetime="2021-02-14 00:00:00 &#43;0000 UTC" class="catalogue-time">2021-02-14</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/ubuntu/">ubuntu</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="environment">Environment</h2>
+<ul>
+<li>Ubuntu 20.10</li>
+<li>Elecom M-DT2DR BK (Mouse)</li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://help.ubuntu.com/community/MouseCustomizations">https://help.ubuntu.com/community/MouseCustomizations</a></li>
+<li><a href="https://wiki.archlinux.jp/index.php/Xbindkeys">https://wiki.archlinux.jp/index.php/Xbindkeys</a></li>
+</ul>
+<hr>
+<p>When you connect a multi-button mouse (Elecom M-DT2DR) to Ubuntu, normal mouse operations and the &ldquo;forward&rdquo; and &ldquo;back&rdquo; buttons work without any special configuration.<br>
+However, the function buttons (Fn 1-3) are not mapped to anything by default, so I will map volume controls to them.</p>
+<h2 id="procedure">Procedure</h2>
+<h3 id="installation">Installation</h3>
+<p>First, install the necessary software.</p>
+<pre tabindex="0"><code>sudo apt install xbindkeys
+</code></pre><h3 id="getting-button-numbers">Getting Button Numbers</h3>
+<p>Next, get the button numbers of the mouse.<br>
+First, execute the following command to enable button detection.</p>
+<pre tabindex="0"><code>xev
+</code></pre><p>Move the mouse cursor to the white rectangular window that appears, and then press the mouse buttons. Information will be displayed in the console.<br>
+For example, for Fn 1 on my mouse (M-DT2DR), <code>button 10</code> is displayed as follows:</p>
+<pre tabindex="0"><code>ButtonRelease event, serial 36, synthetic NO, window 0x4000001,
+    root 0x7ed, subw 0x4000002, time 1758091, (31,39), root:(1951,76),
+    state 0x0, button 10, same_screen YES
+</code></pre><p>Similarly, Fn 2 was <code>button 11</code> and Fn 3 was <code>button 12</code>.</p>
+<h3 id="mapping-buttons">Mapping Buttons</h3>
+<p>Create a configuration file for button mapping.<br>
+You can start with an empty file, but it&rsquo;s a good idea to generate it from the default values.</p>
+<pre tabindex="0"><code>xbindkeys --defaults &gt; ~/.xbindkeysrc
+</code></pre><p>Add the following to the created configuration file:</p>
+<pre tabindex="0"><code># Increase volume
+&#34;pactl set-sink-volume @DEFAULT_SINK@ +1000&#34;
+    b:10
+
+# Decrease volume
+&#34;pactl set-sink-volume @DEFAULT_SINK@ -1000&#34;
+    b:11
+
+# Mute volume
+&#34;pactl set-sink-mute @DEFAULT_SINK@ toggle&#34;
+   b:12
+</code></pre><p>After saving the configuration file, load it with the following command:</p>
+<pre tabindex="0"><code>xbindkeys -p
+</code></pre><p>Now, volume controls are mapped to the Fn 1-3 buttons of the mouse.</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

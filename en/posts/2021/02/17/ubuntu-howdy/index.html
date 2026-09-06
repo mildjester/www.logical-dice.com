@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Using Howdy for Face Recognition on Ubuntu|Logical Dice Techblog</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice Techblog" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/en/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice Techblog" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Using Howdy for Face Recognition on Ubuntu</h1>
+		<div class="post-info">
+				<p class="publish-date">posted: <time datetime="2021-02-17 00:00:00 &#43;0000 UTC" class="catalogue-time">2021-02-17</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/ubuntu/">ubuntu</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="environment">Environment</h2>
+<ul>
+<li>Ubuntu 20.10</li>
+<li>Thinkpad T480</li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://github.com/boltgolt/howdy">https://github.com/boltgolt/howdy</a></li>
+<li><a href="https://wiki.archlinux.jp/index.php/Howdy">https://wiki.archlinux.jp/index.php/Howdy</a> (Japanese)</li>
+</ul>
+<hr>
+<p>Since it was very convenient to log in with face recognition (Windows Hello) when using Windows, I will try to achieve this on Ubuntu as well.<br>
+It seems that Ubuntu can achieve this with an application called <code>Howdy</code>, so I have configured it.</p>
+<h2 id="obtaining-infrared-camera-information">Obtaining Infrared Camera Information</h2>
+<p>Face recognition uses an infrared camera.<br>
+We will use <code>v4l-utils</code> to obtain camera information.</p>
+<h3 id="installing-v4l-utils">Installing v4l-utils</h3>
+<pre tabindex="0"><code>sudo apt-get install v4l-utils
+</code></pre><h3 id="checking-camera-information">Checking Camera Information</h3>
+<p>Check the camera information with the following command.<br>
+Check the item for the Infrared Camera (IR Camera).</p>
+<pre tabindex="0"><code>v4l2-ctl --list-devices --all
+
+# 以下出力結果で見る場所
+Integrated IR Camera: Integrate (usb-0000:00:14.0-5):
+    /dev/video0　　　　←赤外線カメラのパスはvideo0※
+    /dev/video1
+
+Format Video Capture:
+    Width/Height      : 340/340　　　←キャプチャサイズは340×340
+</code></pre><p>*On Thinkpad T480, video1 was also listed, but specifying video1 in later settings did not work.</p>
+<h2 id="installing-howdy">Installing Howdy</h2>
+<h3 id="installing-howdy-1">Installing Howdy</h3>
+<p>First, install the necessary software.</p>
+<pre tabindex="0"><code>sudo add-apt-repository ppa:boltgolt/howdy
+sudo apt update
+sudo apt install howdy
+</code></pre><p>During the installation, you will be asked about the security level as shown below.<br>
+Please select according to your preference and situation.<br>
+(f: prioritize speed, b: balanced, s: prioritize security)</p>
+<pre tabindex="0"><code>After detection, Howdy knows how certain it is that the match is correct.
+How certain Howdy needs to be before authenticating you can be customized.
+
+F: Fast.
+Allows more fuzzy matches, but speeds up the scanning process greatly.
+
+B: Balanced.
+Still relatively quick detection, but might not log you in when further away.
+
+S: Secure.
+The safest option, but will take much longer to authenticate you.
+
+You can always change this setting in the config.
+What profile would you like to use? [f/b/s]: 　　　　　　　　&lt;- Enter f, b, or s here
+</code></pre><h3 id="updating-configuration-file">Updating Configuration File</h3>
+<p>Edit the Howdy configuration file with the following command.<br>
+The UI may be unfamiliar to vim users, but refer to the shortcuts listed at the bottom.<br>
+(<code>^</code>: Ctrl key pressed, <code>M-</code>: Alt key pressed)</p>
+<pre tabindex="0"><code>sudo howdy config
+</code></pre><p>Configure the following items.<br>
+*On some models, it seems to be automatically configured by default, but it was not automatically configured on Thinkpad T480.</p>
+<pre tabindex="0"><code>device_path = /dev/video0        ← Path confirmed with v4l2-ctl
+
+frame_width = 340                ← Capture size confirmed with v4l2-ctl
+frame_height = 340
+
+dark_threshold = 100             ← Darkness adjustment (explained later)
+</code></pre><p>The configuration is now complete.<br>
+You can test if the face can be detected by executing the following command.</p>
+<pre tabindex="0"><code>sudo howdy test
+</code></pre><p>If &lsquo;DARK FRAME&rsquo; is displayed in the test screen, darkness adjustment is necessary.<br>
+Increase the value of <code>dark_threshold</code> in the configuration file.</p>
+<h3 id="registering-face">Registering Face</h3>
+<p>Register your face with the following command.<br>
+When you enter the command, you will be asked to enter a registration name, so enter it as needed.<br>
+(You can press Enter as is)<br>
+After that, face registration will start, so look at the camera and wait.</p>
+<pre tabindex="0"><code>sudo howdy add
+</code></pre><p>Registration is complete if <code>Added a new model to {username}</code> is displayed.</p>
+<h2 id="pam-configuration">PAM Configuration</h2>
+<p>Add the Howdy configuration to the files under <code>/etc/pam.d/</code>.<br>
+Commonly used ones would be login and sudo.</p>
+<p>Add the following line to the files under <code>/etc/pam.d</code>:</p>
+<pre tabindex="0"><code>auth sufficient pam_python.so /lib/security/howdy/pam.py
+</code></pre><p>The Howdy configuration is now complete.<br>
+Please verify that you can log in and use sudo with face recognition.</p>
+<p>My impression after using it is that while I can log in with face recognition,<br>
+I am still asked for my password when launching Chrome after logging in.<br>
+It seems that face recognition alone is not enough for truly secure parts.</p>
+<hr>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="camera-path-is-not-configured-error">Camera path is not configured Error</h3>
+<p>The following error occurred when executing <code>sudo howdy add</code>:</p>
+<pre tabindex="0"><code>Camera path is not configured correctly, please edit the &#39;device_path&#39; config value.
+Exception ignored in: &lt;function VideoCapture.__del__ at 0x7fe09a3a05e0&gt;
+Traceback (most recent call last):
+  File &#34;/usr/lib/security/howdy/recorders/video_capture.py&#34;, line 55, in __del__
+    self.internal.release()
+AttributeError: &#39;VideoCapture&#39; object has no attribute &#39;internal&#39;
+</code></pre><p>It seems that the device could not be found automatically.<br>
+Please specify the <code>device_path</code> with <code>sudo howdy config</code>.</p>
+<h3 id="no-face-detected-error">No face detected Error</h3>
+<p>The following error occurred when executing <code>sudo howdy add</code>:</p>
+<pre tabindex="0"><code>Please look straight into the camera
+No face detected, aborting
+</code></pre><p>This occurred even when looking straight at the camera, and it was caused by the capture size not being automatically detected.<br>
+Please specify <code>frame_width</code> and <code>frame_height</code> with <code>sudo howdy config</code>.</p>
+<h3 id="all-frames-were-too-dark-error">All frames were too dark Error</h3>
+<p>The following error occurred when executing <code>sudo howdy add</code>:</p>
+<pre tabindex="0"><code>Please look straight into the camera
+All frames were too dark, please check dark_threshold in config
+Average darkness: [77.42311], Threshold: 50.0
+</code></pre><p>It didn&rsquo;t work even after brightening the room or shining a light on my face.<br>
+It was resolved by setting <code>dark_threshold</code> to 100 with <code>sudo howdy config</code>.</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

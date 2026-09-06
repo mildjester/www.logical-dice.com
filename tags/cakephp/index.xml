@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>CakePHP on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/cakephp/</link>
+		<description>Recent content in CakePHP on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Sun, 10 Jun 2018 09:20:20 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/cakephp/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>CakePHP2のローカル検証環境構築</title>
+				<link>https://www.logical-dice.com/posts/wp/1375/</link>
+				<pubDate>Sun, 10 Jun 2018 09:20:20 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1375/</guid>
+				<description>環境CakePHP 2.10.10今更ながらCakePHP2を仕事で使う可能性があったので、勉強するためローカルに環境構築しまし&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

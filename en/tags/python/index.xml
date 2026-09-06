@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Python on Logical Dice Techblog</title>
+		<link>https://www.logical-dice.com/en/tags/python/</link>
+		<description>Recent content in Python on Logical Dice Techblog</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Wed, 07 Aug 2024 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/en/tags/python/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Allow python commands to be used on Windows without administrative privileges</title>
+				<link>https://www.logical-dice.com/en/posts/2024/08/07/python-on-secure-windows/</link>
+				<pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/08/07/python-on-secure-windows/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Windows 11&lt;/li&gt;&#xA;&lt;li&gt;git bash&lt;/li&gt;&#xA;&lt;li&gt;Python 3.12.4&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;background&#34;&gt;Background&lt;/h2&gt;&#xA;&lt;p&gt;The PC I use for work does not get administrator rights, but I needed to use Python.&lt;br&gt;&#xA;I prepared an environment where I can use Python without administrator rights.&lt;/p&gt;&#xA;&lt;h2 id=&#34;procedure&#34;&gt;Procedure&lt;/h2&gt;&#xA;&lt;h3 id=&#34;download-embedded-python&#34;&gt;Download Embedded Python&lt;/h3&gt;&#xA;&lt;p&gt;You can download Python from the following site and download the “Windows embeddable package”.&lt;br&gt;&#xA;&lt;a href=&#34;https://www.python.org/downloads/release/python-3124/&#34;&gt;https://www.python.org/downloads/release/python-3124/&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;Unzip the downloaded ZIP file to a folder of your choice and modify the &lt;code&gt;python312._pth&lt;/code&gt; in it.&lt;br&gt;&#xA;Simply uncomment one line.&lt;/p&gt;</description>
+			</item>
+	</channel>
+</rss>

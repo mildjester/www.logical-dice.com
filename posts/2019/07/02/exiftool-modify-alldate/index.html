@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>コマンドで画像の撮影日等を変更する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">コマンドで画像の撮影日等を変更する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-07-02 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年07月02日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Linux Mint 19.1 &ldquo;Tessa&rdquo; - MATE (64-bit)</li>
+<li>exiftool 10.80</li>
+</ul>
+<hr>
+<p>写真をスキャナを使って取り込むと画像ファイルに撮影日が反映されないので<br>
+exiftoolというEXIF情報を扱えるツールを使って撮影日を変更します。</p>
+<p>※この手順ではEXIF情報を無理やり書き込んでいるだけなので、<br>
+　ファイルフォーマットがEXIF形式(?)に変わるわけではなさそうです。</p>
+<p>まずexiftoolがインストールされていない場合はインストールします。</p>
+<pre tabindex="0"><code>apt install exiftool
+</code></pre><p>現状のEXIF情報を参照するには以下のようにコマンドを実行します。<br>
+下記コマンドだとカレントディレクトリにあるpngファイル全てのEXIF情報を参照できます。</p>
+<pre tabindex="0"><code>exiftool -s ./*png
+(./*pngの部分は画像ファイルが置いてあるパスに読み替えてください)
+</code></pre><p>続いて撮影日付等を書き換えます。<br>
+以下のコマンドで撮影日時等を「2019/02/23 00:00:00」に変更しています。</p>
+<pre tabindex="0"><code>exiftool -overwrite_original -alldates=&#39;2019:02:23 00:00:00+09:00&#39; ./*png
+exiftool -overwrite_original -TimeStamp=&#39;2019:02:23 00:00:00+09:00&#39; ./*png
+</code></pre><p>※<code>overwrite_original</code>を指定する事で上書きするようにしているのですが<br>
+　もし書換え前のデータを残したい場合はこのオプションを外してください。</p>
+<p>次にファイルの更新日も修正してしまいます。<br>
+ファイルの更新日はどうでも良い人は飛ばして良いです。</p>
+<pre tabindex="0"><code>exiftool -overwrite_original -FileModifyDate=&#39;2019:02:23 00:00:00+09:00&#39; ./*png
+</code></pre><p>再度EXIF情報を確認すると、日付データが更新されている事が分かります。</p>
+<pre tabindex="0"><code>exiftool -s ./*png
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

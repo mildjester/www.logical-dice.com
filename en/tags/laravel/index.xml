@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Laravel on Logical Dice Techblog</title>
+		<link>https://www.logical-dice.com/en/tags/laravel/</link>
+		<description>Recent content in Laravel on Logical Dice Techblog</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Sat, 19 Jun 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/en/tags/laravel/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>【Laravel】Returning HTTP 200 After Creating a Model</title>
+				<link>https://www.logical-dice.com/en/posts/2021/06/19/laravel-create-http200/</link>
+				<pubDate>Sat, 19 Jun 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/06/19/laravel-create-http200/</guid>
+				<description>How to avoid returning 201 when creating and returning a model.</description>
+			</item>
+			<item>
+				<title>【Laravel】Invalidating JWT Tokens by Specifying JTI</title>
+				<link>https://www.logical-dice.com/en/posts/2021/04/12/laravel-jwt-clear/</link>
+				<pubDate>Mon, 12 Apr 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/04/12/laravel-jwt-clear/</guid>
+				<description>How to invalidate JWT tokens by specifying JTI.</description>
+			</item>
+			<item>
+				<title>【Laravel】Observer Not Executing</title>
+				<link>https://www.logical-dice.com/en/posts/2021/02/21/larave-observer-stop/</link>
+				<pubDate>Sun, 21 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/02/21/larave-observer-stop/</guid>
+				<description>Investigation notes when the processing of an Observer configured in Laravel did not execute.</description>
+			</item>
+	</channel>
+</rss>

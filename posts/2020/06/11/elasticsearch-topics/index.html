@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Elasticsearchの使い方メモ|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Elasticsearchの使い方メモ</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-06-11 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年06月11日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/elasticsearch/">Elasticsearch</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>数年前にElasticsearchを利用していた頃の使いかたメモが見つかったので記事にしておきます。<br>
+以下例ではElasticsearchには商品ID(product_id)も持つ商品情報が格納されているものとします。</p>
+<h2 id="id指定で1件だけ検索するクエリ">ID指定で1件だけ検索するクエリ</h2>
+<p>単純にproduct_idを指定するだけです。</p>
+<pre tabindex="0"><code>{
+  &#34;query&#34;: {
+    &#34;match&#34;: {
+      &#34;product_id&#34;: &#34;123&#34;
+    }
+  }
+}
+</code></pre><h2 id="id指定で複数件順序を指定して検索するクエリ">ID指定で複数件、順序を指定して検索するクエリ</h2>
+<p>複数件の検索をします。取得する順序もweightで指定します。<br>
+weightが大きい方が上位に取得されます。</p>
+<pre tabindex="0"><code>{
+  &#34;query&#34;: {
+    &#34;function_score&#34;: {
+      &#34;query&#34;: {
+        &#34;bool&#34;:{
+          &#34;should&#34;:[
+            {&#34;match&#34;: {&#34;product_id&#34;: &#34;123&#34;}},
+            {&#34;match&#34;: {&#34;product_id&#34;: &#34;323&#34;}},
+            {&#34;match&#34;: {&#34;product_id&#34;: &#34;223&#34;}}
+          ]
+        }
+      },
+      &#34;functions&#34;: [
+        {
+          &#34;filter&#34;: { &#34;product_id&#34;: { &#34;product_id&#34;: &#34;123&#34; } },
+          &#34;weight&#34;: 3
+        },
+        {
+          &#34;filter&#34;: { &#34;product_id&#34;: { &#34;product_id&#34;: &#34;323&#34; } },
+          &#34;weight&#34;: 2
+        },
+        {
+          &#34;filter&#34;: { &#34;product_id&#34;: { &#34;product_id&#34;: &#34;223&#34; } },
+          &#34;weight&#34;: 1
+        }
+      ]
+    }
+  }
+}
+</code></pre><p>※メモ<br>
+shouldはORの意味合いがあります。</p>
+<h2 id="id指定で複数件削除するクエリ">ID指定で複数件削除するクエリ</h2>
+<p>シンプルです。</p>
+<pre tabindex="0"><code>{
+  &#34;query&#34;: {
+    &#34;bool&#34;:{
+      &#34;should&#34;:[
+        {&#34;match&#34;: {&#34;product_id&#34;: &#34;123&#34;}},
+        {&#34;match&#34;: {&#34;product_id&#34;: &#34;223&#34;}},
+        {&#34;match&#34;: {&#34;product_id&#34;: &#34;323&#34;}}
+      ]
+    }
+  }
+}
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

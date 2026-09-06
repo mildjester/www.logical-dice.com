@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Composer on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/composer/</link>
+		<description>Recent content in Composer on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Tue, 11 Apr 2017 16:08:08 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/composer/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Composerのインストール方法</title>
+				<link>https://www.logical-dice.com/posts/wp/515/</link>
+				<pubDate>Tue, 11 Apr 2017 16:08:08 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/515/</guid>
+				<description>■環境macOS Sierra 10.12.4CentOS 6.8作業用MacとCentOSサーバにComposerをインストー&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】ComposerにGitHubのアクセストークンを設定する</title>
+				<link>https://www.logical-dice.com/posts/wp/147/</link>
+				<pubDate>Mon, 07 Dec 2015 23:11:45 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/147/</guid>
+				<description>今更ながら、ComposerにGitHubのアクセストークンを設定する方法です。■環境CentOS 7.1.1503GitHub&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

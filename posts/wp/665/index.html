@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Mac】neovim &amp; dein.vimの設定|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Mac】neovim &amp; dein.vimの設定</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-07-15 00:44:50 &#43;0000 UTC" class="catalogue-time">2017年07月15日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/mac/">Mac</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>macOS Sierra 10.12.6<br>
+fish 2.6.0<br>
+nvim 0.2.0</p>
+<h2 id="参考ページ">■参考ページ</h2>
+<p>NeoVim、そしてdein.vimへ：<a href="https://qiita.com/okamos/items/2259d5c770d51b88d75b" rel="noopener" target="_blank"><a href="https://qiita.com/okamos/items/2259d5c770d51b88d75b">https://qiita.com/okamos/items/2259d5c770d51b88d75b</a></a> <br>
+Shougo氏のGiHub：<a href="https://github.com/Shougo/dein.vim" rel="noopener" target="_blank"><a href="https://github.com/Shougo/dein.vim">https://github.com/Shougo/dein.vim</a></a></p>
+<hr>
+<p>普通のvimよりも良いと噂のneovimを導入します。<br>
+プラグインの管理にはdein.vimを使います。</p>
+<h3 id="neovimのインストール">■neovimのインストール</h3>
+<p>brewでインストールできます。<br>
+便利ですね。</p>
+<pre tabindex="0"><code>brew install neovim/neovim/neovim  
+</code></pre><h3 id="fishへの設定">■fishへの設定</h3>
+<p>コンフィグファイルのディレクトリを設定します。<br>
+以下はホームディレクトリ直下の『.config』を設定する例です。</p>
+<pre tabindex="0"><code>echo &#39;set -g XDG_CONFIG_HOME &#34;$HOME/.config&#34;&#39; &gt;&gt; ~/.config/fish/config.fish  
+</code></pre><p>ついでに、「vi」「vim」コマンド実行時にneovimが起動するようにしてしまいます。<br>
+これは好みだと思うので、やってもやらなくてもいいです。</p>
+<pre tabindex="0"><code>echo &#39;alias vi=&#34;nvim&#34;&#39; &gt;&gt; ~/.config/fish/config.fish  
+echo &#39;alias vim=&#34;nvim&#34;&#39; &gt;&gt; ~/.config/fish/config.fish  
+</code></pre><p>また、neovimで利用するカラースキームのデフォルト値を設定しておきます。<br>
+以下を<code>~/.config/nvim/init.vim</code>の先頭行に記載する。<br>
+上記ディレクトリ、ファイルは初期状態では存在しないので新規作成すること。</p>
+<pre tabindex="0"><code>colorscheme {好きなカラースキーム}  
+</code></pre><p>設定できるカラースキームについては以下サイトにて紹介されているので参考になると思います。<br>
+<a href="https://qiita.com/ryoff/items/134b758afa8cc45a43d3" rel="noopener" target="_blank"><a href="https://qiita.com/ryoff/items/134b758afa8cc45a43d3">https://qiita.com/ryoff/items/134b758afa8cc45a43d3</a></a></p>
+<p>この辺でターミナルを再起動しておくと、上記で設定した内容が綺麗に読み込まれます。</p>
+<h3 id="deinvimのインストール">■dein.vimのインストール</h3>
+<p>Shougo氏の<a href="https://github.com/Shougo/dein.vim" target="_blank">GitHub</a>通りに <br>
+インストールを進めます。</p>
+<pre tabindex="0"><code>curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh &gt; installer.sh  
+sh installer.sh ~/.config  
+</code></pre><p>上記コマンドが成功すると、.vimrc記載する内容が表示されるので、<br>
+それを少しだけ修正して<code>~/.config/nvim/init.vim</code>に追記します。</p>
+<p>installer.shの結果出力された内容から変更する箇所は<br>
+下記の自動インストール処理のコメントアウトを外すくらいです。</p>
+<pre tabindex="0"><code>&#34;dein Scripts-----------------------------  
+〜中略〜  
+&#34; If you want to install not installed plugins on startup.  
+if dein#check_install()  
+  call dein#install()  
+endif  
+〜中略〜  
+&#34;End dein Scripts-------------------------  
+</code></pre><p>ここまで実施すると次回nvim起動時にプラグインのインストールが行われ、 <br>
+基本的な設定は完了します。</p>
+<h3 id="プラグインの追加">■プラグインの追加</h3>
+<p>deinプラグインを追加してみます。<br>
+Tomlに記載して管理する方法もあるようですが、とりあえずは<code>~/.config/nvim/init.vim</code>に直接追加する方法について記載します。</p>
+<h4 id="the-nerd-tree">The NERD Tree</h4>
+<p><a href="https://github.com/scrooloose/nerdtree" target="_blank"><a href="https://github.com/scrooloose/nerdtree">https://github.com/scrooloose/nerdtree</a></a></p>
+<p>エディタの左端にディレクトリ階層(ツリー)を表示できるようにするプラグインです。<br>
+(IDEみたいになる)</p>
+<p><code>~/.config/nvim/init.vim</code>の『&quot; Add or remove your plugins here:』と記載があるあたりの下に以下の記載を追加します。</p>
+<pre tabindex="0"><code>call dein#add(&#39;scrooloose/nerdtree&#39;)  
+</code></pre><p><code>~/.config/nvim/init.vim</code>の末に以下の記載を追加します。</p>
+<pre tabindex="0"><code>&#34; The NERD Tree  
+let g:NERDTreeDirArrowExpandable = &#39;▸&#39;  
+let g:NERDTreeDirArrowCollapsible = &#39;▾&#39;  
+map &lt;C-n&gt; :NERDTreeToggle&lt;CR&gt;  
+</code></pre><p>nvim起動後、「:NERDTreeToggle」と打つか「Ctrl ＋ n」を押すと<br>
+ファイルツリーの表示/非表示を切り替えられるようになります。<br>
+※最後のmapコマンドで「Ctrl＋n」に「:NERDTreeToggle」をマッピングしています。</p>
+<h4 id="indent-guides">Indent Guides</h4>
+<p><a href="https://github.com/nathanaelkane/vim-indent-guides" target="_blank"><a href="https://github.com/nathanaelkane/vim-indent-guides">https://github.com/nathanaelkane/vim-indent-guides</a></a></p>
+<p>インデントを色付けして分かりやすくしてくれます。</p>
+<p><code>~/.config/nvim/init.vim</code>の『&quot; Add or remove your plugins here:』と記載があるあたりの下に以下の記載を追加します。</p>
+<pre tabindex="0"><code>call dein#add(&#39;nathanaelkane/vim-indent-guides&#39;)  
+</code></pre><p><code>~/.config/nvim/init.vim</code>の末に以下の記載を追加します。</p>
+<pre tabindex="0"><code>&#34;Indent Guide  
+let g:indent_guides_enable_on_vim_startup = 1  
+</code></pre><h3 id="その他オススメ設定">■その他オススメ設定</h3>
+<p><code>~/.config/nvim/init.vim</code>の好きな箇所に以下の設定も記載しておくと使いやすくなります。</p>
+<pre tabindex="0"><code>set number &#34;行番号表示  
+set fenc=utf-8 &#34;文字コード設定  
+set cursorline &#34;行に下線を表示  
+set hlsearch &#34;検索語をハイライト  
+set mouse=a &#34;マウス利用可能にする  
+set clipboard+=unnamed &#34;Yankしたものをクリップボードにも反映する  
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

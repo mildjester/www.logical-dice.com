@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Visual Studio CodeでPHP開発環境構築|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Visual Studio CodeでPHP開発環境構築</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-12-18 14:02:41 &#43;0000 UTC" class="catalogue-time">2017年12月18日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/php/">PHP</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/vscode/">VSCode</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>Visual Studio Code 1.19.0<br>
+Linux Mint 18.3 cinnamon 64bit<br>
+macOS High Sierra 10.13.1<br>
+(LinuxでもMacでも基本的に同じ操作でいけるはずです)</p>
+<hr>
+<h3 id="visual-studio-codeの取得">■Visual Studio Codeの取得</h3>
+<p>Visual Studio Code(以下、VSCode)本体をダウンロードします。 <br>
+<a href="https://code.visualstudio.com/" rel="noopener" target="_blank"><a href="https://code.visualstudio.com/">https://code.visualstudio.com/</a></a></p>
+<p>【Macの場合】<br>
+ダウンロードしてきたzipを回答するとアプリケーションファイル(.app)が出てくるので、アプリケーションディレクトリへ移動しておきます。</p>
+<p>【Linux Mintの場合】<br>
+ダウンロードしてきたdebファイルを実行し、画面上の指示に従って進めるだけです。</p>
+<h3 id="フォント変更">■フォント変更</h3>
+<p>VSCodeで使うフォントをプログラミング向けのフォント『Ricty Diminished』に変更します。</p>
+<p>まずフォントそのものをPCにインストールします。<br>
+手順は<a href="/posts/wp/1218" rel="noopener" target="_blank">コチラ</a>を参照してください。</p>
+<p>PCにフォントがインストールできたら、VSCode側の設定をします。<br>
+まず、メニューの「Code　&gt; 基本設定 &gt; 設定」を開きます。<br>
+<img src="https://www.logical-dice.com/images/2017/12/85e7fa312b40652c1c3d804cd66dd2eb.png" alt="" /></p>
+<p>次に設定ファイルに以下の行を追加します。</p>
+<pre tabindex="0"><code>&#34;editor.fontFamily&#34;: &#34;&#39;Ricty Diminished&#39;&#34;,  
+</code></pre><p>これでフォントがRicty Diminishedになりました。</p>
+<h3 id="拡張機能インストール">■拡張機能インストール</h3>
+<p>VSCodeを起動したら上部メニューより<code>表示 &gt; 拡張機能</code>を選択します。 <br>
+もしくは左側にあるアイコンの中の一番下にある四角いアイコンを選択します。 <br>
+<img src="https://www.logical-dice.com/images/2017/12/vscode001.png" alt="" /></p>
+<p>検索窓が表示されるので、キーワード検索をしてインストールすることが可能です。 <br>
+以下、私がインストールしてみたものです。</p>
+<h4 id="project-manager">Project Manager</h4>
+<p>プロジェクト管理をするための拡張機能です。 <br>
+現在開いているワークスペースをプロジェクトとして保存しておくことで <br>
+プロジェクトの切り替えが簡単になります。 <br>
+NetBeansやEclipseのように複数プロジェクトを同時に開いておくことはできないようです。</p>
+<p><em>■使い方</em> <br>
+上部メニューの<code>表示 &gt; コマンドパレット</code>を開き、検索バーに<code>Project Manager</code>と入力するとProject Manager用のコマンドが表示されます。 <br>
+<img src="https://www.logical-dice.com/images/2017/12/vscode002.png" alt="" /><br>
+(コマンドパレットは<code>Command + Shft+P</code>でも開けます)</p>
+<p>主に使うコマンドについては以下の通り。</p>
+<table>
+	<thead>
+			<tr>
+					<th>コマンド</th>
+					<th>内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Save Project</td>
+					<td>現在のワークスペースをプロジェクトとして保存</td>
+			</tr>
+			<tr>
+					<td>Edit Project</td>
+					<td>保存済みプロジェクトの編集</td>
+			</tr>
+			<tr>
+					<td>List Project to Open</td>
+					<td>保存済みプロジェクト一覧を表示し、選択したプロジェクトを開く</td>
+			</tr>
+	</tbody>
+</table>
+<h4 id="ftp-simple">ftp-simple</h4>
+<p>ファイルやディレクトリをサーバへアップロードしたりダウンロードするための拡張機能。 <br>
+FTPだけでなく、SFTPも使えます。</p>
+<p><em>■使い方</em> <br>
+コマンドパレットに「ftp-simple」と入れれば候補がでます。 <br>
+コマンドパレットについては上記「Project Manager」と同様なので割愛。</p>
+<p>主に使うコマンドについては以下の通り。</p>
+<p>| コマンド | 内容 |
+| Config | サーバ連携の設定 |<br>
+| Save | サーバへのファイル・ディレクトリアップロード |<br>
+| Download | サーバからのファイル・ディレクトリダウンロード |<br>
+| Diff | ローカルとサーバーの差分を表示する |<br>
+| Delete | サーバー上のファイル・ディレクトリを削除する |</p>
+<h4 id="php-intellisense">PHP IntelliSense</h4>
+<p>PHPのハイライトや補完機能を追加する拡張機能。 <br>
+インストールするだけで良いです。</p>
+<h4 id="path-intellisense">Path Intellisense</h4>
+<p>ディレクトリパスを入力する際に自動で補完してくれる拡張機能。 <br>
+これもインストールするだけで良いです。</p>
+<h4 id="bracket-pair-colorizer">Bracket Pair Colorizer</h4>
+<p>相対する括弧が同じ色となるので、どこからどこまでが括弧で囲われているか分かりやすくなります。 <br>
+若干エディタがカラフルになり過ぎるので、人によっては嫌いかも。 <br>
+これもインストールするだけで良いです。</p>
+<h3 id="設定周り">■設定周り</h3>
+<h4 id="ファイル拡張子毎の言語設定">ファイル拡張子毎の言語設定</h4>
+<p>ファイルの拡張子を通常ではないものにしている場合、ハイライトや補完機能が使えない場合があります。 <br>
+その場合は対象のファイルを開いた状態で右下の「プレーンテキスト」をクリックします。 <br>
+<img src="https://www.logical-dice.com/images/2017/12/vscode003.png" alt="" /><br>
+※既に他の言語が紐づいている場合は、その言語が表示されていると思います。</p>
+<p>すると言語の設定画面が開きます。 <br>
+同じ拡張子のファイル全てに反映させたい場合は検索バーの下にある「&rsquo;.xxx&rsquo;に対するファイルの関連付けの構成」をクリックします。 <br>
+<img src="https://www.logical-dice.com/images/2017/12/vscode004.png" alt="" /></p>
+<p>ここで言語を設定すれば、今後は選択した言語のハイライトなどが反映されるようになります。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

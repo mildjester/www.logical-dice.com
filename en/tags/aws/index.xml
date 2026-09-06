@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>AWS on Logical Dice Techblog</title>
+		<link>https://www.logical-dice.com/en/tags/aws/</link>
+		<description>Recent content in AWS on Logical Dice Techblog</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 12 Dec 2024 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/en/tags/aws/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Using AWS CLI to Search Multiple Files with S3 Select</title>
+				<link>https://www.logical-dice.com/en/posts/2024/12/12/aws-cli-s3select/</link>
+				<pubDate>Thu, 12 Dec 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/12/12/aws-cli-s3select/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;aws-cli 2.7.14&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;&#xA;&lt;p&gt;I needed to search through CloudFront logs stored in S3.&lt;br&gt;&#xA;Since Athena was not available, I used S3 Select for the search.&lt;/p&gt;&#xA;&lt;p&gt;However, S3 Select can only search one file at a time.&lt;br&gt;&#xA;To handle multiple files, I integrated AWS CLI into a shell script.&lt;/p&gt;&#xA;&lt;h2 id=&#34;steps&#34;&gt;Steps&lt;/h2&gt;&#xA;&lt;p&gt;Here are the conditions:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;The S3 bucket name is target-bucket-name.&lt;/li&gt;&#xA;&lt;li&gt;Files are generated in the logs-dir directory with the format AABBCCDDEE123456.YYYY-MM-DD-HH.abcdefg&amp;hellip;.&lt;/li&gt;&#xA;&lt;li&gt;The AWS CLI profile is named my-aws-profile.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;Below is the completed script:&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Downgrading the AmazonLinux2023 kernel</title>
+				<link>https://www.logical-dice.com/en/posts/2024/08/24/al2023-kernel-downgrade/</link>
+				<pubDate>Sat, 24 Aug 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/08/24/al2023-kernel-downgrade/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Amazon Linux 2023.5.20240819&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;&#xA;&lt;p&gt;I upgraded the kernel of AmazonLinux2023 and downgraded some tools that stopped working.&lt;br&gt;&#xA;This is a record of that operating procedure.&lt;/p&gt;&#xA;&lt;h2 id=&#34;procedure&#34;&gt;Procedure&lt;/h2&gt;&#xA;&lt;p&gt;First, check the current kernel status.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$uname -r&#xA;6.1.102-111.182.amzn2023.x86_64&#xA;&#xA;$ sudo dnf list kernel&#xA;kernel.x86_64   6.1.92-99.174 amzn2023     @amazonlinux&#xA;kernel.x86_64   6.1.96-102.177.amzn2023    @amazonlinux&#xA;kernel.x86_64   6.1.102-111.182.amzn2023   @amazonlinux&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It is currently at 6.1.102 and will downgrade to 6.1.96.&lt;/p&gt;&#xA;&lt;h3 id=&#34;probably-the-shortest-way&#34;&gt;Probably the shortest way.&lt;/h3&gt;&#xA;&lt;p&gt;First, downgrade and restart.&lt;br&gt;&#xA;You can revert to a specific version by specifying “package name - version”.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】Bypassing MFA (Multi-Factor Authentication) to Clone a Repository from CodeCommit</title>
+				<link>https://www.logical-dice.com/en/posts/2024/06/06/aws-codecommit-mfa/</link>
+				<pubDate>Thu, 06 Jun 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/06/06/aws-codecommit-mfa/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;MacBook Pro (Sonoma 14.5, M1 chip)&lt;/li&gt;&#xA;&lt;li&gt;aws-cli/2.15.14&lt;/li&gt;&#xA;&lt;li&gt;aws-mfa 0.0.12&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;steps&#34;&gt;Steps&lt;/h2&gt;&#xA;&lt;p&gt;This guide explains how to clone a repository from CodeCommit in an environment where MFA authentication is required for AWS access.&lt;br&gt;&#xA;Most search results focused on disabling MFA for CodeCommit, which was not helpful, so I decided to document the process.&lt;/p&gt;&#xA;&lt;h3 id=&#34;installing-aws-cli&#34;&gt;Installing AWS CLI&lt;/h3&gt;&#xA;&lt;p&gt;If AWS CLI is not installed, refer to the following page for installation:&lt;br&gt;&#xA;&lt;a href=&#34;https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html&#34;&gt;https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h3 id=&#34;installing-aws-mfa&#34;&gt;Installing aws-mfa&lt;/h3&gt;&#xA;&lt;p&gt;There is a tool that makes MFA authentication easier when using AWS from the command line:&lt;br&gt;&#xA;&lt;a href=&#34;https://github.com/broamski/aws-mfa&#34;&gt;https://github.com/broamski/aws-mfa&lt;/a&gt;&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】Using Paramiko for SFTP Communication in Lambda</title>
+				<link>https://www.logical-dice.com/en/posts/2023/11/03/aws-lambda-use-paramiko/</link>
+				<pubDate>Fri, 03 Nov 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2023/11/03/aws-lambda-use-paramiko/</guid>
+				<description>&lt;h2 id=&#34;environment&#34;&gt;Environment&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;MacBook Air (M1 chip)&lt;/li&gt;&#xA;&lt;li&gt;AWS SAM version 1.99.0&lt;/li&gt;&#xA;&lt;li&gt;Python 3.9&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;steps&#34;&gt;Steps&lt;/h2&gt;&#xA;&lt;p&gt;To retrieve files via SFTP from another server, we use the Paramiko library.&lt;br&gt;&#xA;Since AWS Lambda does not include Paramiko by default, we will use a Lambda layer.&lt;/p&gt;&#xA;&lt;p&gt;Lambda layers can be built using Docker, but for simplicity, we will create one using AWS SAM.&lt;/p&gt;&#xA;&lt;h3 id=&#34;-install-aws-sam&#34;&gt;① Install AWS SAM&lt;/h3&gt;&#xA;&lt;p&gt;Run the following commands on Mac to install AWS SAM:&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】Setting Up a VPN Server in India Using Lightsail</title>
+				<link>https://www.logical-dice.com/en/posts/2023/07/04/aws-lightsail-vpn-india/</link>
+				<pubDate>Tue, 04 Jul 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2023/07/04/aws-lightsail-vpn-india/</guid>
+				<description>Built a VPN server using AWS Lightsail to obtain an Indian IP address.</description>
+			</item>
+			<item>
+				<title>【AWS】S3 Redirect Not Working</title>
+				<link>https://www.logical-dice.com/en/posts/2023/01/29/aws-s3-cloudfront-not-redirect/</link>
+				<pubDate>Sun, 29 Jan 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2023/01/29/aws-s3-cloudfront-not-redirect/</guid>
+				<description>Redirect settings on AWS S3 web hosting do not work when requests are received via CloudFront.</description>
+			</item>
+			<item>
+				<title>【AWS】Auto Scaling Instances Not Becoming InService</title>
+				<link>https://www.logical-dice.com/en/posts/2022/05/03/ec2-not-inservice/</link>
+				<pubDate>Tue, 03 May 2022 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2022/05/03/ec2-not-inservice/</guid>
+				<description>Investigation notes when the lifecycle of EC2 instances launched by Auto Scaling did not become &amp;lsquo;InService&amp;rsquo;.</description>
+			</item>
+	</channel>
+</rss>

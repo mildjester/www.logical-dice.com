@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Google Tag Managerの基本設定|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Google Tag Managerの基本設定</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-11-26 22:32:40 &#43;0000 UTC" class="catalogue-time">2018年11月26日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/googleservice/">GoogleService</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>Google AnalyticsをGoogle Tag Managerに切り替えた際のメモです。<br>
+前提条件としてGoogle Analyticsのアカウントはあることとします。</p>
+<h3 id="アカウント作成">アカウント作成</h3>
+<p>まずGoogle Tag Managerのページにてアカウントを作成します<br>
+<a href="https://tagmanager.google.com" rel="noopener" target="_blank"><a href="https://tagmanager.google.com">https://tagmanager.google.com</a></a><br>
+アカウント名は任意の物を入力し、国は日本を選択して『続行』をクリックします。</p>
+<p>するとコンテナの作成になるので<br>
+任意のコンテナ名と利用場所（WEBページかスマホアプリかなど）を選択します。<br>
+今回はWEBを選択したとします。<br>
+<img src="https://www.logical-dice.com/images/2018/11/gtm001.png" alt="" /></p>
+<p>規約に同意するとHTMLに埋め込むタグが表示されます。<br>
+<code>&lt;head&gt;</code>内に埋めるタグと<code>&lt;body&gt;</code>に埋めるタグが生成されるので<br>
+それぞれ対応する場所に埋め込みます。<br>
+<img src="https://www.logical-dice.com/images/2018/11/gtm002.png" alt="" /></p>
+<p>これでGoogle Tag Managerを使う準備ができました。</p>
+<h3 id="イベントトラッキングの設定">イベントトラッキングの設定</h3>
+<p>クリックをトラッキングする設定をしてみます。</p>
+<p>Google Tag Managerの管理画面を開くと「新しいタグ」のリンクがあるのでクリックします。<br>
+タグとは検知する項目みたいなものです。<br>
+<img src="https://www.logical-dice.com/images/2018/11/gtm003.png" alt="" /></p>
+<p>タグの設定画面が開くので、タグの名前や種類を指定します。<br>
+とりあえず、簡単に下図のような設定をします。<br>
+<img src="https://www.logical-dice.com/images/2018/11/gtm008.png" alt="" /></p>
+<p>「Google アナリティクス設定」という項目があるので、「新しい変数」を選択します。<br>
+するとトラッキングIDを入力する欄が出てくるので、Google AnalyticsのトラッキングIDを入力してください。<br>
+すべて入力したら「保存」をクリックして閉じます。<br>
+<img src="https://www.logical-dice.com/images/2018/11/gtm007.png" alt="" /></p>
+<p>次に下の方にスクロールするとトリガーの設定ができます<br>
+トリガーとは、イベントを検知する条件です。</p>
+<p>プラスマークをクリックすると新規トリガーを作成できます。<br>
+<img src="https://www.logical-dice.com/images/2018/11/gtm005.png" alt="" /></p>
+<p>トリガーの名前や内容を設定します。<br>
+基本的には下図のような設定でよいです。<br>
+クリック対象の要素にIDが付いている場合は「Click ID」で良いですが<br>
+もしIDを指定していなくてClassなどしか設定されていない場合は<br>
+「Click　Classes」を選択してください。<br>
+<img src="https://www.logical-dice.com/images/2018/11/gtm006.png" alt="" /></p>
+<p>全て完了したら『保存』をクリックしてトリガー設定画面を閉じ、<br>
+タグ設定画面でも『保存』をクリックして閉じます。</p>
+<p>最後にGoogle Tag ManagerのTOP画面にて「公開」をクリックすれば完了です。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

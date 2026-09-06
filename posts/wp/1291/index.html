@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Wordpressを多言語対応させる|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Wordpressを多言語対応させる</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-04-24 00:56:56 &#43;0000 UTC" class="catalogue-time">2018年04月24日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/wordpress/">Wordpress</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>Wordpress 4.9.5<br>
+MultilingualPress 2.11.1</p>
+<hr>
+<h2 id="手順">■手順</h2>
+<p>まず<code>MultilingualPress</code>というプラグインをインストールします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/9fd6315f8454ede4b8ab89463ff2601e.png" alt="" /></p>
+<p>インストール後、プラグインを有効化しようとするとマルチサイトを有効にしないといけない旨のメッセージが表示されます。<br>
+<img src="https://www.logical-dice.com/images/2018/04/4a721c9c26ca779d1b19763502984ef4.png" alt="" /></p>
+<p>上記のリンク先にマルチサイト化をするための手順が記載されています。<br>
+<a href="https://multilingualpress.org/docs/install-wordpress-multisite/" rel="noopener" target="_blank"><a href="https://multilingualpress.org/docs/install-wordpress-multisite/">https://multilingualpress.org/docs/install-wordpress-multisite/</a></a></p>
+<p>まず、Wordpressがインストールされているディレクトリにある<code>wp-config.php</code>を編集し、マルチサイトを有効化します。</p>
+<pre tabindex="0"><code>define(&#39;WP_DEBUG&#39;, false);  
+  
+define(&#39;WP_ALLOW_MULTISITE&#39;, TRUE);  &lt;=これを追記  
+  
+/* 編集が必要なのはここまでです ! WordPress でブログをお楽しみください。 */  
+  
+/** Absolute path to the WordPress directory. */  
+if ( !defined(&#39;ABSPATH&#39;) )  
+    define(&#39;ABSPATH&#39;, dirname(__FILE__) . &#39;/&#39;);  
+</code></pre><p>次にプラグインを全て停止させ、管理画面より「ツール ＞ サイトネットワークの設置」を開き、『インストール』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/04b279018ccd8885f814183242c7e189.png" alt="" /></p>
+<p>すると、再度<code>wp-config.php</code>を修正するよう案内が表示されるので、案内通りに修正します。</p>
+<pre tabindex="0"><code>define(&#39;WP_DEBUG&#39;, false);  
+  
+define(&#39;WP_ALLOW_MULTISITE&#39;, TRUE);  
+  
+define(&#39;MULTISITE&#39;, true);                          &lt;=これを追記  
+define(&#39;SUBDOMAIN_INSTALL&#39;, true);                  &lt;=これを追記  
+define(&#39;DOMAIN_CURRENT_SITE&#39;, &#39;your-domain.com&#39;);   &lt;=これを追記  
+define(&#39;PATH_CURRENT_SITE&#39;, &#39;/&#39;);                   &lt;=これを追記  
+define(&#39;SITE_ID_CURRENT_SITE&#39;, 1);                  &lt;=これを追記  
+define(&#39;BLOG_ID_CURRENT_SITE&#39;, 1);                  &lt;=これを追記  
+  
+/* 編集が必要なのはここまでです ! WordPress でブログをお楽しみください。 */  
+  
+/** Absolute path to the WordPress directory. */  
+if ( !defined(&#39;ABSPATH&#39;) )  
+    define(&#39;ABSPATH&#39;, dirname(__FILE__) . &#39;/&#39;);  
+</code></pre><p>また、<code>.htaccess</code>に次の記載をするよう指示がありますので、それも従います。</p>
+<pre tabindex="0"><code>RewriteEngine On  
+RewriteBase /  
+RewriteRule ^index\.php$ - [L]  
+  
+# add a trailing slash to /wp-admin  
+RewriteRule ^wp-admin$ wp-admin/ [R=301,L]  
+  
+RewriteCond %{REQUEST_FILENAME} -f [OR]  
+RewriteCond %{REQUEST_FILENAME} -d  
+RewriteRule ^ - [L]  
+RewriteRule ^(wp-(content|admin|includes).*) $1 [L]  
+RewriteRule ^(.*\.php)$ $1 [L]  
+RewriteRule . index.php [L]  
+</code></pre><p>nginxを使っている場合は<code>.htaccess</code>が効かないので、nginx.confに以下の記載を追加します。</p>
+<pre tabindex="0"><code>rewrite ^/wp-admin$ /wp-admin/ redirect;  
+if (!-e $request_filename){  
+    rewrite ^/(wp-(content|admin|includes).*) /$1 break;  
+    rewrite ^/(.*\.php)$ /$1 break;  
+    rewrite ^(.*)$ /index.php break;  
+}  
+</code></pre><p>nginxの設定ファイルを記載する際、こちらのコンバーターの出力結果を参考にしました。<br>
+<a href="https://winginx.com/ja/htaccess" rel="noopener" target="_blank"><a href="https://winginx.com/ja/htaccess">https://winginx.com/ja/htaccess</a></a></p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

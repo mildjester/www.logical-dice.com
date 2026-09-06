@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>GitHubの草を炭治郎柄にする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">GitHubの草を炭治郎柄にする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-07-16 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年07月16日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/bookmarklet/">bookmarklet</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/javascript/">javascript</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>私は鬼滅の刃自体は見たことが無いのですが、それでも主人公の炭治郎の着物はよく目にします。<br>
+あの柄を見ると、ちょっとGitHubの草っぽいなと思ってました。</p>
+<p>というわけで、GitHubの草を炭治郎の着物柄にしてみます。</p>
+<p>Bookmarkletの説明や作り方についてはこちらを参照。<br>
+<a href="/posts/2020/07/15/howto-make-bookmarklet/">Bookmarklet(ブックマークレット)の作り方</a></p>
+<h2 id="bookmarklet作成">Bookmarklet作成</h2>
+<p>まず、GitHubの草部分の色を変えるスクリプトを書いてみます。</p>
+<pre tabindex="0"><code>// GitHubの草部分の要素を取得
+var kusaElmList = document.getElementsByClassName(&#39;day&#39;)
+
+for (var i=0; i&lt;kusaElmList.length; i++){
+  var kusa = kusaElmList[i]
+
+  if (i % 2 == 0){
+    // 偶数マスは緑
+    kusa.setAttribute(&#39;fill&#39;,&#39;#2A7&#39;)
+  }else{
+    // 奇数マスは黒
+    kusa.setAttribute(&#39;fill&#39;,&#39;#000&#39;)
+  }
+}
+</code></pre><p>これをBookmarkletにします。</p>
+<pre tabindex="0"><code>javascript:for(var t=document.getElementsByClassName(&#34;day&#34;),e=0;e&lt;t.length;e++){var l=t[e];e%2==0?l.setAttribute(&#34;fill&#34;,&#34;#2A7&#34;):l.setAttribute(&#34;fill&#34;,&#34;#000&#34;)}
+</code></pre><p>実行結果はこちら。<br>
+<img src="https://www.logical-dice.com/images/2020/07/bookmarklet-kimetsu-001.png" /></p>
+<p>色はそれっぽくなりましたが、まだ隙間が気になります。<br>
+なので、隙間も埋めるよう修正します。</p>
+<pre tabindex="0"><code>// GitHubの草部分の要素を取得
+var kusaElmList = document.getElementsByClassName(&#39;day&#39;);
+
+for (var i=0; i&lt;kusaElmList.length; i++){
+  var kusa = kusaElmList[i];
+
+  // 草の大きさと形を整える
+  kusa.setAttribute(&#39;width&#39;,&#39;15&#39;);
+  kusa.setAttribute(&#39;height&#39;,&#39;15&#39;);
+  kusa.style.rx=0;
+  kusa.style.ry=0;
+
+  if (i % 2 == 0){
+    // 偶数マスは緑
+    kusa.setAttribute(&#39;fill&#39;,&#39;#2A7&#39;)
+  }else{
+    // 奇数マスは黒
+    kusa.setAttribute(&#39;fill&#39;,&#39;#000&#39;)
+  }
+}
+</code></pre><p>これをBookmarkletにします。</p>
+<pre tabindex="0"><code>javascript:for(var t=document.getElementsByClassName(&#34;day&#34;),e=0;e&lt;t.length;e++){var l=t[e];l.setAttribute(&#34;width&#34;,&#34;15&#34;),l.setAttribute(&#34;height&#34;,&#34;15&#34;),l.style.rx=0,e%2==(l.style.ry=0)?l.setAttribute(&#34;fill&#34;,&#34;#2A7&#34;):l.setAttribute(&#34;fill&#34;,&#34;#000&#34;)}
+</code></pre><p>実行結果はこちら。<br>
+<img src="https://www.logical-dice.com/images/2020/07/bookmarklet-kimetsu-002.png" /></p>
+<p>いい感じになりました。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

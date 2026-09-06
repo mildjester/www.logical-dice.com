@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>FuelPHP on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/fuelphp/</link>
+		<description>Recent content in FuelPHP on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Sun, 27 Dec 2015 23:50:04 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/fuelphp/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>【FuelPHP】PHP7対応版へのアップデート</title>
+				<link>https://www.logical-dice.com/posts/wp/161/</link>
+				<pubDate>Sun, 27 Dec 2015 23:50:04 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/161/</guid>
+				<description>FuelPHPのdev-1.7がPHP7に対応していなかったので、既存プロジェクトをPHP7に対応しているdev-1.8にアップ&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

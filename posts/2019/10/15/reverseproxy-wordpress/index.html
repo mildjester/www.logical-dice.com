@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>リバースプロキシ先でWordpressを動かす|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">リバースプロキシ先でWordpressを動かす</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-10-15 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年10月15日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/wordpress/">Wordpress</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/apache/">Apache</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<p>Apache 2.2.34</p>
+<hr>
+<p>サーバーA(<a href="https://www.sample.com">www.sample.com</a>)でメインサイトが動いていて、サーバーB(sub.sample.com)でWordpressが動いている時に<br>
+Apacheのリバースプロキシを使って以下のようにアクセスできるようにします。</p>
+<p>メインサイト: <code>https://www.sample.com/</code><br>
+Wordpress: <code>https://www.sample.com/blog</code></p>
+<p>なお、既に他のリバースプロキシも設定されており、極力そちらへの影響はないように設定します。<br>
+他ページ(サーバーC): <code>https://www.sample.com/media</code></p>
+<h3 id="サーバーaの設定">■サーバーAの設定</h3>
+<h4 id="apache設定">Apache設定</h4>
+<p>httpd.confなどに以下のようにリバースプロキシ設定をします。<br>
+他リバースプロキシに影響しないようにLocationで括ります。</p>
+<pre tabindex="0"><code>&lt;Location &#34;/blog&#34;&gt;
+    ProxyPass http://sub.sample.com/blog
+    ProxyPassReverse http://sub.sample.com/blog
+    ProxyPassReverseCookieDomain sub.sample.com www.sample.com
+    ProxyPassReverseCookiePath / /blog/
+&lt;/Location&gt;
+</code></pre><p>これで/blog配下へのアクセスはサーバーB(sub.sample.com)に飛ばすようになります。</p>
+<h3 id="サーバーbの設定">■サーバーBの設定</h3>
+<h4 id="apache設定-1">Apache設定</h4>
+<p>Apacheの設定は<code>sub.sample.com</code>にアクセスがある想定で記載しておけば大丈夫です。<br>
+WordpressソースはDocumentRoot配下に<code>blog</code>ディレクトリを作成して格納します。</p>
+<h4 id="ssl通信扱いにする">SSL通信扱いにする</h4>
+<p>これでWordpressページ自体は表示されますが、必要なJS/CSS/画像などの外部ファイルのURLが非SSLとなってしまい<br>
+Chromeなどだとエラーとなってしまいます。<br>
+なので、<code>.htaccess</code>に以下追記して強制的にSSL通信扱いになるようにします。</p>
+<pre tabindex="0"><code>SetEnv HTTPS on
+</code></pre><p>※補足<br>
+非SSLで<code>http://sample.com/blog</code>にアクセスした場合はどうするのって話もありますが、<br>
+そもそも非SSLページは推奨されないので、今回は考えてません。<br>
+<code>http://sample.com/blog</code>にアクセスが来たら<code>https://sample.com/blog</code>にリダイレクトしましょう。<br>
+どうしても非SSLとSSLの両方で受けたければSSL接続時はリバースプロキシ時に「X-Forwarded-HTTPS: on」を設定するなど対策してください。<br>
+「外部→(HTTPS)→ELB→(HTTP)→サーバーA→(HTTP)→サーバーB」のような構成だと結構面倒です。</p>
+<h4 id="ホスト名を補正する">ホスト名を補正する</h4>
+<p>ここまでの対応だと<code>$_SERVER['HTTP_HOST']</code>と<code>$_SERVER['SERVER_NAME']</code>が<code>sub.sample.com</code>のままになってしまいます。<br>
+ページ表示上は問題無さそうですが、管理画面でブラウザのconsoleに警告が出て気持ち悪いので修正しておきます。</p>
+<p>wp-config.phpの先頭に以下の記載を付け加えておきます。</p>
+<pre tabindex="0"><code>if (isset($_SERVER[&#39;HTTP_X_FORWARDED_HOST&#39;]) &amp;&amp; $_SERVER[&#39;HTTP_X_FORWARDED_HOST&#39;] === &#39;www.sample.com&#39;) {
+    $_SERVER[&#39;HTTP_HOST&#39;] = &#39;www.sample.com&#39;;
+    $_SERVER[&#39;SERVER_NAME&#39;] = &#39;www.sample.com&#39;;
+}
+</code></pre><p>これでwww.sample.comからリバースプロキシで飛ばされてきたアクセス時はホスト名が書き換わるようになりました。<br>
+（これはもっといい方法があるかもしれませんが、とりあえずこの方法でも対応できています。）</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

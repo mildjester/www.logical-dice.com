@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Linuxサーバに秘密鍵方式でsshする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Linuxサーバに秘密鍵方式でsshする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2016-08-01 00:27:04 &#43;0000 UTC" class="catalogue-time">2016年08月01日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/centos/">CentOS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>CentOS 7.2</p>
+<hr>
+<h3 id="手順">■手順</h3>
+<p>①秘密鍵と公開鍵を生成<br>
+ローカルPCにて以下を実施します。<br>
+MacでもLinuxでも同じコマンドで生成できるはずです。</p>
+<pre tabindex="0"><code>$ ssh-keygen -t rsa -b 4096  
+Generating public/private rsa key pair.  
+Enter file in which to save the key (/Users/hoge/.ssh/id_rsa):  
+=&gt;生成するパスとファイル名を指定（空欄のままだと括弧内のファイル名で生成される)  
+Enter passphrase (empty for no passphrase):  
+=&gt;生成する鍵のパスワード。不要なら空欄のままエンター  
+Enter same passphrase again:  
+=&gt;鍵のパスワードの再入力  
+</code></pre><p>生成した秘密鍵と同ディレクトリに公開鍵(拡張子pub)も生成されているので、<br>
+catコマンドで中身を見ておく。(後ほど使うのでコピーしておくと良い)</p>
+<p>②公開鍵をサーバに格納<br>
+ログイン先サーバにて以下を実施</p>
+<pre tabindex="0"><code>$ mkdir ~/.ssh  
+$ vim ~/.ssh/authorized_keys  
+</code></pre><p>この「authorized_keys」に①で生成した公開鍵の中身を貼り付ける。</p>
+<p>以上で秘密鍵認証でログインできるようになっている。<br>
+もし接続できなかった場合は以下設定も確認してみる。</p>
+<p>③【繋がらない場合のみ】sshd設定確認<br>
+ログイン先のサーバにて以下を実施</p>
+<pre tabindex="0"><code>$ vim /etc/ssh/sshd_config  
+</code></pre><p>以下の設定となっているか確認</p>
+<pre tabindex="0"><code>RSAAuthentication yes  
+PubkeyAuthentication yes  
+AuthorizedKeysFile     .ssh/authorized_keys  
+</code></pre><p>※上から２つはコメントアウトされていても良い</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

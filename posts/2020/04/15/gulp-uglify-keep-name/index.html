@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>gulp-uglifyで圧縮時に変数／関数名を圧縮させない|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">gulp-uglifyで圧縮時に変数／関数名を圧縮させない</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-04-15 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年04月15日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/javascript/">javascript</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/node/">node</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://github.com/mishoo/UglifyJS2#minify-options">github mishoo/UglifyJS2</a></li>
+</ul>
+<hr>
+<p>意外と調べても情報が出てこなかったのでメモです。</p>
+<p>gulp-uglifyを使ってJSファイルを圧縮すると定義している変数名や関数名も圧縮されてアルファベット1文字等になります。<br>
+圧縮したJSファイル内でのみ呼び出される変数・関数であれば良いのですが、外部からも呼び出したいというパターンもあると思います。特に関数。</p>
+<p>変数名や関数名を保持したい場合は、gulp-uglify実行時に以下の用にオプションを指定してあげればOKです。</p>
+<p>(gulpfile.js例)</p>
+<pre tabindex="0"><code>var gulp = require(&#39;gulp&#39;);
+var uglify = require(&#39;gulp-uglify&#39;);
+
+var uglify_option = {
+    keep_fnames: true,  // function名を圧縮させない場合に指定
+    mangle: false       // 変数名を圧縮させない場合に指定
+}
+gulp.task(&#34;default&#34;, function() {
+    return gulp.src(&#39;src/*.js&#39;)
+      .pipe(uglify(uglify_option))
+      .pipe(gulp.dest(&#39;dest&#39;));
+});
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

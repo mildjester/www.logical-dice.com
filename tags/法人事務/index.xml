@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>法人事務 on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/%E6%B3%95%E4%BA%BA%E4%BA%8B%E5%8B%99/</link>
+		<description>Recent content in 法人事務 on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 13 Feb 2020 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/%E6%B3%95%E4%BA%BA%E4%BA%8B%E5%8B%99/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>e-taxで法定調書関係の申請をする。</title>
+				<link>https://www.logical-dice.com/posts/2020/02/13/etax-legal-record/</link>
+				<pubDate>Thu, 13 Feb 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/02/13/etax-legal-record/</guid>
+				<description>e-taxで法定調書関係の申請をする手順メモです。</description>
+			</item>
+			<item>
+				<title>e-taxで源泉所得税を申請する。</title>
+				<link>https://www.logical-dice.com/posts/2019/07/16/withholding-income-tax/</link>
+				<pubDate>Tue, 16 Jul 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/07/16/withholding-income-tax/</guid>
+				<description>e-taxで源泉所得税を申請する手順メモです。</description>
+			</item>
+			<item>
+				<title>【法人】地方税のeLTAXでの申請手順メモ</title>
+				<link>https://www.logical-dice.com/posts/wp/467/</link>
+				<pubDate>Fri, 10 Mar 2017 00:04:51 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/467/</guid>
+				<description>法人（休眠中）の地方税に関する確定申告をeLTAXで行なったので、その手順をメモします。休眠中じゃなくても、大体の手順は同じだと&amp;hellip;</description>
+			</item>
+			<item>
+				<title>MFクラウド会計を使った休眠法人決算</title>
+				<link>https://www.logical-dice.com/posts/wp/366/</link>
+				<pubDate>Tue, 07 Feb 2017 00:38:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/366/</guid>
+				<description>休眠法人の決算を税理士を雇わずに終わらせる。MFクラウド会計の無料プランを使う。①各種設定＞事業所　で必要な情報を設定する。②各&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【法人】国税のe-taxでの申請手順メモ</title>
+				<link>https://www.logical-dice.com/posts/wp/372/</link>
+				<pubDate>Tue, 07 Feb 2017 00:25:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/372/</guid>
+				<description>法人（休眠中）の国税に関する確定申告をe-taxで行なったので、その手順をメモします。休眠中じゃなくても、大体の手順は同じだと思&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

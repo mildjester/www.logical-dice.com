@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Wordpress on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/wordpress/</link>
+		<description>Recent content in Wordpress on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Tue, 18 Feb 2020 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/wordpress/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>lightsail上に自前でWordpressを構築する(CentOS編)</title>
+				<link>https://www.logical-dice.com/posts/2020/02/18/lightsail-wordpress/</link>
+				<pubDate>Tue, 18 Feb 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/02/18/lightsail-wordpress/</guid>
+				<description>lightsailのCentOS7上でWordpressを構築する手順です</description>
+			</item>
+			<item>
+				<title>lightsail上に自前でWordpressを構築する(Amazon Linux編)</title>
+				<link>https://www.logical-dice.com/posts/2019/12/15/lightsail-wordpress/</link>
+				<pubDate>Sun, 15 Dec 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/12/15/lightsail-wordpress/</guid>
+				<description>bitnamiを利用せずにlightsail上にWordpressを構築する手順です</description>
+			</item>
+			<item>
+				<title>リバースプロキシ先でWordpressを動かす</title>
+				<link>https://www.logical-dice.com/posts/2019/10/15/reverseproxy-wordpress/</link>
+				<pubDate>Tue, 15 Oct 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/10/15/reverseproxy-wordpress/</guid>
+				<description>Apacheのリバースプロキシ先でWordpressを動かす設定メモです</description>
+			</item>
+			<item>
+				<title>【Wordpress】画像ファイルに設定されたタイトルとキャプションを削除する</title>
+				<link>https://www.logical-dice.com/posts/2019/08/26/wp-media-infomation/</link>
+				<pubDate>Mon, 26 Aug 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/08/26/wp-media-infomation/</guid>
+				<description>Wordpressで画像アップ時にタイトルとキャプションに勝手に文字列が設定されるのを防ぐ方法です。</description>
+			</item>
+			<item>
+				<title>【Wordpress】TinyMCEテンプレートでS3の画像を使う</title>
+				<link>https://www.logical-dice.com/posts/2019/02/13/wp-tinymcetemplate-s3/</link>
+				<pubDate>Wed, 13 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/13/wp-tinymcetemplate-s3/</guid>
+				<description>TinyMCE テンプレートとWP Offload Media Lite併用時にS3の画像が取れない時の対処法です</description>
+			</item>
+			<item>
+				<title>WordpressからPicoへデータ移行</title>
+				<link>https://www.logical-dice.com/posts/2019/01/17/wordpress-to-pico/</link>
+				<pubDate>Thu, 17 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/17/wordpress-to-pico/</guid>
+				<description>WordpressのデータをPicoへ移行する方法です</description>
+			</item>
+			<item>
+				<title>Wordpressの画像をS3&#43;CloudFrontで配信する</title>
+				<link>https://www.logical-dice.com/posts/wp/1772/</link>
+				<pubDate>Tue, 11 Dec 2018 19:30:54 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1772/</guid>
+				<description>環境WordPress 4.8.3AWS設定手順IAM設定まず、WordpressとAWSの連携に使うIAMユーザーを準備します&amp;hellip;</description>
+			</item>
+			<item>
+				<title>AWS ELB配下でWordpressを動かす際のSSL対応</title>
+				<link>https://www.logical-dice.com/posts/wp/1439/</link>
+				<pubDate>Fri, 20 Jul 2018 17:56:57 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1439/</guid>
+				<description>■環境AWS ELBAWS EC2Apache 2.2.32Wordpress 4.1.1EC-CUBEではありませんが、内容的&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Wordpressを多言語対応させる</title>
+				<link>https://www.logical-dice.com/posts/wp/1291/</link>
+				<pubDate>Tue, 24 Apr 2018 00:56:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1291/</guid>
+				<description>■環境Wordpress 4.9.5MultilingualPress 2.11.1■手順まずMultilingualPress&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Wordpressにお問合せフォームを作る</title>
+				<link>https://www.logical-dice.com/posts/wp/979/</link>
+				<pubDate>Wed, 17 Jan 2018 16:18:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/979/</guid>
+				<description>環境Wordpress 4.9.1Contact Form 7 4.9.2WP Mail SMTP 1.2.2Wordpress&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Wordpress】テーマで指定されたCSSがうまく読み込めない</title>
+				<link>https://www.logical-dice.com/posts/wp/698/</link>
+				<pubDate>Mon, 21 Aug 2017 01:57:10 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/698/</guid>
+				<description>Wordpressで他人が作成したテーマを使っているとCSSがうまく読み込めない時があります。条件としては以下の両方に当てはまっ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Wordpress】SyntaxHighlighter Evolvedを高速化する</title>
+				<link>https://www.logical-dice.com/posts/wp/402/</link>
+				<pubDate>Fri, 10 Feb 2017 18:23:37 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/402/</guid>
+				<description>Wordperssのプラグイン『SyntaxHighlighter Evolved』を入れていたところ画面表示がとても遅くなった&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>LinuxMint on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/linuxmint/</link>
+		<description>Recent content in LinuxMint on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Mon, 06 Jul 2020 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/linuxmint/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Linux MintでThinkPadのトラックポイントを調整する</title>
+				<link>https://www.logical-dice.com/posts/2019/03/12/linux-mint-trackpoint/</link>
+				<pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/12/linux-mint-trackpoint/</guid>
+				<description>ThinkPadにLinux Mint 19.1をインストールしたので、トラックポイントの調整をします。</description>
+			</item>
+			<item>
+				<title>Linux Mintの初期設定</title>
+				<link>https://www.logical-dice.com/posts/2019/03/10/linux-mint-initialize/</link>
+				<pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/10/linux-mint-initialize/</guid>
+				<description>Linux Mintをインストールして開発環境を構築するまでの作業メモです。</description>
+			</item>
+			<item>
+				<title>Linux Mintにsassをインストールする</title>
+				<link>https://www.logical-dice.com/posts/2019/09/29/ruby-sass-error/</link>
+				<pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/09/29/ruby-sass-error/</guid>
+				<description>Linux Mintにsassをインストールしようとしたら少し躓いたのでメモです</description>
+			</item>
+			<item>
+				<title>Linux Mint上でWindows10を動かす</title>
+				<link>https://www.logical-dice.com/posts/2019/09/28/linux-mint-virtualbox/</link>
+				<pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/09/28/linux-mint-virtualbox/</guid>
+				<description>Linux MintにVirtualBoxを入れて検証用にWindows10を動かした手順です</description>
+			</item>
+			<item>
+				<title>コマンドラインからVPNの接続＆切断をする</title>
+				<link>https://www.logical-dice.com/posts/2019/07/29/linux-mint-vpn/</link>
+				<pubDate>Mon, 29 Jul 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/07/29/linux-mint-vpn/</guid>
+				<description>Linux MintにてコマンドラインからVPNの接続と切断をする方法です。</description>
+			</item>
+			<item>
+				<title>コマンドで画像の撮影日等を変更する</title>
+				<link>https://www.logical-dice.com/posts/2019/07/02/exiftool-modify-alldate/</link>
+				<pubDate>Tue, 02 Jul 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/07/02/exiftool-modify-alldate/</guid>
+				<description>コマンドラインからexiftoolを使って画像ファイルの撮影日等を変更する方法です。</description>
+			</item>
+			<item>
+				<title>Linux Mintを無線LANのアクセスポイントにする</title>
+				<link>https://www.logical-dice.com/posts/2019/04/17/linuxmint-access-point/</link>
+				<pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/04/17/linuxmint-access-point/</guid>
+				<description>Linux MintをアクセスポイントにしてVPNを共有した際のメモ</description>
+			</item>
+			<item>
+				<title>VPNクライアント設定(L2TP over IPsec)</title>
+				<link>https://www.logical-dice.com/posts/2019/03/13/linux-mint-l2tp/</link>
+				<pubDate>Wed, 13 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/13/linux-mint-l2tp/</guid>
+				<description>Linux MintやubuntuにL2TP over IPsecのVPNクライアント設定をします。</description>
+			</item>
+			<item>
+				<title>terminator &#43; fish &#43; fishermanの導入</title>
+				<link>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-fish/</link>
+				<pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-fish/</guid>
+				<description>Linux Mintやubuntuにterminatorとfish&amp;amp;fisherman環境を構築する手順メモです</description>
+			</item>
+			<item>
+				<title>Terminatorのデフォルトサイズを変更する</title>
+				<link>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-size/</link>
+				<pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-size/</guid>
+				<description>Linuxのターミナルソフト「Terminator」を起動した際のデフォルトサイズを変更する手順です</description>
+			</item>
+			<item>
+				<title>Docker環境の構築手順</title>
+				<link>https://www.logical-dice.com/posts/2019/01/25/linux-mint-docker/</link>
+				<pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/25/linux-mint-docker/</guid>
+				<description>Linux MintやubuntuにてDockerをインストールする方法です</description>
+			</item>
+			<item>
+				<title>Linux Mint 19.1 MATEをUSBメモリからインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/1829/</link>
+				<pubDate>Thu, 20 Dec 2018 16:25:54 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1829/</guid>
+				<description>PCを再構築する必要があったので、Linux Mintの最新バージョンを入れて見ましたインストール準備をした作業環境はMacで、&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】 Fcitxの変換候補が黒く塗りつぶされる</title>
+				<link>https://www.logical-dice.com/posts/wp/1470/</link>
+				<pubDate>Mon, 13 Aug 2018 13:01:18 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1470/</guid>
+				<description>環境Linux Mint 18.3 cinnamon 64bit事象ある日、Fcitxで日本語入力していたら変換候補が真っ黒にな&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】gemでcompassをインストールする</title>
+				<link>https://www.logical-dice.com/posts/wp/1245/</link>
+				<pubDate>Fri, 20 Apr 2018 16:23:01 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1245/</guid>
+				<description>以下のコマンドでインストールしようとするとエラーが発生しました。$ sudo gem install compassFetchi&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】cpuminer &#43; wpoolでBitZenyをマイニング</title>
+				<link>https://www.logical-dice.com/posts/wp/1236/</link>
+				<pubDate>Fri, 20 Apr 2018 10:25:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1236/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitcpuminerのインストール基本的な流れはcpuminerの&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】キーマップを変更する</title>
+				<link>https://www.logical-dice.com/posts/wp/1226/</link>
+				<pubDate>Fri, 13 Apr 2018 21:33:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1226/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitXmodmap設定ホームディレクトリ直下に.Xmodmapとい&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】日本語入力できるようにする</title>
+				<link>https://www.logical-dice.com/posts/wp/1222/</link>
+				<pubDate>Fri, 13 Apr 2018 21:28:47 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1222/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitLinux MintをEnglishでインストールした際の作業&amp;hellip;</description>
+			</item>
+			<item>
+				<title>プログラミング向けフォントのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/1218/</link>
+				<pubDate>Fri, 13 Apr 2018 21:21:39 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1218/</guid>
+				<description>プログラミングに向いている「Ricty Diminished」をインストールする手順です</description>
+			</item>
+			<item>
+				<title>【Linux Mint】PHP7.1のインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/1192/</link>
+				<pubDate>Tue, 10 Apr 2018 09:11:57 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1192/</guid>
+				<description>$ set -x LC_ALL C.UTF-8$ sudo add-apt-repository ppa:ondrej/php$&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】Dockerの導入</title>
+				<link>https://www.logical-dice.com/posts/wp/1162/</link>
+				<pubDate>Mon, 09 Apr 2018 21:06:39 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1162/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitDockerのインストールdockerのGPGを追加$ cur&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】OSインストールと設定</title>
+				<link>https://www.logical-dice.com/posts/wp/1098/</link>
+				<pubDate>Sat, 07 Apr 2018 14:01:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1098/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitOS入手公式ページからISOイメージをダウンロードします。ht&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

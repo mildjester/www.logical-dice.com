@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Nginx on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/nginx/</link>
+		<description>Recent content in Nginx on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 05 Jul 2018 15:28:23 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>grepでアクセスログからTPSを出す</title>
+				<link>https://www.logical-dice.com/posts/wp/1436/</link>
+				<pubDate>Thu, 05 Jul 2018 15:28:23 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1436/</guid>
+				<description>■環境Amazon Linux AMI release 2013.03grep 2.6.3WEBサーバーのアクセスログからTPS&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Let&#39;sEncrypt】Certbotの使い方(CentOS7 &#43; nginx)</title>
+				<link>https://www.logical-dice.com/posts/wp/656/</link>
+				<pubDate>Mon, 12 Jun 2017 17:17:21 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/656/</guid>
+				<description>■環境CentOS 7.3nginx 1.10.3certbot 0.14.1■初回SSL証明書発行certbotをインストール&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

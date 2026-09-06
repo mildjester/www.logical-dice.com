@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【CentOS】OpenVPN &amp; LDAPでVPNサーバ構築|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【CentOS】OpenVPN &amp; LDAPでVPNサーバ構築</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-12-20 16:12:33 &#43;0000 UTC" class="catalogue-time">2017年12月20日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/centos/">CentOS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h1 id="環境">環境</h1>
+<p>CentOS 7.4 <br>
+OpenVPN 2.4.4</p>
+<h1 id="参考サイト">参考サイト</h1>
+<p>ServerWorldさん：<a href="https://www.server-world.info/query?os=CentOS_7&p=openvpn" rel="noopener" target="_blank"><a href="https://www.server-world.info/query?os=CentOS_7&amp;amp;p=openvpn">https://www.server-world.info/query?os=CentOS_7&amp;p=openvpn</a></a> <br>
+cloudpackさん：<a href="https://cloudpack.media/73" rel="noopener" target="_blank"><a href="https://cloudpack.media/73">https://cloudpack.media/73</a></a></p>
+<h3 id="前提条件">※前提条件</h3>
+<p>LDAPサーバは既に構築済みとします</p>
+<hr>
+<h1 id="サーバ作業手順">サーバ作業手順</h1>
+<h2 id="インストール">■インストール</h2>
+<p>必要なものをインストールします。</p>
+<pre tabindex="0"><code>yum --enablerepo=epel install openvpn openvpn-auth-ldap easy-rsa net-tools bridge-utils  
+</code></pre><h2 id="各種証明書生成">■各種証明書生成</h2>
+<p>easy-rsaのディレクトリに移動し、各種証明書を生成します。</p>
+<pre tabindex="0"><code>cd /usr/share/easy-rsa/2.0   
+</code></pre><h3 id="ca-証明書">CA 証明書</h3>
+<p>まず、varsファイルを修正します。</p>
+<pre tabindex="0"><code>vim vars  
+</code></pre><p>内容は以下の通りです。(コメント行・空行は除外しています)</p>
+<pre tabindex="0"><code>export EASY_RSA=&#34;`pwd`&#34;  
+export OPENSSL=&#34;openssl&#34;  
+export PKCS11TOOL=&#34;pkcs11-tool&#34;  
+export GREP=&#34;grep&#34;  
+export KEY_CONFIG=`$EASY_RSA/whichopensslcnf $EASY_RSA`  
+export KEY_DIR=&#34;$EASY_RSA/keys&#34;  
+export PKCS11_MODULE_PATH=&#34;dummy&#34;  
+export PKCS11_PIN=&#34;dummy&#34;  
+export KEY_SIZE=2048  
+export CA_EXPIRE=3650  
+export KEY_EXPIRE=3650  
+export KEY_COUNTRY=&#34;JP&#34;         #国  
+export KEY_PROVINCE=&#34;Tokyo&#34;     #都道府県  
+export KEY_CITY=&#34;Shibuya-ku&#34;    #市区町村  
+export KEY_ORG=&#34;AAA-Company&#34;    #組織名  
+export KEY_EMAIL=&#34;fooo@aaa.com&#34; #メールアドレス  
+export KEY_OU=&#34;BTeam&#34;           #チーム名など（任意）  
+export KEY_NAME=&#34;EasyRSA&#34;  
+</code></pre><p>CA証明書を生成します。</p>
+<pre tabindex="0"><code>source ./vars  
+./clean-all  
+./build-ca  
+〜色々聞かれるが全てそのままエンターで良さそう〜  
+</code></pre><h3 id="サーバー証明書">サーバー証明書</h3>
+<p>サーバ証明書を生成します。</p>
+<pre tabindex="0"><code>./build-key-server server  
+〜色々聞かれるが基本的にはそのままエンターで良さそう〜  
+〜途中でYes/Noを聞かれるので、そこは「y」と入力する〜  
+</code></pre><h3 id="diffie-hellmandh">Diffie Hellman(DH)</h3>
+<p>DHを生成します。</p>
+<pre tabindex="0"><code>./build-dh  
+</code></pre><h3 id="各種証明書の移動">各種証明書の移動</h3>
+<p>OpenVPNのディレクトリに生成した証明書達を移動します。</p>
+<pre tabindex="0"><code>cp keys/ca.crt /etc/openvpn/.  
+cp keys/server.crt /etc/openvpn/.  
+cp keys/server.key /etc/openvpn/.  
+cp keys/dh2048.pem /etc/openvpn/.  
+</code></pre><h2 id="openvpn設定">■OpenVPN設定</h2>
+<p>OpenVPNのサーバ設定をします。</p>
+<pre tabindex="0"><code>cp /usr/share/doc/openvpn-2.4.4/sample/sample-config-files/server.conf /etc/openvpn/server.conf  
+vim /etc/openvpn/server.conf  
+</code></pre><p>内容は以下の通りです。(コメント行・空行は除外しています)</p>
+<pre tabindex="0"><code>port 1194  
+proto tcp  
+dev tun  
+ca ca.crt  
+cert server.crt  
+key server.key  
+dh dh2048.pem  
+server 192.168.10.0 255.255.255.0        #OpenVPNサーバのサブネットマスク  
+route 192.168.10.0 255.255.255.0         #クライアントに割り振るサブネットマスク＝serverと同じで良い  
+push &#34;redirect-gateway def1&#34;             #クライアントは全ての通信をVPN経由にする  
+push &#34;dhcp-option DNS 192.168.10.254&#34;    #DNSサーバの設定  
+keepalive 10 120  
+status /var/log/openvpn-status.log  
+log         /var/log/openvpn.log  
+log-append  /var/log/openvpn.log  
+verb 3  
+plugin    /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so &#34;/etc/openvpn/auth/ldap.conf&#34;  
+client-cert-not-required  
+username-as-common-name  
+</code></pre><p>LDAPサーバへの接続設定もします。</p>
+<pre tabindex="0"><code>vim /etc/openvpn/auth/ldap.conf  
+</code></pre><p>内容は以下の通りです。(コメント行・空行は除外しています)</p>
+<pre tabindex="0"><code>&lt;LDAP&gt;  
+    URL     ldap://ldap.sample.com   #LDAPサーバへのURL  
+    Timeout     15  
+    TLSEnable   no  
+    FollowReferrals yes  
+&lt;/LDAP&gt;  
+&lt;Authorization&gt;  
+    BaseDN      &#34;ou=People,dc=sample,dc=com&#34; #LDAPサーバのログインアカウント情報のDN  
+    SearchFilter    &#34;(&amp;(uid=%u))&#34;  
+    RequireGroup    false  
+&lt;/Authorization&gt;  
+</code></pre><h2 id="iptable設定">■iptable設定</h2>
+<p>VPN接続してきたクライアントがVPNサーバ経由で外部連携するためにはiptableでマスカレードしてあげる必要があります。 <br>
+openvpn起動時にiptable設定ができるようスクリプトを作っておきます。</p>
+<h4 id="起動スクリプト">起動スクリプト</h4>
+<pre tabindex="0"><code>#!/bin/bash  
+  
+# 設定クリア  
+/etc/openvpn/openvpn-shutdown  
+  
+# マスカレード設定(IPアドレスや利用するイーサネット等のIFは環境に合わせて変更)  
+iptables -t nat -A POSTROUTING -s 192.168.10.0/24 -o eno1 -j MASQUERADE  
+  
+# VPNサーバからの送信許可設定  
+iptables -I OUTPUT -o tun+ -j ACCEPT  
+iptables -I FORWARD -o tun+ -j ACCEPT  
+</code></pre><h4 id="停止スクリプト">停止スクリプト</h4>
+<pre tabindex="0"><code>#!/bin/bash  
+  
+# iptablesルール削除関数  
+delete() {  
+    rule_number=`iptables -L $target --line-numbers -n -v|grep tun.|awk &#39;{print $1}&#39;|sort -r`  
+    for num in $rule_number  
+    do  
+        iptables -D $target $num  
+    done  
+}  
+  
+# 受信ルール削除  
+target=&#39;INPUT&#39;  
+delete  
+  
+# 転送ルール削除  
+target=&#39;FORWARD&#39;  
+delete  
+  
+# 送信ルール削除  
+target=&#39;OUTPUT&#39;  
+delete  
+</code></pre><h2 id="起動">■起動</h2>
+<pre tabindex="0"><code>systemctl start iptables  
+systemctl start openvpn  
+sh /etc/openvpn/openvpn-startup  
+</code></pre><h1 id="クライアント作業手順">クライアント作業手順</h1>
+<h2 id="tunnelblinkの取得">■Tunnelblinkの取得</h2>
+<p>以下サイトよりダウンロード&amp;インストールします。　　<br>
+<a href="https://tunnelblick.net/downloads.html" rel="noopener" target="_blank"><a href="https://tunnelblick.net/downloads.html">https://tunnelblick.net/downloads.html</a></a>　　</p>
+<h2 id="vpn設定">■VPN設定</h2>
+<p>サーバ側で生成した<code>ca.crt</code>をクライアント側にダウンロードし、その同じディレクトリに<code>sample.ovpn</code>を作成します。 <br>
+※上記「sample」部分については任意の名前にしてください。それがTunnelblink上での接続先名になります。</p>
+<p>sample.ovpnの中身は以下のようにしてください。</p>
+<pre tabindex="0"><code>client  
+  
+auth-user-pass  
+  
+dev    tun  
+proto  tcp  
+  
+ca     ca.crt  
+  
+remote xxx.xxx.xxx.xxx 1194 #xxxはクライアントからVPNサーバへアクセスする際のIPアドレス  
+</code></pre><p>この作成したovpnファイルをダブルクリックで開くとTunnelblinkが起動し、VPN設定がされる。</p>
+<h2 id="vpn接続">■VPN接続</h2>
+<p>Tunnelblinkを起動し、上部常駐アイコンより「sampleに接続」を選択すると接続できる。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

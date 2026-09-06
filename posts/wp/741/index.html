@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Mac】ターミナル設定（iTerm2 ＋ fish ＋ fisherman）|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Mac】ターミナル設定（iTerm2 ＋ fish ＋ fisherman）</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-10-12 16:01:40 &#43;0000 UTC" class="catalogue-time">2017年10月12日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/mac/">Mac</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>iTerm2 3.2.5<br>
+fish 2.7.1<br>
+fisherman 3.1.1</p>
+<h2 id="参考サイト">■参考サイト</h2>
+<p><a href="https://dev.classmethod.jp/etc/fish-shell-life/">fish shell を使いたい人生だった</a></p>
+<hr>
+<p>ターミナルのシェルをiTerm2 &amp; fishにする手順です。<br>
+デフォルトである程度便利機能が入っているので、zshでカスタマイズするのが面倒な人におすすめです。</p>
+<h3 id="iterm2インストール">iTerm2インストール</h3>
+<p>公式ページよりzipをダウンロードします。<br>
+<a href="https://www.iterm2.com/downloads.html" rel="noopener" target="_blank"><a href="https://www.iterm2.com/downloads.html">https://www.iterm2.com/downloads.html</a></a></p>
+<p>ダウンロードしたzipを解凍すると「iTerm」というファイルが出てくるので、それをアプリケーションにドラッグ＆ドロップします。<br>
+これでLanchPadから起動できるようになりました。</p>
+<h3 id="iterm2の配色変更">iTerm2の配色変更</h3>
+<p>iTerm2のデフォルトのままの色だとディレクトリが見づらかったりするので配色を変えます。<br>
+iTerm2のメニューバーより<br>
+<code>iTerm2 &gt; Preferences &gt; Profiles &gt; Colors</code> とクリックしていき<br>
+そこの <code>Color Pareset</code> より好きなテーマを選びます。</p>
+<p>配色設定ファイルをダウンロード設定することもできます。<br>
+私の場合は『Japanesque』という配色をよく使っています。<br>
+<a href="https://github.com/aereal/dotfiles/tree/master/colors/Japanesque" rel="noopener" target="_blank"><a href="https://github.com/aereal/dotfiles/tree/master/colors/Japanesque">https://github.com/aereal/dotfiles/tree/master/colors/Japanesque</a></a></p>
+<p>この『Japanesque.itermcolors』をiTerm2で開くと、上記の <code>Color Pareset</code>の選択肢に<br>
+<code>Japanesque</code> が追加されます。</p>
+<h3 id="fish-インストール">fish インストール</h3>
+<p>fishをインストールします。</p>
+<pre tabindex="0"><code>$ brew install fish  
+</code></pre><p>fishのパスを確認する。</p>
+<pre tabindex="0"><code>$ which fish  
+/usr/local/bin/fish  
+</code></pre><p>上記パスをシェル一覧に追記する</p>
+<pre tabindex="0"><code>$ sudo vi /etc/shells  
+〜末尾にwhichコマンドで確認したパスを追記する〜  
+</code></pre><p>シェルをfishに変更する</p>
+<pre tabindex="0"><code>$ chsh -s /usr/local/bin/fish  
+</code></pre><p>これで、ターミナルを再起動するとfishが立ち上がります。</p>
+<h3 id="fisherman-インストール">fisherman インストール</h3>
+<p>fishermanというfishのプラグイン管理ツールがあります。</p>
+<p>fishermanのgithubベージにインストールコマンドが載っています。<br>
+<a href="https://github.com/fisherman/fisherman" rel="noopener" target="_blank"><a href="https://github.com/fisherman/fisherman">https://github.com/fisherman/fisherman</a></a></p>
+<pre tabindex="0"><code>$ curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://git.io/fisher  
+</code></pre><p>上記コマンド実行時にバージョン情報が出なかった場合は、一度ターミナルを再起動すると良いです。</p>
+<h3 id="fishのテーマ変更">fishのテーマ変更</h3>
+<p>fishはテーマを変更することで見栄えが変えられます。<br>
+どのようなテーマがあるかは、以下ページが参考になります。<br>
+<a href="https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md" rel="noopener" target="_blank"><a href="https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md">https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md</a></a></p>
+<p>私は「bobthefish」というテーマを利用しており、以下手順でインストールしています。</p>
+<pre tabindex="0"><code>$ fisher add oh-my-fish/theme-bobthefish  
+$ git clone https://github.com/powerline/fonts.git  
+$ fonts/install.sh  
+$ rm -rf fonts  
+</code></pre><p>上記コマンド実施後、iTerm2のプロファイルを設定します。<br>
+プロファイル設定画面にて「Text＞Font＞ChangeFont」をクリックしてください。<br>
+<img src="https://www.logical-dice.com/images/2017/10/iterm2001.png" alt="" /></p>
+<p>CollectionでAll Fontsを選択し、「○○○ for Powerline」というフォントの中から好きなものを選んでください。<br>
+個人的には「Meslo LG M for Powerline」が好きです。<br>
+フォントサイズも必要に応じて好きなサイズに変更してください。</p>
+<p>これで、テーマの変更は完了です。</p>
+<h3 id="プラグイン追加">プラグイン追加</h3>
+<p>プラグインは色々ありますが<br>
+私が入れているプラグインを紹介しておきます。</p>
+<h4 id="z">z</h4>
+<p>過去の履歴からディレクトリを選択して遷移できるようになります。<br>
+【インストール方法】</p>
+<pre tabindex="0"><code>$ fisher add z  
+</code></pre><p>【使い方】<br>
+<code>z {文字列}</code> まで入力してタブを押下する。<br>
+上記の{文字列}で履歴からディレクトリ検索をして遷移できる。<br>
+{文字列}を空にしておけば直近の履歴が表示される。</p>
+<h4 id="bd">bd</h4>
+<p>親以上のディレクトリ(祖先ディレクトリ？)への遷移が簡単になる。<br>
+【インストール方法】</p>
+<pre tabindex="0"><code>$ fisher add 0rax/fish-bd  
+</code></pre><p>【使い方】<br>
+<code>$ bd</code>と入力してタブを押すと、親ディレクトリの一覧が表示されるので<br>
+選択してエンターを押すだけで移動できる。</p>
+<h4 id="peco">peco</h4>
+<p>コマンド履歴の検索が容易にできるようになる。</p>
+<p>【インストール方法】</p>
+<pre tabindex="0"><code>$ brew install peco  
+$ fisher add oh-my-fish/plugin-peco  
+</code></pre><p>上記コマンド後、fishのコンフィグファイルへ以下を記載。</p>
+<pre tabindex="0"><code>vim ~/.config/fish/config.fish  
+〜以下を追記(ファイルがなければ新規作成)〜  
+function fish_user_key_bindings  
+  bind \cr &#39;peco_select_history (commandline -b)&#39;  
+end  
+</code></pre><p>※「function fish_user_key_bindings」の定義が既にされているなら、<br>
+その中に<code>bind〜</code>の行だけ追記すれば良い。</p>
+<p>上記完了後、ターミナルを再起動してください。</p>
+<p>【使い方】<br>
+「Ctrl + R」でコマンド履歴検索画面になる。<br>
+検索画面では直近のコマンドから選択することもできるし、文字列を入力すれば該当の文字列を含むコマンド履歴に絞ることもできる。</p>
+<h4 id="ghq">ghq</h4>
+<p>gitの管理が容易になるプラグイン</p>
+<p>【インストール方法】</p>
+<pre tabindex="0"><code>$ brew install ghq  
+$ fisher add yoshiori/fish-peco_select_ghq_repository  
+</code></pre><p>上記コマンド後、fishのコンフィグファイルへ以下を記載。</p>
+<pre tabindex="0"><code>vim ~/.config/fish/config.fish  
+〜以下を追記(ファイルがなければ新規作成)〜  
+function fish_user_key_bindings  
+  bind \c] peco_select_ghq_repository  # 追加  
+end  
+</code></pre><p>※「function fish_user_key_bindings」の定義が既にされているなら、<br>
+　その中に<code>bind〜</code>の行だけ追記すれば良い。<br>
+　例えば、もし上記のpecoも導入しているのであれば、config.fishの記載は以下のようになる。</p>
+<pre tabindex="0"><code>function fish_user_key_bindings  
+  bind \cr &#39;peco_select_history (commandline -b)&#39;  
+  bind \c] peco_select_ghq_repository  # 追加  
+end  
+</code></pre><p>上記完了後、ターミナルを再起動してください。</p>
+<p>【使い方】<br>
+「Ctrl + ]」でghqで管理しているgitリポジトリの選択ができます。<br>
+gitリポジトリを選択すると、該当リポジトリのディレクトリへ遷移します。</p>
+<p>ghqコマンドの使い方は割愛するので、別途調べてください。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

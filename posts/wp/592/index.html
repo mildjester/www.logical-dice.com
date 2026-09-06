@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>MastodonインスタンスをHerokuだけで立てる|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">MastodonインスタンスをHerokuだけで立てる</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-04-28 20:05:40 &#43;0000 UTC" class="catalogue-time">2017年04月28日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags//"></a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>最近Mastdonが流行っているらしいので<br>
+お金をかけずにMastdonインスタンスをHerokuのみで立ててみます。</p>
+<h2 id="注意">注意</h2>
+<ul>
+<li>本手順ではS３(ストレージ)を利用しないので、アイコンやヘッダーなどは保存されません。</li>
+<li>自分１人用のインスタンスにするつもりで作ってます。</li>
+<li>「Herokuのみ」に拘っており、他の無料ツールと組み合わせることもできますが、やってません。</li>
+</ul>
+<h3 id="参考にしたサイト">■参考にしたサイト</h3>
+<ul>
+<li><a href="https://snap.textfile.org/20170419212148/" target="_blank">結城浩大先生のブログ</a></li>
+<li><a href="http://qiita.com/sho7650/items/290fd3daff28e962e5e3" target="_blank">しょっさんのQiita</a></li>
+</ul>
+<h3 id="手順インスタンス生成編">■手順(インスタンス生成編)</h3>
+<p>Herokuのアカウントを持っていなければアカウント作成します。<br>
+アカウント作成は<a href="https://signup.heroku.com/login" target="_blank">コチラ</a>から。</p>
+<p>mastodon公式の<a href="https://github.com/tootsuite/documentation/blob/master/Running-Mastodon/Heroku-guide.md" target="_blank">Herokuページ</a>にて「Deploy to Heroku」ボタンをクリックする。</p>
+<p>Herokuのアプリ新規作成画面が開くので、以下を入力します。</p>
+<ul>
+<li>AppName: 作成するアプリ名</li>
+<li>LOCAL_DOMAIN: {上記のAppName}.herokuapp.com</li>
+<li>S3_ENABLED: false</li>
+<li>SINGLE_USER_MODE: true</li>
+</ul>
+<p>上記入力が完了したら『Deploy』ボタンをクリックします。</p>
+<p>私の場合はここでクレジットカード情報を入力する画面が出ましたが、既にHerokuを使っていて無料枠を使い切っていたから出たのかもしれません。<br>
+ど新規でHeroku登録していれば、何も出ないかもしれません。</p>
+<p>Deployが完了したら、Heroku管理画面の「Resources」画面にて「worker」をONにします。<br>
+右側のエンピツマークをクリックしたらON/OFFを切り替えできるようになります。</p>
+<p>ここまでで、マストドンのインスタンス生成は完了です。</p>
+<h3 id="手順アカウント登録編">■手順（アカウント登録編）</h3>
+<p>普通ならアカウント登録をし、登録したメールアドレスに届いたメールのリンクをクリックすれば<br>
+アカウント登録は完了なのですが、今回はメールサーバーの設定もしてないので、<br>
+無理やりDBを参照して進めます。</p>
+<p>まず、Heroku管理画面の「Resources」画面にて、『Heroku Postgres :: Database』をクリックします。<br>
+するとPostgreSQLの管理画面へ遷移するので、『View Credentials』をクリックし、<br>
+「Heroku CLI」(heroku pg:psql〜)を確認しておきます。<br>
+※後ほど利用するHeroku CLIのコマンドです。</p>
+<p>ブラウザで『{AppName}.herokuapp.com』へアクセスするとアカウント作成画面が開くので<br>
+普通にアカウント登録します。</p>
+<p>次に、Heroku CLIをインストールします。<br>
+インストール手順は<a href="https://devcenter.heroku.com/posts/heroku-cli" target="_blank">コチラ</a>にまとまってます。</p>
+<p>ローカルPCにPostgreSQLが入っていないなら、インストールしておきます。<br>
+Macなら以下コマンドでインストールできます。</p>
+<pre tabindex="0"><code>brew install postgresql  
+</code></pre><p>PostgreSQLが使える状態になったら、HerokuのDBへ接続して<br>
+メールアドレス確認用のtokenを確認します。</p>
+<pre tabindex="0"><code># ローカルPCのターミナルにて、確認した「Heroku CLI」コマンドを実行  
+heroku pg:psql postgresql-fitted-xxxxxx --app {AppName}  
+# DB操作モードに切り替わるので、DBよりtokenをselectする  
+select email, confirmation_token from users;  
+</code></pre><p>上記コマンドでtokenが表示されるので、それを含めた以下のURLへブラウザでアクセスします。<br>
+https://{AppName}.herokuapp.com/auth/confirmation?confirmation_token={上記で確認したtoken}</p>
+<p>これでメールアドレスの確認も完了し、Mastdonを利用開始できます。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

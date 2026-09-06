@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>lightsail上に自前でWordpressを構築する(CentOS編)|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">lightsail上に自前でWordpressを構築する(CentOS編)</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-02-18 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年02月18日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/wordpress/">Wordpress</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>CentOS Linux release 7.6.1810 (Core)</li>
+<li>nginx 1.1.17</li>
+<li>php 7.4.2</li>
+<li>MySQL 8.0.19</li>
+</ul>
+<hr>
+<p><a href="/posts/2019/12/15/lightsail-wordpress/">以前の記事</a>でAmazon Linux上でWordpressを構築しましたが、<br>
+lightsailのAmazon Linux上だとなぜかcertbotが正常に動かなくなったので<br>
+CentOSで再構築することにしました。</p>
+<h3 id="インスタンス作成">インスタンス作成</h3>
+<p>lightsailのインスタンスを作成します。</p>
+<p>プラットフォーム：Linux/Unix<br>
+設計図の選択：OSのみ CentOS</p>
+<h3 id="インスタンス設定">インスタンス設定</h3>
+<p>作成したインスタンスの設定をします。</p>
+<p>対象インスタンスのネットワーキングを開き、静的IPをアタッチしておきます。<br>
+また、HTTPSで公開する場合はファイアウォールにてTCPの443ポートを開けておきます。</p>
+<h3 id="サーバーへのログイン初期設定">サーバーへのログイン＆初期設定</h3>
+<p>インスタンスにSSHにて接続し、以下コマンドを実行していきます。</p>
+<p>まずrootになります。<br>
+以降のコマンドはrootで実行するものとします。</p>
+<pre tabindex="0"><code>$ sudo -i
+</code></pre><p>タイムゾーンを日本にします。</p>
+<pre tabindex="0"><code># timedatectl set-timezone Asia/Tokyo
+</code></pre><p>基本的なアプリケーションを入れておきます。</p>
+<pre tabindex="0"><code>yum install git vim
+</code></pre><h3 id="selinuxの無効化">SELinuxの無効化</h3>
+<p>SELinuxがあると色々動かないことがあるので無効にしてしまいます。<br>
+(nginxが403になったり)<br>
+ちゃんとセキュアな環境を作りたい場合はSELinuxが有効でもちゃんと諸々動く環境を作った方がいいですが、<br>
+今回はそこまででは無かったので割愛しています。</p>
+<p>現在有効か確認します。<br>
+以下コマンドで「Enforcing」と出たら有効です。</p>
+<pre tabindex="0"><code># getenforce
+Enforcing
+</code></pre><p>設定ファイルを修正して無効にします。</p>
+<pre tabindex="0"><code># vim /etc/selinux/config
+以下部分を修正します。
+SELINUX=disabled
+</code></pre><p>これでlightsailのコンソールからインスタンスを再起動をすると反映されます。</p>
+<h3 id="nginxのインストール">nginxのインストール</h3>
+<p>公式の手順を参考にします。<br>
+<a href="http://nginx.org/en/linux_packages.html#RHEL-CentOS">http://nginx.org/en/linux_packages.html#RHEL-CentOS</a></p>
+<pre tabindex="0"><code># yum install yum-utils
+
+# vim /etc/yum.repos.d/nginx.repo
+〜空のファイルが開くので以下を記載する〜
+[nginx-stable]
+name=nginx stable repo
+baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+
+[nginx-mainline]
+name=nginx mainline repo
+baseurl=http://nginx.org/packages/mainline/centos/$releasever/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+〜ここまで〜
+
+# yum-config-manager --enable nginx-mainline
+# yum install nginx
+</code></pre><h3 id="nginxの設定">nginxの設定</h3>
+<p>nginxの設定ファイルを追加します。<br>
+ファイル名の.confより前は任意です。</p>
+<pre tabindex="0"><code>vim /etc/nginx/conf.d/wordpress.conf
+</code></pre><p>以下のように記載します。<br>
+(Wordpressおきまりのやつです)</p>
+<pre tabindex="0"><code>server {
+    listen 80;
+    listen [::]:80;
+    server_name  your-domain.jp;
+
+    root   /usr/share/nginx/html;
+    index  index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~\.php$ {
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            include fastcgi_params;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_pass unix:/var/run/php-fpm/www.sock;
+    }
+}
+</code></pre><h3 id="phpのインストール">phpのインストール</h3>
+<p>以下のコマンドを実行します。<br>
+この例ではphp7.4をインストールしていますが、別のバージョンにする場合は<br>
+yum install時にenableするリポジトリの<code>remi-phpxx</code>部分を変更してください。</p>
+<pre tabindex="0"><code># yum install epel-release
+# rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+# yum install --disablerepo=* --enablerepo=epel,remi,remi-safe,remi-php74 -y php-fpm php-bcmath php-cli php-common php-devel php-gd php-json php-mbstring php-mysqlnd php-pdo php-xml
+</code></pre><h3 id="phpの設定">phpの設定</h3>
+<p>設定ファイルを開きます。</p>
+<pre tabindex="0"><code># vim /etc/php.ini
+</code></pre><p>画像アップロードが難なくできるよう、以下の箇所を修正します。</p>
+<pre tabindex="0"><code>upload_max_filesize = 16M
+post_max_size = 16M
+</code></pre><h3 id="php-fpmの設定">php-fpmの設定</h3>
+<p>設定ファイルを開きます。</p>
+<pre tabindex="0"><code># vim /etc/php-fpm.d/www.conf
+</code></pre><p>nginxで動くように以下の箇所を修正します。</p>
+<pre tabindex="0"><code>user = nginx
+group = nginx
+
+listen = /var/run/php-fpm/www.sock
+
+listen.owner = nginx
+listen.group = nginx
+listen.mode = 0660
+</code></pre><p>貧弱インスタンスを作成した場合は<code>pm.max_〜</code>をインスタンスのパワーに合わせて変更してください。</p>
+<pre tabindex="0"><code>pm.max_children = 15
+pm.max_spare_servers = 10
+</code></pre><h3 id="nginx--php-fpmの起動">nginx &amp; php-fpmの起動</h3>
+<p>起動</p>
+<pre tabindex="0"><code># systemctl start nginx.service
+# systemctl start php-fpm.service
+</code></pre><p>自動起動を有効化</p>
+<pre tabindex="0"><code># systemctl enable nginx.service
+# systemctl enable php-fpm.service
+</code></pre><h3 id="mysqlのインストール">MySQLのインストール</h3>
+<p>CentOSではデフォルトでmariaDBがインストールされているので削除しておきます。</p>
+<pre tabindex="0"><code># yum remove mariadb-libs
+# rm -rf /var/lib/mysql　※もしあれば削除しておく。1度も起動したことがなければ無いかも。
+</code></pre><p>MySQLをインストールします。</p>
+<pre tabindex="0"><code># yum install https://dev.mysql.com/get/mysql80-community-release-el7-2.noarch.rpm
+# yum install mysql-community-server
+</code></pre><p>このままMySQLを起動すると以下のエラーが出ます。</p>
+<pre tabindex="0"><code>Cannot allocate memory for the buffer pool
+</code></pre><p>これはlightsailだとSwap領域が無い事が原因です。<br>
+確認するとSwapがゼロになっていると思います。</p>
+<pre tabindex="0"><code># free -m
+              total        used        free      shared  buff/cache   available
+Mem:            485          74         247           8         163         358
+Swap:             0           0           0
+</code></pre><p>Swap領域を確保します。<br>
+以下例では1MBブロックを512個＝512MBのSwapを生成しています。</p>
+<pre tabindex="0"><code># dd if=/dev/zero of=/swapfile bs=1M count=512
+# chmod 600 /swapfile
+# mkswap /swapfile
+# swapon /swapfile
+</code></pre><p>確認するとSwapが生成されています。</p>
+<pre tabindex="0"><code># free -m
+              total        used        free      shared  buff/cache   available
+Mem:            485          73           5           8         406         359
+Swap:           511           0         511
+</code></pre><p>このままだとサーバー再起動時にSwapが開放されてしまうので、fstabにも記載しておきます。</p>
+<pre tabindex="0"><code># vim /etc/fstab
+〜以下行を追記〜
+/swapfile                                 swap                    swap    defaults        0 0
+</code></pre><h3 id="mysqlの起動自動起動設定有効">MySQLの起動＆自動起動設定有効</h3>
+<pre tabindex="0"><code>systemctl start mysqld.service
+systemctl enable mysqld.service
+</code></pre><h3 id="mysqlのrootパスワード変更">MySQLのrootパスワード変更</h3>
+<p>rootの初期パスワードはログ内にあります。<br>
+以下のhogehoge部分を確認してください。</p>
+<pre tabindex="0"><code># grep &#34;temporary password&#34; /var/log/mysqld.log
+A temporary password is generated for root@localhost: hogehoge
+</code></pre><p>rootのパスワード設定をします。</p>
+<pre tabindex="0"><code>mysql -u root -p
+Enter password: (確認した初期パスワードを入れる)
+ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;新しいパスワード&#39;;
+</code></pre><h4 id="lets-encrypt設定">let&rsquo;s encrypt設定</h4>
+<p>let&rsquo;s encryptで無料SSL証明書を取得します。<br>
+こちらの記事を参考にしてください。<br>
+<a href="/posts/wp/656/">【Let&rsquo;sEncrypt】Certbotの使い方(CentOS7 + nginx)</a></p>
+<hr>
+<p>これでインフラ部分はできました。<br>
+後はWordpressの公式サイトなどを見ながらWordpressをDownload＆設定するだけです。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

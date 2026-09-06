@@ -1,0 +1,1396 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/</link>
+		<description>Recent content on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 12 Dec 2024 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>AWS CLIで複数ファイルに対してS3 Selectで検索する</title>
+				<link>https://www.logical-dice.com/posts/2024/12/12/aws-cli-s3select/</link>
+				<pubDate>Thu, 12 Dec 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2024/12/12/aws-cli-s3select/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;aws-cli 2.7.14&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;概要&#34;&gt;概要&lt;/h2&gt;&#xA;&lt;p&gt;S3に保存されているCloudFrontのログを検索したかったのですが&lt;br&gt;&#xA;Athenaは導入されていなかったのでS3 Selectを使って検索をしました。&lt;/p&gt;&#xA;&lt;p&gt;S3 Selectは1ファイルずつしか検索できないので、&lt;br&gt;&#xA;AWS CLIをシェルに組み込んで複数ファイル検索できるようにしました。&lt;/p&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;p&gt;条件は以下とします。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;S3バケット名は「target-bucket-name」&lt;/li&gt;&#xA;&lt;li&gt;「logs-dir」というディレクトリ内に「AABBCCDDEE123456.YYYY-MM-DD-HH.abcdefg・・・」形式でファイルが生成される。&lt;/li&gt;&#xA;&lt;li&gt;aws cli用のprofileは「my-aws-profile」という名前で設定してある。&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;できあがったものはこちら。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;# ①設定&#xA;PROFILE=&amp;#34;my-aws-profile&amp;#34;&#xA;BUCKET=&amp;#34;target-bucket-name&amp;#34;&#xA;PREFIX=&amp;#34;logs-dir/AABBCCDDEE123456.2024-12-11&amp;#34;    # 左記例では2024年12月11日に出力された分を検索する。&#xA;QUERY=&amp;#34;SELECT * FROM s3object s&amp;#34;                 # 左記例では全て出力しています。列を絞ったりWHERE句を入れたりしてください。&#xA;&#xA;# ②オブジェクト（ファイル）の一覧取得&#xA;objects=`aws s3api list-objects --profile $PROFILE --bucket $BUCKET --prefix $PREFIX | jq`&#xA;&#xA;# ③取得したオブジェクトの一覧に対して1件ずつ処理をする&#xA;for object in $(echo &amp;#34;$objects&amp;#34; | jq -c &amp;#39;.Contents[]&amp;#39;); do&#xA;  key=$(echo &amp;#34;$object&amp;#34; | jq -r &amp;#39;.Key&amp;#39;)&#xA;  echo &amp;#34;$key&amp;#34;&#xA;&#xA;  # ④検索結果出力&#xA;  aws s3api select-object-content --profile $PROFILE --bucket $BUCKET --key $key --expression &amp;#34;$QUERY&amp;#34; --expression-type SQL --input-serialization &amp;#39;{&amp;#34;CSV&amp;#34;: {&amp;#34;FileHeaderInfo&amp;#34;: &amp;#34;NONE&amp;#34;, &amp;#34;FieldDelimiter&amp;#34;: &amp;#34;\t&amp;#34;}, &amp;#34;CompressionType&amp;#34;: &amp;#34;GZIP&amp;#34;}&amp;#39; --output-serialization &amp;#39;{&amp;#34;CSV&amp;#34;: {&amp;#34;FieldDelimiter&amp;#34;: &amp;#34;,&amp;#34;}}&amp;#39; output-tmp.csv&#xA;  cat output-tmp.csv &amp;gt;&amp;gt; output.csv&#xA;done&#xA;&#xA;rm -f output-tmp.csv&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;設定&#34;&gt;①設定&lt;/h3&gt;&#xA;&lt;p&gt;必要な情報を設定してください。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>AmazonLinux2023のカーネルをダウングレードする</title>
+				<link>https://www.logical-dice.com/posts/2024/08/24/al2023-kernel-downgrade/</link>
+				<pubDate>Sat, 24 Aug 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2024/08/24/al2023-kernel-downgrade/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Amazon Linux 2023.5.20240819&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;概要&#34;&gt;概要&lt;/h2&gt;&#xA;&lt;p&gt;AmazonLinux2023のカーネルをアップグレードしたところ、動作しなくなるツールが出てきてしまったためダウングレードしました。&lt;br&gt;&#xA;その操作手順の記録です。&lt;/p&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;p&gt;まず、現在のカーネルの状態を確認します。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$uname -r&#xA;6.1.102-111.182.amzn2023.x86_64&#xA;&#xA;$ sudo dnf list kernel&#xA;kernel.x86_64   6.1.92-99.174 amzn2023     @amazonlinux&#xA;kernel.x86_64   6.1.96-102.177.amzn2023    @amazonlinux&#xA;kernel.x86_64   6.1.102-111.182.amzn2023   @amazonlinux&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;現状は6.1.102になっていますが、6.1.96にダウングレードしていきます。&lt;/p&gt;&#xA;&lt;h3 id=&#34;おそらく最短の方法&#34;&gt;おそらく最短の方法&lt;/h3&gt;&#xA;&lt;p&gt;まず、ダウングレードして再起動します。&lt;br&gt;&#xA;「パッケージ名-バージョン」と指定をすることで特定のバージョンに戻れるようです。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo dnf downgrade kernel-6.1.96-102.177.amzn2023&#xA;$ sudo reboot&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;再起動後、カーネルを確認するとダウングレードできているはずです。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ uname -r&#xA;6.1.96-102.177.amzn2023.x86_64&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;適用されているバージョンは戻しましたが、最新バージョンのパッケージは残っているので削除しておきます。&lt;br&gt;&#xA;こちらも「パッケージ名-バージョン」で特定バージョンのremoveができます。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo dnf remove kernel-6.1.102-111.182.amzn2023&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;これでダウングレード完了です。&lt;/p&gt;&#xA;&lt;h3 id=&#34;参考実際にやった手順&#34;&gt;参考：実際にやった手順&lt;/h3&gt;&#xA;&lt;p&gt;思考錯誤しながらやっていたので結構遠回しをしました。&lt;br&gt;&#xA;まず、ダウングレードして再起動します。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo dnf downgrade kernel&#xA;$ sudo reboot&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;再起動後、カーネルを確認してみます。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ uname -r&#xA;6.1.92-99.174.amzn2023.x86_64&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;戻りすぎてしまいました。&lt;br&gt;&#xA;どうやらバージョン指定をしないと戻れるだけ戻ってしまうようです。&lt;/p&gt;&#xA;&lt;p&gt;なので、狙いのバージョンにアップデートします。&lt;br&gt;&#xA;該当バージョンを一度削除しないとバージョンアップできないので、現バージョンより新しいものは一旦削除します。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo dnf remove kernel-6.1.96-102.177.amzn2023&#xA;$ sudo dnf remove kernel-6.1.102-111.182.amzn2023&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;アップデートして再起動します。&lt;br&gt;&#xA;この際、また新しくなり過ぎないようにreleaseverでOSのバージョンを指定します。&lt;br&gt;&#xA;※後で思ったが、kernelのバージョンを指定すれば良いだけだったしれない。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Windowsで管理者権限なしでpythonコマンドを使えるようにする</title>
+				<link>https://www.logical-dice.com/posts/2024/08/07/python-on-secure-windows/</link>
+				<pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2024/08/07/python-on-secure-windows/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Windows 11&lt;/li&gt;&#xA;&lt;li&gt;git bash&lt;/li&gt;&#xA;&lt;li&gt;Python 3.12.4&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;&#xA;&lt;p&gt;仕事で利用しているPCは管理者権限が貰えないのですが、Pythonを使う必要があったため&lt;br&gt;&#xA;管理者権限不要でPythonを使える環境を用意しました。&lt;/p&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;h3 id=&#34;エンベデッド-pythonのダウンロード&#34;&gt;エンベデッド Pythonのダウンロード&lt;/h3&gt;&#xA;&lt;p&gt;以下サイトにてPythonのダウンロードができるので『Windows embeddable package』をダウンロードします。&lt;br&gt;&#xA;&lt;a href=&#34;https://www.python.org/downloads/release/python-3124/&#34;&gt;https://www.python.org/downloads/release/python-3124/&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;ダウンロードしたZIPファイルを任意のフォルダに解凍し、その中にある&lt;code&gt;python312._pth&lt;/code&gt;を修正します。&lt;br&gt;&#xA;1行コメントアウトを外すだけです。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;■修正前&#xA;# import site&#xA;■修正後&#xA;import site&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;br /&gt;&#xA;&lt;p&gt;続いてpythonコマンドにパスを通します。&lt;br&gt;&#xA;管理者権限がなくても以下よりPathの設定が可能です。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;コントロールパネル&lt;/code&gt;を開く&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;ユーザーアカウント&lt;/code&gt;を開く&lt;/li&gt;&#xA;&lt;li&gt;さらに&lt;code&gt;ユーザーアカウント&lt;/code&gt;を開く&lt;/li&gt;&#xA;&lt;li&gt;左メニューにある&lt;code&gt;環境変数の変更&lt;/code&gt;を開く&lt;/li&gt;&#xA;&lt;li&gt;ユーザー環境変数内にある&lt;code&gt;Path&lt;/code&gt;を編集し、今回配置したフォルダとそこのScripts配下を追加する。&#xA;&lt;ul&gt;&#xA;&lt;li&gt;追加例: pythonをC:¥toolsフォルダの下に解凍した場合は以下2つを追加する。&#xA;&lt;ul&gt;&#xA;&lt;li&gt;C:¥tools¥python-3.12.4-embed-amd64&lt;/li&gt;&#xA;&lt;li&gt;C:¥tools¥python-3.12.4-embed-amd64¥Scripts&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;優先度を高めるために「上へ」ボタンで上部に持っていっておくこと&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;これでPCを再起動すればpythonコマンドが利用可能となっています。&lt;/p&gt;&#xA;&lt;h3 id=&#34;pipコマンドのインストール&#34;&gt;pipコマンドのインストール&lt;/h3&gt;&#xA;&lt;p&gt;次にpipコマンドを利用できるようにします。&lt;br&gt;&#xA;まず以下のファイルをpython-3.12.4-embed-amd64フォルダにダウンロードします。&lt;br&gt;&#xA;&lt;a href=&#34;https://bootstrap.pypa.io/get-pip.py&#34;&gt;https://bootstrap.pypa.io/get-pip.py&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;次に、以下コマンドを実行します。&lt;br&gt;&#xA;trusted-hostオプションを付けないとエラーとなるのでご注意ください。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ cd 配置したパス/python-3.12.4-embed-amd64&#xA;$ python get-pip.py --trusted-host=files.pythonhosted.org --trusted-host=pypi.org&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;カレントディレクトリ配下にScriptsフォルダが作られ、そこにpip.exeが生成されます。&lt;br&gt;&#xA;すでに前手順でPathには追加済みなので、Path追加は不要です。&lt;/p&gt;&#xA;&lt;p&gt;これで&lt;code&gt;python&lt;/code&gt;および&lt;code&gt;pip&lt;/code&gt;コマンドが利用できるようになりました。&lt;br&gt;&#xA;管理者権限が無いPCという事はセキュアな情報を扱うPCだと思うので、常識の範囲＆自己責任の範囲でご利用ください。&lt;/p&gt;&#xA;&lt;h3 id=&#34;おまけaws-cliのインストール&#34;&gt;おまけ：aws cliのインストール&lt;/h3&gt;&#xA;&lt;p&gt;pipが使えると、実はaws cliもインストールできます。&lt;br&gt;&#xA;以下コマンドでpip.exeと同じフォルダにawsコマンドが生成されます。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ pip install awscli&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;トラブルシューティング&#34;&gt;トラブルシューティング&lt;/h2&gt;&#xA;&lt;h3 id=&#34;-get-pippy実行エラー&#34;&gt;① get-pip.py実行エラー&lt;/h3&gt;&#xA;&lt;p&gt;get-pip.pyをそのまま実行すると以下のようなエラーが発生します。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by &amp;#39;SSLError(SSLCertVerificationError(1, &amp;#39;[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)&amp;#39;))&amp;#39;: /simple/pip/&#xA;Could not fetch URL https://pypi.org/simple/pip/: There was a problem confirming the ssl certificate: HTTPSConnectionPool(host=&amp;#39;pypi.org&amp;#39;, port=443): Max retries exceeded with url: /simple/pip/ (Caused by SSLError(SSLCertVerificationError(1, &amp;#39;[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)&amp;#39;))) - skipping&#xA;ERROR: Could not find a version that satisfies the requirement pip (from versions: none)&#xA;ERROR: No matching distribution found for pip&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;これはSSL証明書のエラーが発生しているので、上記手順の通り&lt;code&gt;trusted-host&lt;/code&gt;オプションを付けて実行しましょう。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>スクラムのストーリーポイントの「時間で見積もらない」とは</title>
+				<link>https://www.logical-dice.com/posts/2024/07/25/story-point-knowledge/</link>
+				<pubDate>Thu, 25 Jul 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2024/07/25/story-point-knowledge/</guid>
+				<description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;&#xA;&lt;p&gt;普段スクラム開発でスクラムマスターとして業務しています。&lt;/p&gt;&#xA;&lt;p&gt;開発者の方々にはストーリーポイントで見積もりをしてもらっています。&lt;br&gt;&#xA;ストーリーポイントは「工数」で見積もってはならず、代わりに「難易度」や「労力」で見積もります。&lt;/p&gt;&#xA;&lt;p&gt;ただ、この表現がフワッとしていてメンバーが困っていました。&lt;br&gt;&#xA;メンバーにより解釈に違いがあるし、そもそも工数で見積もらないけどストーリーポイントを元にスプリントで実施できるチケットを判断したりしているし、&lt;br&gt;&#xA;結局皆どうしても各チケットの相対的な工数を考えてしまっており、すごい悶々としていました。&lt;/p&gt;&#xA;&lt;p&gt;そんな時にスクラムコーチの方々のスクラム研修を受ける機会があり、いい機会なので見積もりの考え方について色々ぶつけてみました。&lt;br&gt;&#xA;結果として自分の中ではすごいシックリくる解釈ができたので残しておきます。&lt;/p&gt;&#xA;&lt;h2 id=&#34;見積もりの考え方&#34;&gt;見積もりの考え方&lt;/h2&gt;&#xA;&lt;p&gt;結果から言ってしまうと「各チケットの相対的な工数」を考えるのは間違いでは無さそうです。&lt;br&gt;&#xA;ただし、前提条件があるので、そこを履き違えてしまうと正しい見積もりができません。&lt;/p&gt;&#xA;&lt;h3 id=&#34;前提条件自分がやった場合ではない&#34;&gt;前提条件①：自分がやった場合。ではない&lt;/h3&gt;&#xA;&lt;img src=&#34;https://www.logical-dice.com/images/2024/story-point-knowledge-001.png&#34; style=&#34;width:300px;&#34;/&gt;  &#xA;&lt;p&gt;見積もりをしていてポイントの根拠を聞いた時によく聞くセリフで以下のようなものがあります。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;この対応はCSSでの調整が必要ですが、自分はスタイル調整が苦手なので高めに付けました。&lt;/li&gt;&#xA;&lt;li&gt;この機能は自分は関わった事がないので、影響箇所の調査から入るので高めに付けました。&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;上記の考え方はダメです。&lt;br&gt;&#xA;客観的にみて「どんな作業があるか」「それぞれの作業は一般的にどの程度重いか」を考えてポイントを入れる必要があります。&lt;br&gt;&#xA;チーム内で「もし普段この業務を担当している並レベルの人がやった場合」などの基準を設けましょう。&lt;br&gt;&#xA;また、もしタスクに対して必要な作業が分からなければ、ポイントを入れる前に有識者から作業内容をざっくり聞いておきましょう。&lt;/p&gt;&#xA;&lt;p&gt;それを行なった上でも「作業の重さ」というのはズレが生じるので、そこだけ最後に擦り合わせできれば良いと思います。&lt;br&gt;&#xA;他の人とズレてたなと思った場合は擦り合わせた結果を次の見積もりから活かせば良いです。&lt;/p&gt;&#xA;&lt;h3 id=&#34;前提条件工数は具体的な数値じゃなくてどっちの方が時間かかりそうかで考える&#34;&gt;前提条件②：工数は具体的な数値じゃなくて、どっちの方が時間かかりそうかで考える&lt;/h3&gt;&#xA;&lt;img src=&#34;https://www.logical-dice.com/images/2024/story-point-knowledge-002.png&#34; style=&#34;width:300px;&#34;/&gt;  &#xA;&lt;p&gt;相対的に工数でポイントをつけるとは言ったものの、この作業にどのくらいの時間がかかりそうかを考える時に、具体的に「3日かかりそうだから3P相当」みたいな考え方はやってはいけません。&lt;/p&gt;&#xA;&lt;p&gt;なぜかというと人は成長していくものなので今は3日かかる作業も1年後は1日でできるようになっているかもしれません。&lt;br&gt;&#xA;もし具体的な数値で見積もっていると全く同じ作業をでも現在と1年後でポイントが3倍も変わってしまい、同じ作業なのにポイントが違うという矛盾が生じてしまいます。&lt;/p&gt;&#xA;&lt;p&gt;具体的な数値ではなく相対的な感覚でいけば1年後もポイントが大きくズレることはないと思います。&lt;/p&gt;&#xA;&lt;h3 id=&#34;前提条件よく分からなければポイントを入れない&#34;&gt;前提条件③：よく分からなければポイントを入れない&lt;/h3&gt;&#xA;&lt;img src=&#34;https://www.logical-dice.com/images/2024/story-point-knowledge-003.png&#34; style=&#34;width:300px;&#34;/&gt;  &#xA;&lt;p&gt;これは前提条件というか、見積もる際の注意点かもしれません。&lt;/p&gt;&#xA;&lt;p&gt;前提条件①でも少し触れましたが、見積もりタスクに対して「この機能は自分は関わった事がない」という事は普通にありえると思います。&lt;br&gt;&#xA;ポイント見積もり前にどんな作業があるのかなどは話し合いますが、それでも全然想像を付かなけば見積もりに参加しない勇気も必要です。&lt;br&gt;&#xA;WEBのプランニングポーカーツールでも「？」があると思いますが、それです。&lt;/p&gt;&#xA;&lt;p&gt;作業量が分からないのに無理にポイントをいれてもノイズにしかならないので、空気読んで他の人と合いそうなポイントを入れるって言うのは止めましょう。&lt;br&gt;&#xA;ただし、該当機能は今後見積もりをしなくていいやと諦めるのではなく、どんなポイントが付いたのかを見ながら次からは参加できるようにする努力はしましょう。&lt;/p&gt;&#xA;&lt;h2 id=&#34;あとがき&#34;&gt;あとがき&lt;/h2&gt;&#xA;&lt;p&gt;いろいろと前提条件をつけましたが、これを一言で伝えるのは難しいと思いました。&lt;br&gt;&#xA;その結果出てきた表現が「難易度」とか「労力」なのかなと思います。&lt;/p&gt;&#xA;&lt;p&gt;また、見積もりはあくまで作業の目安をつけているだけで顧客に価値は提供していません。&lt;br&gt;&#xA;より良い見積もりをするために工数をかけすぎて、結果として顧客に提供できる価値にかける工数が減ってしまっては本末転倒です。&lt;br&gt;&#xA;チームによって最適な運用というのは違うと思うので、各チームで現実的な見積もり方法というのを見つけていきましょう。&lt;br&gt;&#xA;その辺りを推進していくのもスクラムマスターの仕事かと思います。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】MFA(多要素)認証を突破してCodeCommitからgit cloneする</title>
+				<link>https://www.logical-dice.com/posts/2024/06/06/aws-codecommit-mfa/</link>
+				<pubDate>Thu, 06 Jun 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2024/06/06/aws-codecommit-mfa/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;MacBook Pro (Sonoma14.5 M1チップ)&lt;/li&gt;&#xA;&lt;li&gt;aws-cli/2.15.14&lt;/li&gt;&#xA;&lt;li&gt;aws-mfa 0.0.12&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;p&gt;AWSへのアクセスにMFAが必須である環境においてCodeCommitよりリポジトリをcloneする手順です。&lt;br&gt;&#xA;調べても「CodeCommitでMFA不要にする手順」ばかり出てきて手間取ったので、メモを残します。&lt;/p&gt;&#xA;&lt;h3 id=&#34;aws-cliのインストール&#34;&gt;AWS CLIのインストール&lt;/h3&gt;&#xA;&lt;p&gt;もしAWS CLIが未インストールである場合は以下ページ参考にインストールします。&lt;br&gt;&#xA;&lt;a href=&#34;https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html&#34;&gt;https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h3 id=&#34;aws-mfaのインストール&#34;&gt;aws-mfaのインストール&lt;/h3&gt;&#xA;&lt;p&gt;コマンドラインでAWS操作する際にMFA認証を楽にするツールがあります。&lt;br&gt;&#xA;&lt;a href=&#34;https://github.com/broamski/aws-mfa&#34;&gt;https://github.com/broamski/aws-mfa&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;こちらをpipでインストールします。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ pip install aws-mfa&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;aws認証情報の確認&#34;&gt;AWS認証情報の確認&lt;/h3&gt;&#xA;&lt;p&gt;AWSのマネジメントコンソールにログイン後、ヘッダー右端にあるアカウント名をクリックすると「セキュリテイ認証情報」というメニューが表示されるので選択します。&lt;br&gt;&#xA;そこでアカウントの詳細が表示されるので「ユーザーのARN」を控えておきます。&lt;/p&gt;&#xA;&lt;p&gt;また、もし自分のAWS アクセスキーを発行していない場合はここで発行します。&lt;br&gt;&#xA;少し下へスクロールすると「アクセスキーを作成」というボタンがあるのでそこからアクセスキーが発行できます。&lt;/p&gt;&#xA;&lt;h3 id=&#34;aws-cli向けアクセスキー設定&#34;&gt;AWS CLI向けアクセスキー設定&lt;/h3&gt;&#xA;&lt;p&gt;AWS CLIにprofileを指定してアクセスキーを紐づけます。&lt;/p&gt;&#xA;&lt;p&gt;『hoge』というプロファイル名で登録したい場合&lt;br&gt;&#xA;『hoge』だけではなく『hoge-long-term』というプロファイルも登録します。&lt;/p&gt;&#xA;&lt;p&gt;まず『hoge-long-term』の登録をします。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ aws configure --profile hoge-long-term&#xA;AWS Access Key ID [None]: XXXXXXXXXXXXXXXXXXXX      (発行したアクセスキー)&#xA;AWS Secret Access Key [None]: XXXXXXXXXXXXXXXXXXXX  (発行したアクセスキーに紐づくシークレット)&#xA;Default region name [None]: ap-northeast-1          (利用するリージョン 任意)&#xA;Default output format [None]: json                  (利用するフォーマット 任意)&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;次に『hoge』の登録をします。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ aws configure --profile hoge&#xA;AWS Access Key ID [None]:                   (空のまま)&#xA;AWS Secret Access Key [None]:               (空のまま)&#xA;Default region name [None]: ap-northeast-1  (利用するリージョン 任意)&#xA;Default output format [None]: json          (利用するフォーマット 任意)&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;mfa認証登録&#34;&gt;MFA認証登録&lt;/h3&gt;&#xA;&lt;p&gt;以下のコマンドでMFA認証を通します。&lt;br&gt;&#xA;コマンド実行後にMFA code(数字6桁)を聞かれるので入力します。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】lambdaでparamikoを使ってSFTP通信する</title>
+				<link>https://www.logical-dice.com/posts/2023/11/03/aws-lambda-use-paramiko/</link>
+				<pubDate>Fri, 03 Nov 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2023/11/03/aws-lambda-use-paramiko/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;MacBook Air M1チップ&lt;/li&gt;&#xA;&lt;li&gt;AWS SAM version 1.99.0&lt;/li&gt;&#xA;&lt;li&gt;python 3.9&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;p&gt;他サーバーよりSFTPでファイルを取得する処理を作るためにparamikoを利用します。&lt;br&gt;&#xA;AWS lambdaでparamikoを利用するためにレイヤーを利用します。&lt;/p&gt;&#xA;&lt;p&gt;lambdaのレイヤーはDockerなどを使って構築する方法もありますが&lt;br&gt;&#xA;簡易に作成したかったのでAWS SAMを利用してレイヤーの作成をしました。&lt;/p&gt;&#xA;&lt;h3 id=&#34;aws-samをインストールする&#34;&gt;①AWS SAMをインストールする&lt;/h3&gt;&#xA;&lt;p&gt;Macにて以下コマンドを実行してAWS SAMをインストールします。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ brew tap aws/tap&#xA;$ brew install aws-sam-cli&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この記事を書いている時点でインストールできたのはバージョン1.99.0でした。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sam --version&#xA;SAM CLI, version 1.99.0&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;aws-sam用のファイルを作成する&#34;&gt;②AWS SAM用のファイルを作成する。&lt;/h3&gt;&#xA;&lt;p&gt;以下構成でファイルを作成します。&lt;br&gt;&#xA;&lt;code&gt;paramiko-layer&lt;/code&gt;ディレクトリは変えても良いです。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(current dir)&#xA;    ├── paramiko-layer&#xA;    │   └── requirements.txt&#xA;    └── template.yaml&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;各ファイルの中身は以下です。&lt;/p&gt;&#xA;&lt;p&gt;【requirements.txt】&lt;br&gt;&#xA;インストールするライブラリを記載します&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;paramiko&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;【template.yaml】&lt;br&gt;&#xA;ここで記載する&lt;code&gt;ContentUri&lt;/code&gt;はrequirements.txtを配置しているディレクトリにします。&lt;br&gt;&#xA;また&lt;code&gt;python3.9&lt;/code&gt;、&lt;code&gt;x86_64&lt;/code&gt;の部分は作成するlambdaに合わせて読み替えてください。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Resources:&#xA;  ParamikoLayer:&#xA;    Type: AWS::Serverless::LayerVersion&#xA;    Properties:&#xA;      ContentUri: &amp;#39;paramiko-layer/&amp;#39;&#xA;      CompatibleRuntimes:&#xA;        - python3.9&#xA;      CompatibleArchitectures:&#xA;        - x86_64&#xA;    Metadata:&#xA;      BuildMethod: python3.9&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;レイヤーをビルドする&#34;&gt;③レイヤーをビルドする&lt;/h3&gt;&#xA;&lt;p&gt;template.yamlがあるディレクトリにて以下コマンドを実行します。&lt;br&gt;&#xA;&lt;code&gt;ParamikoLayer&lt;/code&gt;は変えても良いです。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】LightsailでインドのVPNサーバーを構築する</title>
+				<link>https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india/</link>
+				<pubDate>Tue, 04 Jul 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india/</guid>
+				<description>AWS Lightsailを使ってインドのIPアドレスを使うためのVPNサーバーを構築しました。</description>
+			</item>
+			<item>
+				<title>Viteを使ってみる</title>
+				<link>https://www.logical-dice.com/posts/2023/02/11/vite-tutorial/</link>
+				<pubDate>Sat, 11 Feb 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2023/02/11/vite-tutorial/</guid>
+				<description>旧サイトをViteを使って作り直してみた時のメモです</description>
+			</item>
+			<item>
+				<title>【AWS】S3のリダイレクトが効かない</title>
+				<link>https://www.logical-dice.com/posts/2023/01/29/aws-s3-cloudfront-not-redirect/</link>
+				<pubDate>Sun, 29 Jan 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2023/01/29/aws-s3-cloudfront-not-redirect/</guid>
+				<description>AWS S3のWebホスティングにてリダイレクト設定をしてもCloud Front経由でリクエストを受けるとリダイレクトされない</description>
+			</item>
+			<item>
+				<title>【AWS】Auto ScalingのインスタンスがInServiceにならない</title>
+				<link>https://www.logical-dice.com/posts/2022/05/03/ec2-not-inservice/</link>
+				<pubDate>Tue, 03 May 2022 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2022/05/03/ec2-not-inservice/</guid>
+				<description>Auto Scalingで立ち上がったEC2インスタンスのライフサイクルがInServiceにならなかった時の調査メモです。</description>
+			</item>
+			<item>
+				<title>【Laravel】モデルをcreateしてもレスポンスをHTTP 200にする</title>
+				<link>https://www.logical-dice.com/posts/2021/06/19/laravel-create-http200/</link>
+				<pubDate>Sat, 19 Jun 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/06/19/laravel-create-http200/</guid>
+				<description>モデルをcreateして返却しても201は返さない方法です</description>
+			</item>
+			<item>
+				<title>lodashのdebounceとthrottleの違い</title>
+				<link>https://www.logical-dice.com/posts/2021/06/06/lodash-debounce-vs-throttle/</link>
+				<pubDate>Sun, 06 Jun 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/06/06/lodash-debounce-vs-throttle/</guid>
+				<description>debounceとthrottleの違いを調べた際のメモです。</description>
+			</item>
+			<item>
+				<title>【Laravel】JTIを指定してJWTトークンを無効化する</title>
+				<link>https://www.logical-dice.com/posts/2021/04/12/laravel-jwt-clear/</link>
+				<pubDate>Mon, 12 Apr 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/04/12/laravel-jwt-clear/</guid>
+				<description>JTIを指定してJWTトークンを無効化する方法です</description>
+			</item>
+			<item>
+				<title>WindowsのMySQL Workbenchで2段SSH踏み台で接続する</title>
+				<link>https://www.logical-dice.com/posts/2021/03/07/windows-localforward-mysql-workbench/</link>
+				<pubDate>Sun, 07 Mar 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/03/07/windows-localforward-mysql-workbench/</guid>
+				<description>Windows10のMySQL Workbenchで2段階のSSH接続を挟みDBへ接続する方法です。</description>
+			</item>
+			<item>
+				<title>【Laravel】Observerが実行されない</title>
+				<link>https://www.logical-dice.com/posts/2021/02/21/larave-observer-stop/</link>
+				<pubDate>Sun, 21 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/21/larave-observer-stop/</guid>
+				<description>Laravelで設定したObserverの処理が実行されない事があったので、その際の調査メモです。</description>
+			</item>
+			<item>
+				<title>Howdyを使ってubuntuで顔認証する</title>
+				<link>https://www.logical-dice.com/posts/2021/02/17/ubuntu-howdy/</link>
+				<pubDate>Wed, 17 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/17/ubuntu-howdy/</guid>
+				<description>ubuntu 20.10で顔認証をするための設定です</description>
+			</item>
+			<item>
+				<title>ubuntuで多機能マウスを設定する</title>
+				<link>https://www.logical-dice.com/posts/2021/02/14/ubuntu-mouse-keymap/</link>
+				<pubDate>Sun, 14 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/14/ubuntu-mouse-keymap/</guid>
+				<description>ubuntu 20.10で多機能マウスのボタンマッピングをした際のメモです</description>
+			</item>
+			<item>
+				<title>ubuntu 20.10の初期設定</title>
+				<link>https://www.logical-dice.com/posts/2021/02/11/ubuntu-20-10-initialize/</link>
+				<pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/11/ubuntu-20-10-initialize/</guid>
+				<description>Thinkpad T480にubuntu 20.10をインストールした際のメモです</description>
+			</item>
+			<item>
+				<title>修正したファイルだけPHP_CodeSnifferでチェックする</title>
+				<link>https://www.logical-dice.com/posts/2021/02/06/phpcs-git-diff/</link>
+				<pubDate>Sat, 06 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/06/phpcs-git-diff/</guid>
+				<description>git diffを使い修正したファイルだけphpcsでチェックする方法です</description>
+			</item>
+			<item>
+				<title>Googleフォームを使って迷子札を作る</title>
+				<link>https://www.logical-dice.com/posts/2021/01/25/lost-tag-qr/</link>
+				<pubDate>Mon, 25 Jan 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/01/25/lost-tag-qr/</guid>
+				<description>子供に持たせる迷子札をGoogleフォームを使って作ってみました。</description>
+			</item>
+			<item>
+				<title>LaravelのQueue内でAuth::user()が取れたり取れなかったりする</title>
+				<link>https://www.logical-dice.com/posts/2021/01/13/laravel-auth-user/</link>
+				<pubDate>Wed, 13 Jan 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/01/13/laravel-auth-user/</guid>
+				<description>LaravelのAuth::user()をキューで呼び出すと、環境により値が取れたりnullになったりするという事象に遭遇したので、その際のメモです。</description>
+			</item>
+			<item>
+				<title>Typescript &#43; Vue.jsで子コンポーネントのプロパティにアクセスする</title>
+				<link>https://www.logical-dice.com/posts/2021/01/07/git-revert-revert/</link>
+				<pubDate>Thu, 07 Jan 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/01/07/git-revert-revert/</guid>
+				<description>Typescript + Vue.jsで子コンポーネントのプロパティにアクセスする方法です。</description>
+			</item>
+			<item>
+				<title>gitで一旦取り消しRevertをしたら、RevertのRevertをすべし</title>
+				<link>https://www.logical-dice.com/posts/2020/12/28/git-revert-revert/</link>
+				<pubDate>Mon, 28 Dec 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/12/28/git-revert-revert/</guid>
+				<description>gitでRevertしたあと、RevertのRevertをしないと大変な事になる。</description>
+			</item>
+			<item>
+				<title>javascriptでライブラリ無しでオートコンプリート</title>
+				<link>https://www.logical-dice.com/posts/2020/10/25/javascript-autocomplete/</link>
+				<pubDate>Sun, 25 Oct 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/10/25/javascript-autocomplete/</guid>
+				<description>javascriptでライブラリを使わずにカーソルキーで選択できるオートコンプリートを実装します。</description>
+			</item>
+			<item>
+				<title>swiper.scssがwebpackで取り込まれない</title>
+				<link>https://www.logical-dice.com/posts/2020/09/15/webpack-swiper-env-diff/</link>
+				<pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/15/webpack-swiper-env-diff/</guid>
+				<description>webpackでswiperをバンドルした際に本番環境だけswiper.scssが取り込まれなかった話です</description>
+			</item>
+			<item>
+				<title>Windows Terminalの導入</title>
+				<link>https://www.logical-dice.com/posts/2020/09/04/windows-terminal-install/</link>
+				<pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/04/windows-terminal-install/</guid>
+				<description>Windows 10でWindows Terminalを使えるようにします。</description>
+			</item>
+			<item>
+				<title>Windows10でキー配置を変更する</title>
+				<link>https://www.logical-dice.com/posts/2020/09/04/win10-keymap-change/</link>
+				<pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/04/win10-keymap-change/</guid>
+				<description>Windows 10のCapsLockの挙動やIMEオン/オフキーを変更します。</description>
+			</item>
+			<item>
+				<title>Windows10で開発PCをセッティングする。</title>
+				<link>https://www.logical-dice.com/posts/2020/09/04/win10-initial-setting/</link>
+				<pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/04/win10-initial-setting/</guid>
+				<description>Windows 10のWSL2やWindows Terminalが良い感じだったので開発環境を整えてみました。</description>
+			</item>
+			<item>
+				<title>WSL2でUbuntuを使えるようにする</title>
+				<link>https://www.logical-dice.com/posts/2020/09/04/win10-wsl2-ubuntu/</link>
+				<pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/04/win10-wsl2-ubuntu/</guid>
+				<description>Windows 10のWLS2でUbuntu20.04を使えるようにします。</description>
+			</item>
+			<item>
+				<title>EC2とECSのレコードを全てCSVに出力する</title>
+				<link>https://www.logical-dice.com/posts/2020/08/26/ec2-ecs-to-csv/</link>
+				<pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/08/26/ec2-ecs-to-csv/</guid>
+				<description>AWS のEC2とECSの情報をCSVに出力する方法です</description>
+			</item>
+			<item>
+				<title>Route53のレコードを全てCSVに出力する</title>
+				<link>https://www.logical-dice.com/posts/2020/08/21/route53-to-csv/</link>
+				<pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/08/21/route53-to-csv/</guid>
+				<description>AWS Route53に登録されているホストゾーンとレコードをCSVに出力する方法です</description>
+			</item>
+			<item>
+				<title>改行コードを一括で置換する</title>
+				<link>https://www.logical-dice.com/posts/2020/08/05/replace-with-find-sed/</link>
+				<pubDate>Wed, 05 Aug 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/08/05/replace-with-find-sed/</guid>
+				<description>findコマンドとsedコマンドで改行コードをCRLFからLFに置換します。</description>
+			</item>
+			<item>
+				<title>GitHubの草を炭治郎柄にする</title>
+				<link>https://www.logical-dice.com/posts/2020/07/16/bookmarklet-kimetsu/</link>
+				<pubDate>Thu, 16 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/07/16/bookmarklet-kimetsu/</guid>
+				<description>Bookmarkletを使ってGitHubの草を炭治郎の着物柄にします。</description>
+			</item>
+			<item>
+				<title>Bookmarklet(ブックマークレット)の作り方</title>
+				<link>https://www.logical-dice.com/posts/2020/07/15/howto-make-bookmarklet/</link>
+				<pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/07/15/howto-make-bookmarklet/</guid>
+				<description>uglify-jsを使ってBookmarkletを作る方法をざっくりと説明</description>
+			</item>
+			<item>
+				<title>AWS lambdaからDBアクセスも外部アクセスもできるようにする。</title>
+				<link>https://www.logical-dice.com/posts/2020/07/12/vpc-lambda/</link>
+				<pubDate>Sun, 12 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/07/12/vpc-lambda/</guid>
+				<description>AWS lambdaをVPCに入れると普通には外部アクセスできなくなるので、その設定をした際のメモです。</description>
+			</item>
+			<item>
+				<title>Linux MintでThinkPadのトラックポイントを調整する</title>
+				<link>https://www.logical-dice.com/posts/2019/03/12/linux-mint-trackpoint/</link>
+				<pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/12/linux-mint-trackpoint/</guid>
+				<description>ThinkPadにLinux Mint 19.1をインストールしたので、トラックポイントの調整をします。</description>
+			</item>
+			<item>
+				<title>Linux Mintの初期設定</title>
+				<link>https://www.logical-dice.com/posts/2019/03/10/linux-mint-initialize/</link>
+				<pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/10/linux-mint-initialize/</guid>
+				<description>Linux Mintをインストールして開発環境を構築するまでの作業メモです。</description>
+			</item>
+			<item>
+				<title>EC2上でオレオレ証明書を作る</title>
+				<link>https://www.logical-dice.com/posts/2020/06/14/oreore-certification/</link>
+				<pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/14/oreore-certification/</guid>
+				<description>最近はめっきり使われなくなったオレオレ証明書を作成する手順です。</description>
+			</item>
+			<item>
+				<title>Elasticsearchの使い方メモ</title>
+				<link>https://www.logical-dice.com/posts/2020/06/11/elasticsearch-topics/</link>
+				<pubDate>Thu, 11 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/11/elasticsearch-topics/</guid>
+				<description>数年前のElasticsearchのメモが出てきたので晒します。</description>
+			</item>
+			<item>
+				<title>AWS S3を使ったリダイレクトの方法</title>
+				<link>https://www.logical-dice.com/posts/2020/06/10/aws-s3-redirect/</link>
+				<pubDate>Wed, 10 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/10/aws-s3-redirect/</guid>
+				<description>AWSのS3を使ってリダイレクトを設定します。</description>
+			</item>
+			<item>
+				<title>Dictionaly型から特定の値を取り出しlist型に入れる</title>
+				<link>https://www.logical-dice.com/posts/2020/06/06/python-dict-list/</link>
+				<pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/06/python-dict-list/</guid>
+				<description>pythonらしくDictionaly型から特定の値を取り出して配列に入れる方法です。</description>
+			</item>
+			<item>
+				<title>ThinkpadにHDMIケーブルを接続したままUbuntu 20.04を起動する</title>
+				<link>https://www.logical-dice.com/posts/2020/06/01/ubuntu-20-04-hdmi/</link>
+				<pubDate>Mon, 01 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/01/ubuntu-20-04-hdmi/</guid>
+				<description>ThinkpadにUbuntu 20.04を入れるとHDMIケーブルを挿したまま起動できなくなったので対応しました。</description>
+			</item>
+			<item>
+				<title>Serverless Frameworkを使ってLambda &amp; API Gatewayをデプロイする</title>
+				<link>https://www.logical-dice.com/posts/2020/05/19/serverless-framework-lambda/</link>
+				<pubDate>Tue, 19 May 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/05/19/serverless-framework-lambda/</guid>
+				<description>試しにServerless Frameworkを使ってLambda &amp;amp; API Gatewayをデプロイしてみた時の手順メモです。</description>
+			</item>
+			<item>
+				<title>Ubuntu 20.04にアップデートした話</title>
+				<link>https://www.logical-dice.com/posts/2020/05/17/update-ubuntu-20-04/</link>
+				<pubDate>Sun, 17 May 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/05/17/update-ubuntu-20-04/</guid>
+				<description>作業PCをUbuntu 19.10から20.04 LTSにアップデートした時の話です。</description>
+			</item>
+			<item>
+				<title>gulp-uglifyで圧縮時に変数／関数名を圧縮させない</title>
+				<link>https://www.logical-dice.com/posts/2020/04/15/gulp-uglify-keep-name/</link>
+				<pubDate>Wed, 15 Apr 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/04/15/gulp-uglify-keep-name/</guid>
+				<description>gulp-uglifyでJSファイルを圧縮する際に変数名や関数名をそのままにする方法です。</description>
+			</item>
+			<item>
+				<title>javascriptの入力イベントでIME未確定時は発火させない設定方法</title>
+				<link>https://www.logical-dice.com/posts/2020/03/20/javascript-input-event/</link>
+				<pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/20/javascript-input-event/</guid>
+				<description>テキスト入力イベントでIME未確定時には発火させたくないので調べました</description>
+			</item>
+			<item>
+				<title>GitHub ActionsでAWS Code Deployを回す</title>
+				<link>https://www.logical-dice.com/posts/2020/03/15/github-actions-deploy/</link>
+				<pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/15/github-actions-deploy/</guid>
+				<description>GitHub ActionsからAWS Code Deployを回してデプロイする手順です。</description>
+			</item>
+			<item>
+				<title>GASでGmailをSlackに転送する</title>
+				<link>https://www.logical-dice.com/posts/2020/03/10/gas-gmail-slack/</link>
+				<pubDate>Tue, 10 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/10/gas-gmail-slack/</guid>
+				<description>Google Apps Scriptを使ってGmailで受信したメールをSlackに通知する方法です。</description>
+			</item>
+			<item>
+				<title>Google Analyticsから直近のページ閲覧数を取得する</title>
+				<link>https://www.logical-dice.com/posts/2020/03/05/get-google-analytics-report/</link>
+				<pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/05/get-google-analytics-report/</guid>
+				<description>Google Analyticsから直近のページ閲覧数を取得する方法です。</description>
+			</item>
+			<item>
+				<title>lightsail上に自前でWordpressを構築する(CentOS編)</title>
+				<link>https://www.logical-dice.com/posts/2020/02/18/lightsail-wordpress/</link>
+				<pubDate>Tue, 18 Feb 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/02/18/lightsail-wordpress/</guid>
+				<description>lightsailのCentOS7上でWordpressを構築する手順です</description>
+			</item>
+			<item>
+				<title>e-taxで法定調書関係の申請をする。</title>
+				<link>https://www.logical-dice.com/posts/2020/02/13/etax-legal-record/</link>
+				<pubDate>Thu, 13 Feb 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/02/13/etax-legal-record/</guid>
+				<description>e-taxで法定調書関係の申請をする手順メモです。</description>
+			</item>
+			<item>
+				<title>lightsail上に自前でWordpressを構築する(Amazon Linux編)</title>
+				<link>https://www.logical-dice.com/posts/2019/12/15/lightsail-wordpress/</link>
+				<pubDate>Sun, 15 Dec 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/12/15/lightsail-wordpress/</guid>
+				<description>bitnamiを利用せずにlightsail上にWordpressを構築する手順です</description>
+			</item>
+			<item>
+				<title>htaccessで本番環境だけ特定のディレクトリを隠す</title>
+				<link>https://www.logical-dice.com/posts/2019/11/19/apache-directory-hidden/</link>
+				<pubDate>Tue, 19 Nov 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/11/19/apache-directory-hidden/</guid>
+				<description>本番環境だけ特定のディレクトリへのアクセスを制限するメモです</description>
+			</item>
+			<item>
+				<title>Linux用ターミナル『Tilix』</title>
+				<link>https://www.logical-dice.com/posts/2019/11/08/ubuntu-tilix/</link>
+				<pubDate>Fri, 08 Nov 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/11/08/ubuntu-tilix/</guid>
+				<description>ubuntuに『Tilix』を入れてみたので紹介します</description>
+			</item>
+			<item>
+				<title>ubuntu 19.10の初期設定</title>
+				<link>https://www.logical-dice.com/posts/2019/11/06/ubuntu-initialize/</link>
+				<pubDate>Wed, 06 Nov 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/11/06/ubuntu-initialize/</guid>
+				<description>Thinkpad T480にubuntu 19.10をインストールした際のメモです</description>
+			</item>
+			<item>
+				<title>リバースプロキシ先でWordpressを動かす</title>
+				<link>https://www.logical-dice.com/posts/2019/10/15/reverseproxy-wordpress/</link>
+				<pubDate>Tue, 15 Oct 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/10/15/reverseproxy-wordpress/</guid>
+				<description>Apacheのリバースプロキシ先でWordpressを動かす設定メモです</description>
+			</item>
+			<item>
+				<title>Linuxで別ユーザとしてコマンドを実行する</title>
+				<link>https://www.logical-dice.com/posts/2019/10/10/linux-sudo/</link>
+				<pubDate>Thu, 10 Oct 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/10/10/linux-sudo/</guid>
+				<description>sudoコマンドの使い方メモです</description>
+			</item>
+			<item>
+				<title>Bookmarkletでパスワードを自動で入力させる</title>
+				<link>https://www.logical-dice.com/posts/2019/10/02/bookmarklet-mizuho/</link>
+				<pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/10/02/bookmarklet-mizuho/</guid>
+				<description>みずほダイレクトで振込時の第2暗証番号を調べるのが面倒だったので、ワンクリックで自動抽出できるようにしました</description>
+			</item>
+			<item>
+				<title>Linux Mintにsassをインストールする</title>
+				<link>https://www.logical-dice.com/posts/2019/09/29/ruby-sass-error/</link>
+				<pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/09/29/ruby-sass-error/</guid>
+				<description>Linux Mintにsassをインストールしようとしたら少し躓いたのでメモです</description>
+			</item>
+			<item>
+				<title>Linux Mint上でWindows10を動かす</title>
+				<link>https://www.logical-dice.com/posts/2019/09/28/linux-mint-virtualbox/</link>
+				<pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/09/28/linux-mint-virtualbox/</guid>
+				<description>Linux MintにVirtualBoxを入れて検証用にWindows10を動かした手順です</description>
+			</item>
+			<item>
+				<title>CSSでtext-orientationは使ってはいけない</title>
+				<link>https://www.logical-dice.com/posts/2019/09/14/text-orientation-upright/</link>
+				<pubDate>Sat, 14 Sep 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/09/14/text-orientation-upright/</guid>
+				<description>text-orientationを使って失敗してしまったことの記録です</description>
+			</item>
+			<item>
+				<title>【Wordpress】画像ファイルに設定されたタイトルとキャプションを削除する</title>
+				<link>https://www.logical-dice.com/posts/2019/08/26/wp-media-infomation/</link>
+				<pubDate>Mon, 26 Aug 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/08/26/wp-media-infomation/</guid>
+				<description>Wordpressで画像アップ時にタイトルとキャプションに勝手に文字列が設定されるのを防ぐ方法です。</description>
+			</item>
+			<item>
+				<title>SSHポートフォワーディングでローカルから外部サーバーへアクセスする</title>
+				<link>https://www.logical-dice.com/posts/2019/08/15/ssh-portfowarding/</link>
+				<pubDate>Thu, 15 Aug 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/08/15/ssh-portfowarding/</guid>
+				<description>SSHポートフォワーディングを使ってローカルのDocker環境からSSHサーバーを踏み台にして別サーバーへアクセスさせる手順です。</description>
+			</item>
+			<item>
+				<title>フリーWi-FiでVPN通信がうまくいかない</title>
+				<link>https://www.logical-dice.com/posts/2019/08/02/vpn-accident/</link>
+				<pubDate>Fri, 02 Aug 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/08/02/vpn-accident/</guid>
+				<description>フリーWi-Fiを使ってVPNに繋いだら一部上手く動かなかった話です。</description>
+			</item>
+			<item>
+				<title>コマンドラインからVPNの接続＆切断をする</title>
+				<link>https://www.logical-dice.com/posts/2019/07/29/linux-mint-vpn/</link>
+				<pubDate>Mon, 29 Jul 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/07/29/linux-mint-vpn/</guid>
+				<description>Linux MintにてコマンドラインからVPNの接続と切断をする方法です。</description>
+			</item>
+			<item>
+				<title>LightsailにOpenVPNサーバーを立てる</title>
+				<link>https://www.logical-dice.com/posts/2019/07/25/lightsail-vpn/</link>
+				<pubDate>Thu, 25 Jul 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/07/25/lightsail-vpn/</guid>
+				<description>AWSのLightsailにOpenVPNサーバーを立てる手順です。</description>
+			</item>
+			<item>
+				<title>e-taxで源泉所得税を申請する。</title>
+				<link>https://www.logical-dice.com/posts/2019/07/16/withholding-income-tax/</link>
+				<pubDate>Tue, 16 Jul 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/07/16/withholding-income-tax/</guid>
+				<description>e-taxで源泉所得税を申請する手順メモです。</description>
+			</item>
+			<item>
+				<title>コマンドで画像の撮影日等を変更する</title>
+				<link>https://www.logical-dice.com/posts/2019/07/02/exiftool-modify-alldate/</link>
+				<pubDate>Tue, 02 Jul 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/07/02/exiftool-modify-alldate/</guid>
+				<description>コマンドラインからexiftoolを使って画像ファイルの撮影日等を変更する方法です。</description>
+			</item>
+			<item>
+				<title>Linux Mintを無線LANのアクセスポイントにする</title>
+				<link>https://www.logical-dice.com/posts/2019/04/17/linuxmint-access-point/</link>
+				<pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/04/17/linuxmint-access-point/</guid>
+				<description>Linux MintをアクセスポイントにしてVPNを共有した際のメモ</description>
+			</item>
+			<item>
+				<title>IME有効時の入力イベントを調べる</title>
+				<link>https://www.logical-dice.com/posts/2019/04/10/javascript-event/</link>
+				<pubDate>Wed, 10 Apr 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/04/10/javascript-event/</guid>
+				<description>PC/Android/iOSでIME有効時に入力イベントが結構違ったので調べました。</description>
+			</item>
+			<item>
+				<title>VPNクライアント設定(L2TP over IPsec)</title>
+				<link>https://www.logical-dice.com/posts/2019/03/13/linux-mint-l2tp/</link>
+				<pubDate>Wed, 13 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/13/linux-mint-l2tp/</guid>
+				<description>Linux MintやubuntuにL2TP over IPsecのVPNクライアント設定をします。</description>
+			</item>
+			<item>
+				<title>terminator &#43; fish &#43; fishermanの導入</title>
+				<link>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-fish/</link>
+				<pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-fish/</guid>
+				<description>Linux Mintやubuntuにterminatorとfish&amp;amp;fisherman環境を構築する手順メモです</description>
+			</item>
+			<item>
+				<title>Terminatorのデフォルトサイズを変更する</title>
+				<link>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-size/</link>
+				<pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-size/</guid>
+				<description>Linuxのターミナルソフト「Terminator」を起動した際のデフォルトサイズを変更する手順です</description>
+			</item>
+			<item>
+				<title>Google Optimizeでセッション情報が必要なページを触る</title>
+				<link>https://www.logical-dice.com/posts/2019/03/07/google-optimize-interactive/</link>
+				<pubDate>Thu, 07 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/07/google-optimize-interactive/</guid>
+				<description>Google Optimizeでログイン後のページなどのセッション情報が必要なページを触る際の手順です。</description>
+			</item>
+			<item>
+				<title>CircleCIからAWS Code Deployを実行する</title>
+				<link>https://www.logical-dice.com/posts/2019/03/04/aws-code-deploy-circleci/</link>
+				<pubDate>Mon, 04 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/04/aws-code-deploy-circleci/</guid>
+				<description>S3を使わずCircleCIからAWS Code Deployを実行する方法です</description>
+			</item>
+			<item>
+				<title>AWS Code DeployでEC2にデプロイする</title>
+				<link>https://www.logical-dice.com/posts/2019/02/28/aws-code-deploy/</link>
+				<pubDate>Thu, 28 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/28/aws-code-deploy/</guid>
+				<description>AWS Code Deployを使ってEC2上にデプロイをした際のメモです。</description>
+			</item>
+			<item>
+				<title>Apacheにサーバーのメモリを食い尽くさせない</title>
+				<link>https://www.logical-dice.com/posts/2019/02/15/apache-tuning/</link>
+				<pubDate>Fri, 15 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/15/apache-tuning/</guid>
+				<description>Apacheのチューニングをした際のメモです</description>
+			</item>
+			<item>
+				<title>MacにPHP7.2をインストールする</title>
+				<link>https://www.logical-dice.com/posts/2019/02/14/mac-php-72/</link>
+				<pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/14/mac-php-72/</guid>
+				<description>MacにPHP7.2をインストールする方法です</description>
+			</item>
+			<item>
+				<title>【Wordpress】TinyMCEテンプレートでS3の画像を使う</title>
+				<link>https://www.logical-dice.com/posts/2019/02/13/wp-tinymcetemplate-s3/</link>
+				<pubDate>Wed, 13 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/13/wp-tinymcetemplate-s3/</guid>
+				<description>TinyMCE テンプレートとWP Offload Media Lite併用時にS3の画像が取れない時の対処法です</description>
+			</item>
+			<item>
+				<title>gitコマンドチートシート(応用編)</title>
+				<link>https://www.logical-dice.com/posts/2019/02/01/git-cmd-cheatsheet/</link>
+				<pubDate>Fri, 01 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/01/git-cmd-cheatsheet/</guid>
+				<description>gitコマンドの応用編チートシートです</description>
+			</item>
+			<item>
+				<title>【PHP】strtotimeの罠</title>
+				<link>https://www.logical-dice.com/posts/2019/01/31/php-strtotime-trap/</link>
+				<pubDate>Thu, 31 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/31/php-strtotime-trap/</guid>
+				<description>PHPのstrtotimeのハマりそうな挙動です</description>
+			</item>
+			<item>
+				<title>window.onloadが動かない</title>
+				<link>https://www.logical-dice.com/posts/2019/01/26/javascript-window-load/</link>
+				<pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/26/javascript-window-load/</guid>
+				<description>window.onloadが動かない原因の1つについて</description>
+			</item>
+			<item>
+				<title>Docker環境の構築手順</title>
+				<link>https://www.logical-dice.com/posts/2019/01/25/linux-mint-docker/</link>
+				<pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/25/linux-mint-docker/</guid>
+				<description>Linux MintやubuntuにてDockerをインストールする方法です</description>
+			</item>
+			<item>
+				<title>【Let&#39;sEncrypt】Amazon Linux2でCertbotを使う</title>
+				<link>https://www.logical-dice.com/posts/2019/01/21/certboy-amazon-linux-2/</link>
+				<pubDate>Mon, 21 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/21/certboy-amazon-linux-2/</guid>
+				<description>Amazon Linux2でCertbotを使う方法です。</description>
+			</item>
+			<item>
+				<title>WordpressからPicoへデータ移行</title>
+				<link>https://www.logical-dice.com/posts/2019/01/17/wordpress-to-pico/</link>
+				<pubDate>Thu, 17 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/17/wordpress-to-pico/</guid>
+				<description>WordpressのデータをPicoへ移行する方法です</description>
+			</item>
+			<item>
+				<title>picoでブログ構築</title>
+				<link>https://www.logical-dice.com/posts/2019/01/16/pico-blog/</link>
+				<pubDate>Wed, 16 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/16/pico-blog/</guid>
+				<description>PHP製のCMS「pico」でブログを構築する方法です。</description>
+			</item>
+			<item>
+				<title>PHP製のCMS「pico」の紹介</title>
+				<link>https://www.logical-dice.com/posts/2019/01/15/pico-introduction/</link>
+				<pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/15/pico-introduction/</guid>
+				<description>PHP製のCMS「pico」の紹介です。</description>
+			</item>
+			<item>
+				<title>Linux Mint 19.1 MATEをUSBメモリからインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/1829/</link>
+				<pubDate>Thu, 20 Dec 2018 16:25:54 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1829/</guid>
+				<description>PCを再構築する必要があったので、Linux Mintの最新バージョンを入れて見ましたインストール準備をした作業環境はMacで、&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Wordpressの画像をS3&#43;CloudFrontで配信する</title>
+				<link>https://www.logical-dice.com/posts/wp/1772/</link>
+				<pubDate>Tue, 11 Dec 2018 19:30:54 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1772/</guid>
+				<description>環境WordPress 4.8.3AWS設定手順IAM設定まず、WordpressとAWSの連携に使うIAMユーザーを準備します&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Google Tag Managerで発火しない時</title>
+				<link>https://www.logical-dice.com/posts/wp/1755/</link>
+				<pubDate>Mon, 26 Nov 2018 23:38:42 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1755/</guid>
+				<description>Google Tag　Managerを使ってトリガーを設定したはずが思い通りにGoogle Analytics上で集計できない時&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Google Tag Managerの基本設定</title>
+				<link>https://www.logical-dice.com/posts/wp/1741/</link>
+				<pubDate>Mon, 26 Nov 2018 22:32:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1741/</guid>
+				<description>Google AnalyticsをGoogle Tag Managerに切り替えた際のメモです。前提条件としてGoogle An&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Chromeの開発者ツールを新タブでも維持する</title>
+				<link>https://www.logical-dice.com/posts/wp/1735/</link>
+				<pubDate>Mon, 19 Nov 2018 10:29:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1735/</guid>
+				<description>Chromeの開発者ツールはデフォルトでは新タブには反映されないのですがスマホモードでページの確認をしている時などは新タブもスマ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>gitコマンドで複数のGitHubアカウントを使い分ける</title>
+				<link>https://www.logical-dice.com/posts/wp/1715/</link>
+				<pubDate>Wed, 14 Nov 2018 20:37:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1715/</guid>
+				<description>環境Mac OS(Linuxでも動く気がします）概要GitHubではアカウントに秘密鍵が紐づいておりgit コマンドを実行した際&amp;hellip;</description>
+			</item>
+			<item>
+				<title>同じForm内に複数のreCAPTCHA認証ボタンを設置する</title>
+				<link>https://www.logical-dice.com/posts/wp/1627/</link>
+				<pubDate>Fri, 26 Oct 2018 13:27:25 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1627/</guid>
+				<description>WEBページのreCAPTCHA対応しているform内に複数のsubmitボタンを設置する方法です。前提としてPOSTデータより&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CircleCIの通知をSlackへ飛ばす</title>
+				<link>https://www.logical-dice.com/posts/wp/1573/</link>
+				<pubDate>Sun, 14 Oct 2018 22:01:37 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1573/</guid>
+				<description>参考サイトCircleCIの結果をSlackに通知する以下のCircle CIの基本設定は完了している前提とします。Circle&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CircleCIで自動デプロイする</title>
+				<link>https://www.logical-dice.com/posts/wp/1538/</link>
+				<pubDate>Sat, 13 Oct 2018 23:20:06 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1538/</guid>
+				<description>参考サイトCircle CIでwebサイトを自動デプロイGitHubのmasterブランチへマージされたらサーバーにデプロイされ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>akamaiのレスポンスヘッダーをChromeで確認する</title>
+				<link>https://www.logical-dice.com/posts/wp/1521/</link>
+				<pubDate>Wed, 26 Sep 2018 12:02:33 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1521/</guid>
+				<description>背景今お手伝いをしている会社さんではakamaiを使ってページをキャッシュさせてますakamaiについてはコチラhttps://&amp;hellip;</description>
+			</item>
+			<item>
+				<title>WindowsでDocker Toolbox＆docker-composeを動かす</title>
+				<link>https://www.logical-dice.com/posts/wp/1500/</link>
+				<pubDate>Fri, 21 Sep 2018 17:55:45 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1500/</guid>
+				<description>仕事でWindows利用者にDocker環境を構築してもらう事があったのですが結構苦労したので手順を残します。■□ 注意 ■□■&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CircleCIでプルリク時にUnitテストが走るようにする</title>
+				<link>https://www.logical-dice.com/posts/wp/1477/</link>
+				<pubDate>Tue, 14 Aug 2018 01:30:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1477/</guid>
+				<description>CircleCIを使って、GitHubにてプルリクエストを投げた際にUnitテストが走るようにします。ソースコードはPHPで、U&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】 Fcitxの変換候補が黒く塗りつぶされる</title>
+				<link>https://www.logical-dice.com/posts/wp/1470/</link>
+				<pubDate>Mon, 13 Aug 2018 13:01:18 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1470/</guid>
+				<description>環境Linux Mint 18.3 cinnamon 64bit事象ある日、Fcitxで日本語入力していたら変換候補が真っ黒にな&amp;hellip;</description>
+			</item>
+			<item>
+				<title>AWS ELB配下でWordpressを動かす際のSSL対応</title>
+				<link>https://www.logical-dice.com/posts/wp/1439/</link>
+				<pubDate>Fri, 20 Jul 2018 17:56:57 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1439/</guid>
+				<description>■環境AWS ELBAWS EC2Apache 2.2.32Wordpress 4.1.1EC-CUBEではありませんが、内容的&amp;hellip;</description>
+			</item>
+			<item>
+				<title>grepでアクセスログからTPSを出す</title>
+				<link>https://www.logical-dice.com/posts/wp/1436/</link>
+				<pubDate>Thu, 05 Jul 2018 15:28:23 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1436/</guid>
+				<description>■環境Amazon Linux AMI release 2013.03grep 2.6.3WEBサーバーのアクセスログからTPS&amp;hellip;</description>
+			</item>
+			<item>
+				<title>AWS ELB配下でApacheのRewriteRuleが上手く動かなかった話</title>
+				<link>https://www.logical-dice.com/posts/wp/1423/</link>
+				<pubDate>Sat, 30 Jun 2018 22:29:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1423/</guid>
+				<description>■環境AWS ELBAWS EC2Apache 2.2.32AWSのEC2上で動いているApacheサーバーでの話。SEO対策で&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CakePHP2のローカル検証環境構築</title>
+				<link>https://www.logical-dice.com/posts/wp/1375/</link>
+				<pubDate>Sun, 10 Jun 2018 09:20:20 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1375/</guid>
+				<description>環境CakePHP 2.10.10今更ながらCakePHP2を仕事で使う可能性があったので、勉強するためローカルに環境構築しまし&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Apacheのevent MPMのチューニング</title>
+				<link>https://www.logical-dice.com/posts/wp/1363/</link>
+				<pubDate>Sat, 26 May 2018 11:28:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1363/</guid>
+				<description>preforkからeventに乗り換えるとチューニングの考え方が少し変わるので簡単にメモ。event MPMではまずApache&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Linux環境のタイムゾーンを日本にする</title>
+				<link>https://www.logical-dice.com/posts/wp/1360/</link>
+				<pubDate>Tue, 22 May 2018 10:14:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1360/</guid>
+				<description>このコマンドを実行するだけsudo ln -fs /usr/share/zoneinfo/Asia/Tokyo /etc/loc&amp;hellip;</description>
+			</item>
+			<item>
+				<title>数字入力フォームに文字数制限をつける</title>
+				<link>https://www.logical-dice.com/posts/wp/1352/</link>
+				<pubDate>Fri, 18 May 2018 21:53:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1352/</guid>
+				<description>数字入力フォームに文字数制限をつける方法です</description>
+			</item>
+			<item>
+				<title>Wordpressを多言語対応させる</title>
+				<link>https://www.logical-dice.com/posts/wp/1291/</link>
+				<pubDate>Tue, 24 Apr 2018 00:56:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1291/</guid>
+				<description>■環境Wordpress 4.9.5MultilingualPress 2.11.1■手順まずMultilingualPress&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】gemでcompassをインストールする</title>
+				<link>https://www.logical-dice.com/posts/wp/1245/</link>
+				<pubDate>Fri, 20 Apr 2018 16:23:01 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1245/</guid>
+				<description>以下のコマンドでインストールしようとするとエラーが発生しました。$ sudo gem install compassFetchi&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】cpuminer &#43; wpoolでBitZenyをマイニング</title>
+				<link>https://www.logical-dice.com/posts/wp/1236/</link>
+				<pubDate>Fri, 20 Apr 2018 10:25:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1236/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitcpuminerのインストール基本的な流れはcpuminerの&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】キーマップを変更する</title>
+				<link>https://www.logical-dice.com/posts/wp/1226/</link>
+				<pubDate>Fri, 13 Apr 2018 21:33:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1226/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitXmodmap設定ホームディレクトリ直下に.Xmodmapとい&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】日本語入力できるようにする</title>
+				<link>https://www.logical-dice.com/posts/wp/1222/</link>
+				<pubDate>Fri, 13 Apr 2018 21:28:47 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1222/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitLinux MintをEnglishでインストールした際の作業&amp;hellip;</description>
+			</item>
+			<item>
+				<title>プログラミング向けフォントのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/1218/</link>
+				<pubDate>Fri, 13 Apr 2018 21:21:39 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1218/</guid>
+				<description>プログラミングに向いている「Ricty Diminished」をインストールする手順です</description>
+			</item>
+			<item>
+				<title>【Linux Mint】PHP7.1のインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/1192/</link>
+				<pubDate>Tue, 10 Apr 2018 09:11:57 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1192/</guid>
+				<description>$ set -x LC_ALL C.UTF-8$ sudo add-apt-repository ppa:ondrej/php$&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】Dockerの導入</title>
+				<link>https://www.logical-dice.com/posts/wp/1162/</link>
+				<pubDate>Mon, 09 Apr 2018 21:06:39 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1162/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitDockerのインストールdockerのGPGを追加$ cur&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】OSインストールと設定</title>
+				<link>https://www.logical-dice.com/posts/wp/1098/</link>
+				<pubDate>Sat, 07 Apr 2018 14:01:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1098/</guid>
+				<description>■環境Linux Mint 18.3 cinnamon 64bitOS入手公式ページからISOイメージをダウンロードします。ht&amp;hellip;</description>
+			</item>
+			<item>
+				<title>docker-composeチートシート</title>
+				<link>https://www.logical-dice.com/posts/wp/1071/</link>
+				<pubDate>Mon, 29 Jan 2018 13:35:42 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1071/</guid>
+				<description>環境macOS High Sierra 10.13.2docker-compose 1.18.0■よく使いそうなコマンドyaml&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Wordpressにお問合せフォームを作る</title>
+				<link>https://www.logical-dice.com/posts/wp/979/</link>
+				<pubDate>Wed, 17 Jan 2018 16:18:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/979/</guid>
+				<description>環境Wordpress 4.9.1Contact Form 7 4.9.2WP Mail SMTP 1.2.2Wordpress&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】OpenVPN &amp; LDAPでVPNサーバ構築</title>
+				<link>https://www.logical-dice.com/posts/wp/942/</link>
+				<pubDate>Wed, 20 Dec 2017 16:12:33 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/942/</guid>
+				<description>環境CentOS 7.4OpenVPN 2.4.4参考サイトServerWorldさん：https://www.server-w&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Visual Studio CodeでPHP開発環境構築</title>
+				<link>https://www.logical-dice.com/posts/wp/914/</link>
+				<pubDate>Mon, 18 Dec 2017 14:02:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/914/</guid>
+				<description>■環境Visual Studio Code 1.19.0Linux Mint 18.3 cinnamon 64bitmacOS &amp;hellip;</description>
+			</item>
+			<item>
+				<title>【git】ローカルとリモートのブランチを削除するスクリプト</title>
+				<link>https://www.logical-dice.com/posts/wp/894/</link>
+				<pubDate>Tue, 12 Dec 2017 12:47:09 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/894/</guid>
+				<description>マージ済みのブランチを削除する時に、いつもローカルブランチとリモートブランチの両方を削除するのが面倒だったのでスクリプト化しまし&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】侵入検知したらSlack通知する</title>
+				<link>https://www.logical-dice.com/posts/wp/853/</link>
+				<pubDate>Tue, 12 Dec 2017 00:30:31 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/853/</guid>
+				<description>■環境CentOS 7.4AIDE 0.15.1AIDEという侵入検知ツールを導入し、検査結果をSlackに通知するようにします&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】PCの起動・停止時刻を出力するシェルスクリプト</title>
+				<link>https://www.logical-dice.com/posts/wp/857/</link>
+				<pubDate>Mon, 11 Dec 2017 23:51:12 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/857/</guid>
+				<description>■環境macOS High Sierra 10.13.1bash 4.4.12職場の勤怠を付ける際に数日分まとめて入力するのです&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Dockerチートシート</title>
+				<link>https://www.logical-dice.com/posts/wp/842/</link>
+				<pubDate>Tue, 28 Nov 2017 16:22:31 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/842/</guid>
+				<description>DockerHubにログインまずこれをしておかないとDockerHubにて公開されているイメージを取ってこれない。※要Docke&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【AWS】新規EC2立ち上げ後の作業メモ</title>
+				<link>https://www.logical-dice.com/posts/wp/820/</link>
+				<pubDate>Sun, 12 Nov 2017 01:06:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/820/</guid>
+				<description>環境AWS EC2Amazon Linuxセキュリティグループ設定SSH接続元やHTTP通信元の設定をする。デフォルトではEC2&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】圧縮解凍ソフトのインストール(Win対応)</title>
+				<link>https://www.logical-dice.com/posts/wp/799/</link>
+				<pubDate>Fri, 13 Oct 2017 19:48:22 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/799/</guid>
+				<description>■環境macOS Sierra 10.12.6Windowsで圧縮したファイルがMacで正常に開けなかったりMacで圧縮したファ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】ForiClientでVPNを繋ぐ</title>
+				<link>https://www.logical-dice.com/posts/wp/776/</link>
+				<pubDate>Fri, 13 Oct 2017 11:43:37 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/776/</guid>
+				<description>■環境macOS Sierra 10.12.6FortiClient 5.6.0.703■本体のダウンロード &amp;amp; インス&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】NetBeansのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/737/</link>
+				<pubDate>Fri, 13 Oct 2017 11:05:07 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/737/</guid>
+				<description>■環境macOS Sierra 10.12.6NetBeans 8.2コードの補完やFTP機能を標準装備していたりと無料のIDE&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】Homebrewインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/750/</link>
+				<pubDate>Thu, 12 Oct 2017 16:27:26 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/750/</guid>
+				<description>■環境macOS Sierra(10.12.5)HomebrewはmacOS用のパッケージマネージャーです。インストールするため&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】PC購入後・初期化後の設定</title>
+				<link>https://www.logical-dice.com/posts/wp/734/</link>
+				<pubDate>Thu, 12 Oct 2017 16:23:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/734/</guid>
+				<description>初期状態のMacBookから行なう設定をまとめました■設定一覧Homebrewインストールターミナル設定（iTerm2 ＋ fi&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】ターミナル設定（iTerm2 ＋ fish ＋ fisherman）</title>
+				<link>https://www.logical-dice.com/posts/wp/741/</link>
+				<pubDate>Thu, 12 Oct 2017 16:01:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/741/</guid>
+				<description>■環境iTerm2 3.2.5fish 2.7.1fisherman 3.1.1■参考サイトfish shell を使いたい人生&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Google Cloud Platformにインスタンス作成</title>
+				<link>https://www.logical-dice.com/posts/wp/721/</link>
+				<pubDate>Sun, 08 Oct 2017 00:10:11 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/721/</guid>
+				<description>参考https://www.topgate.co.jp/category/gcpインスタンス立ち上げ① 左メニューの「Compu&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Atom IDEの環境構築（PHP、Go）</title>
+				<link>https://www.logical-dice.com/posts/wp/708/</link>
+				<pubDate>Fri, 29 Sep 2017 19:11:15 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/708/</guid>
+				<description>■環境macOS Sierra 10.12.6Atom 1.21.0-beta2■参考にしたサイト公式サイトhttps://id&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】コマンドラインから写真の撮影日時などを確認する</title>
+				<link>https://www.logical-dice.com/posts/wp/703/</link>
+				<pubDate>Sun, 24 Sep 2017 15:27:02 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/703/</guid>
+				<description>■環境macOS Sierra 10.12.6exiftool 10.55Macのコマンドラインから写真の撮影日時を確認する方法&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Wordpress】テーマで指定されたCSSがうまく読み込めない</title>
+				<link>https://www.logical-dice.com/posts/wp/698/</link>
+				<pubDate>Mon, 21 Aug 2017 01:57:10 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/698/</guid>
+				<description>Wordpressで他人が作成したテーマを使っているとCSSがうまく読み込めない時があります。条件としては以下の両方に当てはまっ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】言語パッケージ管理用にasdfを導入する(fish環境)</title>
+				<link>https://www.logical-dice.com/posts/wp/689/</link>
+				<pubDate>Sat, 19 Aug 2017 17:11:43 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/689/</guid>
+				<description>■環境macOS Sierra 10.12.6fish 2.5.0■手順Brewでもインストールできるらしいが、公式ページの手順&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【node】foreverチートシート</title>
+				<link>https://www.logical-dice.com/posts/wp/677/</link>
+				<pubDate>Mon, 31 Jul 2017 01:44:06 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/677/</guid>
+				<description>起動forever start {jsファイル}起動中一覧表示forever list停止forever stop {停止対象の&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Vue.js &#43; foreverでのアプリ起動</title>
+				<link>https://www.logical-dice.com/posts/wp/674/</link>
+				<pubDate>Mon, 31 Jul 2017 01:32:53 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/674/</guid>
+				<description>■環境CentOS 7.3npm 3.10.10=====2017/12/27追記=====久しぶりに本手順を試したところ、vu&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】neovim &amp; dein.vimの設定</title>
+				<link>https://www.logical-dice.com/posts/wp/665/</link>
+				<pubDate>Sat, 15 Jul 2017 00:44:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/665/</guid>
+				<description>■環境macOS Sierra 10.12.6fish 2.6.0nvim 0.2.0■参考ページNeoVim、そしてdein&amp;hellip;.</description>
+			</item>
+			<item>
+				<title>【Let&#39;sEncrypt】Certbotの使い方(CentOS7 &#43; nginx)</title>
+				<link>https://www.logical-dice.com/posts/wp/656/</link>
+				<pubDate>Mon, 12 Jun 2017 17:17:21 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/656/</guid>
+				<description>■環境CentOS 7.3nginx 1.10.3certbot 0.14.1■初回SSL証明書発行certbotをインストール&amp;hellip;</description>
+			</item>
+			<item>
+				<title>MacにDocker環境を作る</title>
+				<link>https://www.logical-dice.com/posts/wp/642/</link>
+				<pubDate>Mon, 08 May 2017 11:01:23 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/642/</guid>
+				<description>■環境macOS Sierra 10.12.4Dockerのインストール公式ページ(こちら)の「Get Docker for M&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Cisco IOSスイッチ操作チートシート</title>
+				<link>https://www.logical-dice.com/posts/wp/631/</link>
+				<pubDate>Tue, 02 May 2017 15:05:24 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/631/</guid>
+				<description>管理者権限になるenable※省略系はen現在の設定を参照する# show interfaces      ※全て見る場合# s&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CentOS7のネットワーク周り初期設定</title>
+				<link>https://www.logical-dice.com/posts/wp/629/</link>
+				<pubDate>Tue, 02 May 2017 15:01:15 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/629/</guid>
+				<description>■環境CentOS 7.3bonding設定参考URL：https://bacchi.me/linux/bonding/現状確認&amp;hellip;</description>
+			</item>
+			<item>
+				<title>MacにZabbixエージェントを入れる</title>
+				<link>https://www.logical-dice.com/posts/wp/624/</link>
+				<pubDate>Tue, 02 May 2017 14:49:34 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/624/</guid>
+				<description>■環境Mac OS 10.9.5Zabbix 3.2.1Mac OSのサーバにZabbixエージェントを入れた際の手順メモです。&amp;hellip;</description>
+			</item>
+			<item>
+				<title>MastodonインスタンスをHerokuだけで立てる</title>
+				<link>https://www.logical-dice.com/posts/wp/592/</link>
+				<pubDate>Fri, 28 Apr 2017 20:05:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/592/</guid>
+				<description>最近Mastdonが流行っているらしいのでお金をかけずにMastdonインスタンスをHerokuのみで立ててみます。注意本手順で&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】fish &#43; oh-my-fish &#43; pecoの導入方法</title>
+				<link>https://www.logical-dice.com/posts/wp/569/</link>
+				<pubDate>Thu, 20 Apr 2017 00:31:51 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/569/</guid>
+				<description>環境OS X ElCapitan 10.11.6fishのインストールbrewでfishをインストールする。brew insta&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Laravel】migrateで『Class &#39;CreateFoooTable&#39; not found』が発生する</title>
+				<link>https://www.logical-dice.com/posts/wp/520/</link>
+				<pubDate>Tue, 11 Apr 2017 16:25:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/520/</guid>
+				<description>■環境Laravel 5.1Laravelの「migrate:rollback」や「migrate:refresh」をしようとし&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Composerのインストール方法</title>
+				<link>https://www.logical-dice.com/posts/wp/515/</link>
+				<pubDate>Tue, 11 Apr 2017 16:08:08 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/515/</guid>
+				<description>■環境macOS Sierra 10.12.4CentOS 6.8作業用MacとCentOSサーバにComposerをインストー&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【PHP】Laravel5でカスタムバリデーションを追加する</title>
+				<link>https://www.logical-dice.com/posts/wp/512/</link>
+				<pubDate>Tue, 11 Apr 2017 15:11:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/512/</guid>
+				<description>■環境Laravel 5.1Laravel5でカスタムバリデーションを追加した際の手順です。まず、サービスプロバイダーを作成しま&amp;hellip;</description>
+			</item>
+			<item>
+				<title>gitの履歴から特定のコミット以降の履歴だけを残してクリアする</title>
+				<link>https://www.logical-dice.com/posts/wp/501/</link>
+				<pubDate>Mon, 10 Apr 2017 19:39:28 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/501/</guid>
+				<description>個人で開発しているアプリケーションのgitリポジトリで履歴がグチャグチャしてしまったので、コミット履歴をちょっと弄った時のメモで&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【golang】mapの要素順は変動する</title>
+				<link>https://www.logical-dice.com/posts/wp/491/</link>
+				<pubDate>Sat, 08 Apr 2017 12:22:59 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/491/</guid>
+				<description>■環境OS X El Capitan 10.11.6go 1.8 darwin/amd64タイトルの件、ちょっと引っかかったので&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【法人】地方税のeLTAXでの申請手順メモ</title>
+				<link>https://www.logical-dice.com/posts/wp/467/</link>
+				<pubDate>Fri, 10 Mar 2017 00:04:51 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/467/</guid>
+				<description>法人（休眠中）の地方税に関する確定申告をeLTAXで行なったので、その手順をメモします。休眠中じゃなくても、大体の手順は同じだと&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Redmine2.3.2にグループ管理プラグインを入れる</title>
+				<link>https://www.logical-dice.com/posts/wp/444/</link>
+				<pubDate>Mon, 27 Feb 2017 15:16:05 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/444/</guid>
+				<description>redmineにグループ管理のプラグインを入れたが、ちゃんと動かなかったのでつまづいた所をメモする。※補足Ruby on Rai&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CentOS7にfishを入れる</title>
+				<link>https://www.logical-dice.com/posts/wp/440/</link>
+				<pubDate>Fri, 17 Feb 2017 00:00:18 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/440/</guid>
+				<description>最近人気らしいfishを試しに入れてみました。■環境CentOS 7.3fish 2.3.1epelリポジトリが入っていない人は&amp;hellip;</description>
+			</item>
+			<item>
+				<title>zabbixでPHPの警告が出る場合の対処</title>
+				<link>https://www.logical-dice.com/posts/wp/424/</link>
+				<pubDate>Tue, 14 Feb 2017 00:48:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/424/</guid>
+				<description>■環境zabbix 3.2PHP 7.1PHP7.1でzabbixを動かすと、以下の警告が出ました。A non well for&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CentOS 7.3にzabbix 3.2をインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/349/</link>
+				<pubDate>Tue, 14 Feb 2017 00:20:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/349/</guid>
+				<description>■環境CentOS 7.3zabbix 3.2PHP 7.1MySQL 14.14Apache 2.4①zabbixをyumでイ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【git】gitコマンドチートシート</title>
+				<link>https://www.logical-dice.com/posts/wp/398/</link>
+				<pubDate>Sat, 11 Feb 2017 23:06:36 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/398/</guid>
+				<description>自分が使うgitコマンドを整理しました。■環境OS X El Capitan 10.11.6git 2.10.1【設定について】&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Wordpress】SyntaxHighlighter Evolvedを高速化する</title>
+				<link>https://www.logical-dice.com/posts/wp/402/</link>
+				<pubDate>Fri, 10 Feb 2017 18:23:37 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/402/</guid>
+				<description>Wordperssのプラグイン『SyntaxHighlighter Evolved』を入れていたところ画面表示がとても遅くなった&amp;hellip;</description>
+			</item>
+			<item>
+				<title>PHPExcelの使い方メモ</title>
+				<link>https://www.logical-dice.com/posts/wp/384/</link>
+				<pubDate>Tue, 07 Feb 2017 11:42:44 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/384/</guid>
+				<description>PHPでExcelを生成できる『PHPExcel』の使い方メモ※実際に私が使ったものをメモしているだけなので、機能を網羅している&amp;hellip;</description>
+			</item>
+			<item>
+				<title>MFクラウド会計を使った休眠法人決算</title>
+				<link>https://www.logical-dice.com/posts/wp/366/</link>
+				<pubDate>Tue, 07 Feb 2017 00:38:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/366/</guid>
+				<description>休眠法人の決算を税理士を雇わずに終わらせる。MFクラウド会計の無料プランを使う。①各種設定＞事業所　で必要な情報を設定する。②各&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【法人】国税のe-taxでの申請手順メモ</title>
+				<link>https://www.logical-dice.com/posts/wp/372/</link>
+				<pubDate>Tue, 07 Feb 2017 00:25:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/372/</guid>
+				<description>法人（休眠中）の国税に関する確定申告をe-taxで行なったので、その手順をメモします。休眠中じゃなくても、大体の手順は同じだと思&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS &#43; Apache】Let’s Encryptで無料SSL証明書の取得＆自動更新をする</title>
+				<link>https://www.logical-dice.com/posts/wp/355/</link>
+				<pubDate>Wed, 18 Jan 2017 00:51:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/355/</guid>
+				<description>■環境CentOS 7.3Apache 2.4.6Let&amp;rsquo;s Encryptで無料SSL証明書を取得し、自動更新する設定をします&amp;hellip;</description>
+			</item>
+			<item>
+				<title>HP Proliant Microserver Gen 8 にCentOS7を入れる</title>
+				<link>https://www.logical-dice.com/posts/wp/318/</link>
+				<pubDate>Thu, 01 Dec 2016 13:29:48 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/318/</guid>
+				<description>■作業環境・OS X El Capitan 10.11.6 ■手順CentOS7の準備まず、CentOSのISOイメー&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【DNSサーバ】BINDからNSDへの移行</title>
+				<link>https://www.logical-dice.com/posts/wp/311/</link>
+				<pubDate>Tue, 25 Oct 2016 11:21:04 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/311/</guid>
+				<description>社内利用のDNSをBIND作っていたのですが、BINDは脆弱性が頻繁に発見されるし、DNSキャッシュ機能は要らなかったのでNSD&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Apacheのセキュリティ設定</title>
+				<link>https://www.logical-dice.com/posts/wp/302/</link>
+				<pubDate>Wed, 12 Oct 2016 13:40:02 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/302/</guid>
+				<description>Apacheはデフォルト設定のまま利用するとサーバーの情報が諸々見えてしまいます。それらを隠すには設定ファイルを編集する必要があ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>brewインストールでphp-mcryptがインストールできない</title>
+				<link>https://www.logical-dice.com/posts/wp/295/</link>
+				<pubDate>Tue, 20 Sep 2016 00:15:18 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/295/</guid>
+				<description>■環境OS X El Capitan(10.11.6)Homebrew 0.9.9brewインストールでphp-mcryptをイ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>SVNサーバ(svn&#43;ssh)のリポジトリをgitサーバに移行する</title>
+				<link>https://www.logical-dice.com/posts/wp/278/</link>
+				<pubDate>Wed, 10 Aug 2016 12:04:21 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/278/</guid>
+				<description>■前提条件gitはサーバ＆クライアントのどちらも既に使える環境であること①gitサーバで空のリポジトリを作成する。作成方法は各G&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Linuxサーバに秘密鍵方式でsshする</title>
+				<link>https://www.logical-dice.com/posts/wp/274/</link>
+				<pubDate>Mon, 01 Aug 2016 00:27:04 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/274/</guid>
+				<description>■環境CentOS 7.2■手順①秘密鍵と公開鍵を生成ローカルPCにて以下を実施します。MacでもLinuxでも同じコマンドで生&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】ターミナル設定（iTerm2 &#43; zsh &#43; prezto &#43; peco）</title>
+				<link>https://www.logical-dice.com/posts/wp/259/</link>
+				<pubDate>Tue, 26 Jul 2016 00:00:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/259/</guid>
+				<description>Ubuntuの場合はこちら①iTerm2を準備するiTerm2についてはこちらの記事で記載していますのでこちらをご参照ください。&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Apache】htaccessのRewriteでGETパラメータも残す</title>
+				<link>https://www.logical-dice.com/posts/wp/249/</link>
+				<pubDate>Thu, 26 May 2016 19:56:46 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/249/</guid>
+				<description>nginxが台頭してきている今日この頃。Apacheの話です。少しハマったのでメモします。■環境CentOS 6.6httpd &amp;hellip;</description>
+			</item>
+			<item>
+				<title>【golang】NetBeansでgo言語を使えるようにする</title>
+				<link>https://www.logical-dice.com/posts/wp/223/</link>
+				<pubDate>Wed, 25 May 2016 23:06:28 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/223/</guid>
+				<description>元々NetBeansでPHPをやっているので同じIDEでgoも使うために設定してみました。■環境Ubuntu 16.04NetB&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】シャットダウンが遅い</title>
+				<link>https://www.logical-dice.com/posts/wp/242/</link>
+				<pubDate>Sun, 22 May 2016 00:35:22 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/242/</guid>
+				<description>■環境Ubuntu 16.04Ubuntuを16.04にしたら、シャットダウンに時間がかかるようになったので対応します。参考： &amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】デュアルブート環境で時計が狂うのを防ぐ</title>
+				<link>https://www.logical-dice.com/posts/wp/239/</link>
+				<pubDate>Sun, 22 May 2016 00:30:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/239/</guid>
+				<description>■環境Ubuntu 16.04Windows10Ubuntuを16.04にしたら、デュアルブートのWindowsとUbuntuを&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】zsh&amp;preztoのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/225/</link>
+				<pubDate>Fri, 06 May 2016 10:29:33 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/225/</guid>
+				<description>Ubuntuのターミナル（端末）でzsh＆preztoを使う設定です。Macの場合はこちら■環境Ubunt16.04①zshとg&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Ubuntu16.04のインストール後にしたこと</title>
+				<link>https://www.logical-dice.com/posts/wp/216/</link>
+				<pubDate>Wed, 04 May 2016 23:54:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/216/</guid>
+				<description>ubuntuの16.04が出ていたので、インストールしてみました。その際に実施した内容です。（随時更新していくと思います）■ホー&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【PHP】Eclipseでカーソルがある変数のハイライトを変更する</title>
+				<link>https://www.logical-dice.com/posts/wp/206/</link>
+				<pubDate>Tue, 08 Mar 2016 12:17:33 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/206/</guid>
+				<description>たまにカーソルがある変数の色がおかしくなる事があります。その際は以下の設定を変更すれば治ります。■環境Mac (OS X El &amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】cronが動かない場合のチェック</title>
+				<link>https://www.logical-dice.com/posts/wp/202/</link>
+				<pubDate>Tue, 08 Mar 2016 05:23:15 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/202/</guid>
+				<description>cronが動かない時のチェック項目 ①cronのプロセス（crond）は起動しているか↓起動している②crontabの&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】InkscapeでPDFを開くとズレてしまう場合</title>
+				<link>https://www.logical-dice.com/posts/wp/196/</link>
+				<pubDate>Thu, 04 Feb 2016 12:37:03 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/196/</guid>
+				<description>知っている人にとっては当たり前の話かもしれませんがInkscapeでPDFを編集しようと開くと、一部文字がズレてしまう事象に困っ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>MySQLの文字コードを設定する</title>
+				<link>https://www.logical-dice.com/posts/wp/189/</link>
+				<pubDate>Wed, 20 Jan 2016 22:36:39 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/189/</guid>
+				<description>MySQLで文字コードを設定する方法です。■環境MySQL 5.6.26これからDBの作成をする場合は、設定ファイル「/etc/&amp;hellip;</description>
+			</item>
+			<item>
+				<title>mysql系の関数がPHP7でエラーになる場合の対応</title>
+				<link>https://www.logical-dice.com/posts/wp/173/</link>
+				<pubDate>Wed, 20 Jan 2016 21:55:34 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/173/</guid>
+				<description>PHP5.XからPHP7にアップデートした際にmysql系の関数がエラーになっていたので、その際に行なった対応をメモしておきます&amp;hellip;</description>
+			</item>
+			<item>
+				<title>ダイジェスト認証の設定方法</title>
+				<link>https://www.logical-dice.com/posts/wp/164/</link>
+				<pubDate>Wed, 20 Jan 2016 21:30:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/164/</guid>
+				<description>Apacheで動いているWEBサーバにて、ダイジェスト認証を入れる方法です。■環境CentOS Linux release 7&amp;hellip;.</description>
+			</item>
+			<item>
+				<title>【FuelPHP】PHP7対応版へのアップデート</title>
+				<link>https://www.logical-dice.com/posts/wp/161/</link>
+				<pubDate>Sun, 27 Dec 2015 23:50:04 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/161/</guid>
+				<description>FuelPHPのdev-1.7がPHP7に対応していなかったので、既存プロジェクトをPHP7に対応しているdev-1.8にアップ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】php7をyumインストールする</title>
+				<link>https://www.logical-dice.com/posts/wp/156/</link>
+				<pubDate>Mon, 07 Dec 2015 23:31:02 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/156/</guid>
+				<description>php7がリリースされたので、CentOS7のサーバにyumでインストールした手順です。■環境CentOS 7.1.1503以下&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】ComposerにGitHubのアクセストークンを設定する</title>
+				<link>https://www.logical-dice.com/posts/wp/147/</link>
+				<pubDate>Mon, 07 Dec 2015 23:11:45 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/147/</guid>
+				<description>今更ながら、ComposerにGitHubのアクセストークンを設定する方法です。■環境CentOS 7.1.1503GitHub&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】PostgreSQLの導入</title>
+				<link>https://www.logical-dice.com/posts/wp/127/</link>
+				<pubDate>Fri, 04 Dec 2015 12:59:49 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/127/</guid>
+				<description>CentOSにPostgreSQLを導入した際の作業メモです■環境CentOS r&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】UXtermの設定</title>
+				<link>https://www.logical-dice.com/posts/wp/136/</link>
+				<pubDate>Wed, 02 Dec 2015 21:41:14 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/136/</guid>
+				<description>ubuntuのターミナルは「UXterm」と普通の「端末」がありますが、UXtermの方がカスタマイズできたりするので、UXte&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】atomのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/139/</link>
+				<pubDate>Wed, 02 Dec 2015 21:37:16 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/139/</guid>
+				<description>Ubuntu環境にテキストエディタのatomをインストールする手順です。■環境ubuntu 15.04以下サイトよりインストーラ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】exfat形式の外部メモリのマウントができない</title>
+				<link>https://www.logical-dice.com/posts/wp/130/</link>
+				<pubDate>Sun, 15 Nov 2015 22:05:23 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/130/</guid>
+				<description>■環境ubuntu 15.04Ubuntuはデフォルトでは「exfat」のフォーマットに対応していないので、外部メモリをマウント&amp;hellip;</description>
+			</item>
+			<item>
+				<title>COMODOのSSL証明書をApacheに設定する方法</title>
+				<link>https://www.logical-dice.com/posts/wp/120/</link>
+				<pubDate>Tue, 20 Oct 2015 20:25:57 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/120/</guid>
+				<description>COMODOの証明書を購入した後の設定が複雑だったので、まとめました。購入手順についてはSSL購入サイトを見れば分かると思うので&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CentOS7のsshd設定（セキュリティ）</title>
+				<link>https://www.logical-dice.com/posts/wp/106/</link>
+				<pubDate>Mon, 19 Oct 2015 21:52:24 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/106/</guid>
+				<description>サーバへのsshログインについて、以下の設定をします・sshポートの変更・ルート権限でのログインを無効化・ルート権限にsuできる&amp;hellip;</description>
+			</item>
+			<item>
+				<title>PHPで文字化けが直らない場合の対処</title>
+				<link>https://www.logical-dice.com/posts/wp/83/</link>
+				<pubDate>Tue, 06 Oct 2015 21:38:07 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/83/</guid>
+				<description>■環境CentOS 6.6Apache2.2日本語が文字化けするのでphpのソースで以下の記載をしていました。setlocale&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】JDKとNetBeans IDEのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/69/</link>
+				<pubDate>Wed, 16 Sep 2015 23:18:43 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/69/</guid>
+				<description>開発環境としてUbuntuにJDKとNetBeansをインストールします。■環境Ubuntu 15.04openjdk 8Net&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】FlashPlayerのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/57/</link>
+				<pubDate>Thu, 27 Aug 2015 21:56:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/57/</guid>
+				<description>UbuntuのブラウザでFlashPlayerをインストールする手順です。■Firefoxの場合AdobeよりFlashPlay&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】ホームディレクトリを日本語から英語にする</title>
+				<link>https://www.logical-dice.com/posts/wp/48/</link>
+				<pubDate>Thu, 27 Aug 2015 21:36:09 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/48/</guid>
+				<description>日本語版Ubuntuをインストールすると、ホームディレクトリ内のディレクトリ名が日本語になっています。コマンドラインで操作する時&amp;hellip;</description>
+			</item>
+			<item>
+				<title>メールドメインに「localhost」と付いてしまう</title>
+				<link>https://www.logical-dice.com/posts/wp/40/</link>
+				<pubDate>Sat, 08 Aug 2015 16:52:42 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/40/</guid>
+				<description>■環境CentOS 7postfix 2.10.1postfixで構築したメールサーバからメールを送信した場合に設定は間違えてい&amp;hellip;</description>
+			</item>
+			<item>
+				<title>メールサーバ構築（②dovecot編）</title>
+				<link>https://www.logical-dice.com/posts/wp/18/</link>
+				<pubDate>Sat, 08 Aug 2015 15:35:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/18/</guid>
+				<description>■環境CentOS 7dovecot 2.2.10事前に①postfix編が終わっている前提とします。必要な物をインストールyu&amp;hellip;</description>
+			</item>
+			<item>
+				<title>メールサーバ構築（①postfix編）</title>
+				<link>https://www.logical-dice.com/posts/wp/9/</link>
+				<pubDate>Thu, 06 Aug 2015 23:28:32 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/9/</guid>
+				<description>■環境CentOS 7postfix 2.10.1メールアカウントはpasswdに登録されているアカウントを利用します。メール専&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

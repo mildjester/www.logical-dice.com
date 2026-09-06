@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>AWS ELB配下でApacheのRewriteRuleが上手く動かなかった話|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">AWS ELB配下でApacheのRewriteRuleが上手く動かなかった話</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-06-30 22:29:41 &#43;0000 UTC" class="catalogue-time">2018年06月30日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/apache/">Apache</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>AWS ELB<br>
+AWS EC2<br>
+Apache 2.2.32</p>
+<hr>
+<p>AWSのEC2上で動いているApacheサーバーでの話。</p>
+<p>SEO対策で<code>/index.html</code>を<code>/</code>にリダイレクトしたかったので<br>
+<code>.htaccess</code> に以下を設定しました。</p>
+<pre tabindex="0"><code>RewriteRule ^(.*)index.html$ $1 [R=301,L]  
+</code></pre><p>検証インスタンスでは上手く動いたので、本番インスタンスにも反映させたところ<br>
+<code>https://〜/index.html</code>(443ポート) が <code>http://〜/</code>(80ポート)にリダイレクトされるようになってしまいました。</p>
+<p>なんでだろう？と思いながら以下のような分岐を作ってみましたが、結果は変わらずでした。</p>
+<pre tabindex="0"><code># 一旦プロトコルはhttpとしておく  
+RewriteRule .* - [E=X_PRTCL:http]  
+# リクエストプロトコルがhttpsの場合、リダイレクト先もhttpsにする  
+RewriteCond %{HTTPS} on  
+RewriteRule .* - [E=X_PRTCL:https]  
+RewriteRule ^(.*)index.html$ %{ENV:X_PRTCL}://%{HTTP_HOST}/$1 [R=301,L]  
+</code></pre><p>なぜ443ポート(https)の通信が80ポート(http)扱いになってしまったかというと<br>
+本番環境のEC2はELBを通しているのが原因でした。</p>
+<p>つまり、検証環境では</p>
+<pre tabindex="0"><code>PC  
+↓443ポート  
+EC2  
+</code></pre><p>だったのに対して、本番環境では</p>
+<pre tabindex="0"><code>PC  
+↓443ポート  
+ELB  
+↓80ポート  
+EC2  
+</code></pre><p>となっていたのでした。</p>
+<p>ELBを経由した場合、HTTPプロトコルを判定するには<code>X-Forwarded-Proto</code>というパラメータを見る必要があるようです。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/elasticloadbalancing/latest/classic/x-forwarded-headers.html" rel="noopener" target="_blank"><a href="https://docs.aws.amazon.com/ja_jp/elasticloadbalancing/latest/classic/x-forwarded-headers.html">https://docs.aws.amazon.com/ja_jp/elasticloadbalancing/latest/classic/x-forwarded-headers.html</a></a></p>
+<p>以下のようにhtaccessへ記載すればELB経由でも上手く動きました</p>
+<pre tabindex="0"><code># 一旦プロトコルはhttpとしておく  
+RewriteRule .* - [E=X_PRTCL:http]  
+# リクエストプロトコルがhttpsの場合、リダイレクト先もhttpsにする  
+RewriteCond %{HTTPS} on [OR] # ELBを経由しない時用  
+RewriteCond %{HTTP:X-Forwarded-Proto} https # ELBを経由する時用  
+RewriteRule .* - [E=X_PRTCL:https]  
+RewriteRule ^(.*)index.html$ %{ENV:X_PRTCL}://%{HTTP_HOST}/$1 [R=301,L]  
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

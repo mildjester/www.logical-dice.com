@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【CentOS &#43; Apache】Let’s Encryptで無料SSL証明書の取得＆自動更新をする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【CentOS &#43; Apache】Let’s Encryptで無料SSL証明書の取得＆自動更新をする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-01-18 00:51:55 &#43;0000 UTC" class="catalogue-time">2017年01月18日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/centos/">CentOS</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/apache/">Apache</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>CentOS 7.3<br>
+Apache 2.4.6</p>
+<hr>
+<p>Let&rsquo;s Encryptで無料SSL証明書を取得し、自動更新する設定をします。</p>
+<p>########## 2017/04/05追記 ##########<br>
+Certbotというツールが公開されており、<br>
+本手順を実施するよりも、そちらを利用した方が簡単です。<br>
+<a href="https://certbot.eff.org" target="_blank"><a href="https://certbot.eff.org">https://certbot.eff.org</a></a><br>
+設定方法はこちら<br>
+<a href="/posts/wp/656">【Let&rsquo;sEncrypt】Certbotの使い方(CentOS7 + nginx)</a><br>
+################################</p>
+<h3 id="前提">■前提</h3>
+<p>対象サーバがインターネット網に公開しているサーバであること。<br>
+→証明書発行時に認証のためLet&rsquo;s Encrypt側からアクセスがあるようです。<br>
+　そのため、ファイアーウォールなどで外部からのアクセスを遮断している環境では証明書発行ができません。<br>
+　2017/1/19現在、アクセス時のIPアドレスも公開しておりません。<br>
+　<a href="https://letsencrypt.jp/faq/#IP"><a href="https://letsencrypt.jp/faq/#IP">https://letsencrypt.jp/faq/#IP</a></a></p>
+<h3 id="設定手順">設定手順</h3>
+<p>※以下手順はroot権限で実施しています。</p>
+<p>まず、サーバー上の任意のディレクトリにLet&rsquo;s Encryptから証明書を取得するツールをダウンロードします。<br>
+サーバにgitが入っていない場合は、ローカルでダウンロードしたものをFTPなどでアップしても良いと思います。</p>
+<pre tabindex="0"><code># git clone https://github.com/letsencrypt/letsencrypt
+</code></pre><p>ダウンロードしたら、ツールの初期構築をします。<br>
+以下コマンドにて必要なソフトウェアのインストールなどが走り、完了したらletsencrypt-autoのヘルプが表示されます。</p>
+<pre tabindex="0"><code># cd letsencrypt  
+# ./letsencrypt-auto --help --debug
+</code></pre><p>次にツールを実行し、実際に証明書を取得します。<br>
+その際、４４３ポートを利用しているプロセスがあるとエラーとなるので、この瞬間はApacheを止める必要がありました。</p>
+<pre tabindex="0"><code># systemctl stop httpd  
+# ./letsencrypt-auto certonly --standalone -d your-domain.com  
+# systemctl start httpd
+</code></pre><p>※上記の「your-domain.com」には証明書を生成するドメインを入力してください。</p>
+<p>これで証明書が生成できました。<br>
+以下のディレクトリ配下に証明書や秘密鍵（のシンボリックリンク）が生成されているので、<br>
+Apacheの設定ファイルへ記載します。<br>
+■生成されるディレクトリ</p>
+<pre tabindex="0"><code>/etc/letsencrypt/live/your-domain.com/
+</code></pre><p>■生成されるファイル</p>
+<pre tabindex="0"><code>cert.pem　：　SSL証明書本体  
+chain.pem　：　チェイン証明書  
+fullchain.pem　：　SSL証明書本体とチェイン証明書を結合したもの  
+privkey.pem　：　秘密鍵
+</code></pre><p>これらをApacheの設定ファイル（一般的に/etc/httpd/conf.d/ssl.conf）に設定する。<br>
+・設定パターン１</p>
+<pre tabindex="0"><code>SSLCertificateFile /etc/letsencrypt/live/your-domain.com/cert.pem  
+SSLCertificateKeyFile /etc/letsencrypt/live/your-domain.com/privkey.pem  
+SSLCertificateChainFile /etc/letsencrypt/live/your-domain.com/chain.pem
+</code></pre><p>・設定パターン2</p>
+<pre tabindex="0"><code>SSLCertificateFile /etc/letsencrypt/live/your-domain.com/cert.pem  
+SSLCertificateKeyFile /etc/letsencrypt/live/your-domain.com/privkey.pem  
+SSLCertificateChainFile /etc/letsencrypt/live/your-domain.com/chain.pem
+</code></pre><p>※Apacheのバージョンが2.4.8以上の場合は「SSLCertificateChainFile」の設定はできないので、<br>
+　「SSLCertificateKeyFile」にfullchain.pemを設定すること。</p>
+<p>ここで生成した証明書は3ヶ月間しか有効期限がないので、定期的に更新が必要です。<br>
+証明書を更新するコマンドは以下です。</p>
+<pre tabindex="0"><code>./letsencrypt-auto renew
+</code></pre><p>ただし、更新は有効期限が残り30日を切らないと実行されないらしく、<br>
+上記コマンドを実行しても何も更新せずに終わります。</p>
+<p>「Apache停止→証明書更新→Apache起動」を実施するシェルを作ります。<br>
+70日以内に生成した証明書が存在する場合は何もしません。</p>
+<pre tabindex="0"><code>#!/bin/bash  
+serchResult=`find /etc/letsencrypt/archive/your-domain.com/ -mtime -70 -regex &#34;.*cert[0-9]?\.pem&#34;`  
+if [ -n &#34;$serchResult&#34; ]; then  
+    echo &#34;certs are not due for renewal yet&#34;  
+else  
+    systemctl stop httpd &amp;&amp; /opt/git/letsencrypt/letsencrypt-auto renew &amp;&amp; systemctl start httpd  
+    if [ $? != 0 ]; then  
+        # just to be sure  
+        systemctl restart httpd  
+    fi  
+fi
+</code></pre><p>※上記はツールをopt配下に配置した場合です。</p>
+<p>このシェルをcronで毎日深夜に実行するよう設定します。</p>
+<pre tabindex="0"><code># SSL update  
+5 0 * * * sh /etc/letsencrypt/renew.sh
+</code></pre><p>※上記はシェルを/etc/letsencrypt/renew.shに作った場合の例です。</p>
+<p>これで設定完了です。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

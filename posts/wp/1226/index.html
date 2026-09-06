@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Linux Mint】キーマップを変更する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Linux Mint】キーマップを変更する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-04-13 21:33:50 &#43;0000 UTC" class="catalogue-time">2018年04月13日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>Linux Mint 18.3 cinnamon 64bit</p>
+<hr>
+<h2 id="xmodmap設定">Xmodmap設定</h2>
+<p>ホームディレクトリ直下に<code>.Xmodmap</code>というファイルを作成し、設定を記載していきます。</p>
+<h3 id="xmodmapへの記載内容">【.Xmodmapへの記載内容】</h3>
+<h4 id="マウス中央クリック貼り付けを無効化">マウス中央クリック貼り付けを無効化</h4>
+<p>ThinkPadキーボードだと中央ボタンをクリックしながらポインタを動かす事が多いですが、<br>
+その時にちょいちょいペーストが走って邪魔なので無効化します。</p>
+<p>.Xmodmapに以下を記載します。</p>
+<pre tabindex="0"><code>pointer = 1 9 3 4 5 6 7 8 2 10  
+</code></pre><h4 id="pageup--pagedownをshiftにする">PageUp &amp; PageDownをShiftにする</h4>
+<p>PageUp &amp; PageDownは使わないし指が当たると画面が動いて邪魔なので<br>
+Shiftに変えてしてしまいます。</p>
+<p>.Xmodmapに以下を記載します。</p>
+<pre tabindex="0"><code>keycode 112 = Shift_R  
+keycode 117 = Shift_R  
+add Shift = Shift_R  
+</code></pre><h4 id="caps-lockをctrlにする">Caps LockをCtrlにする</h4>
+<p>Caps Lockも使わないし指が当たると大文字入力になって邪魔なので<br>
+こちらはCtrlに変えてしてしまいます。</p>
+<p>.Xmodmapに以下を記載します。</p>
+<pre tabindex="0"><code>remove Lock = Caps_Lock  
+keysym Caps_Lock = Control_L  
+add Control = Control_L  
+</code></pre><h3 id="xmodmapの反映">【.Xmodmapの反映】</h3>
+<p><code>.Xmodmap</code>記載後、以下コマンドで適用されます。</p>
+<pre tabindex="0"><code>$ xmodmap ~/.Xmodmap  
+</code></pre><p>ただし、ログインのたびに上記コマンドを打つのは面倒なので<br>
+自動起動するよう設定します。</p>
+<p>①まず、任意のシェルスクリプトを作成し、<code>xmodmap ~/.Xmodmap</code>を記載する。実行権付与も忘れず。<br>
+②『システム設定＞Startup Applications』を開く。<br>
+（「Startup Applications」は「自動起動するアプリ」と表記されている可能性もあり）<br>
+③『Custom Command』を追加し、①で作成したシェルスクリプトを選択する。</p>
+<h2 id="半角全角切り替えをmac風にする">半角/全角切り替えをMac風にする</h2>
+<p>通常のキーボードについている『半角/全角』ボタンはトグル式で切り替わるので<br>
+現在「半角入力」なのか「全角入力」なのかが分からないと使いづらいです。<br>
+も<br>
+そこで、普段使わない以下のキーをMac風に割り当てます。<br>
+無変換キー：半角入力にする<br>
+変換キー：全角入力にする<br>
+カタカナ/ひらがなキー：誤タッチがあるので、これも全角入力にしてしまいます</p>
+<p>まず、メニューより『Mozcの設定』を開きます。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-05-16-23-57-03.png" alt="" /></p>
+<p>次に、一般タブのキー設定の『編集』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-05-17-00-00-21.png" alt="" /></p>
+<p>キー設定の一覧が表示されるので以下のように変更してOKをクリックします。<br>
+Hiragana：IMEを有効化<br>
+Henkan：IMEを有効化<br>
+Katakana：IMEを有効化<br>
+Muhenkan：IMEを無効化<br>
+※モード別に複数箇所あります</p>
+<p>これでMac風に変更できました。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

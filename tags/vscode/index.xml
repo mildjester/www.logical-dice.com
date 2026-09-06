@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>VSCode on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/vscode/</link>
+		<description>Recent content in VSCode on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Mon, 18 Dec 2017 14:02:41 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/vscode/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Visual Studio CodeでPHP開発環境構築</title>
+				<link>https://www.logical-dice.com/posts/wp/914/</link>
+				<pubDate>Mon, 18 Dec 2017 14:02:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/914/</guid>
+				<description>■環境Visual Studio Code 1.19.0Linux Mint 18.3 cinnamon 64bitmacOS &amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

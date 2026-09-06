@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>MySQL on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/mysql/</link>
+		<description>Recent content in MySQL on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Wed, 20 Jan 2016 22:36:39 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>MySQLの文字コードを設定する</title>
+				<link>https://www.logical-dice.com/posts/wp/189/</link>
+				<pubDate>Wed, 20 Jan 2016 22:36:39 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/189/</guid>
+				<description>MySQLで文字コードを設定する方法です。■環境MySQL 5.6.26これからDBの作成をする場合は、設定ファイル「/etc/&amp;hellip;</description>
+			</item>
+			<item>
+				<title>mysql系の関数がPHP7でエラーになる場合の対応</title>
+				<link>https://www.logical-dice.com/posts/wp/173/</link>
+				<pubDate>Wed, 20 Jan 2016 21:55:34 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/173/</guid>
+				<description>PHP5.XからPHP7にアップデートした際にmysql系の関数がエラーになっていたので、その際に行なった対応をメモしておきます&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

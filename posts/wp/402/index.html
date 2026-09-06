@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Wordpress】SyntaxHighlighter Evolvedを高速化する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Wordpress】SyntaxHighlighter Evolvedを高速化する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-02-10 18:23:37 &#43;0000 UTC" class="catalogue-time">2017年02月10日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/wordpress/">Wordpress</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>Wordperssのプラグイン『SyntaxHighlighter Evolved』を入れていたところ<br>
+画面表示がとても遅くなったので高速化しました。</p>
+<p>〜〜〜2017/2/11 追記〜〜〜<br>
+プラグインを変えた方が早いかもしれないです<br>
+「WP Code Highlight.js」に変えてみたところ、表示は問題なく早いですし<br>
+paddingなどもこちらの方が気に入ってます。<br>
+〜〜〜追記終わり〜〜〜</p>
+<p>■環境<br>
+CentOS 7.3<br>
+Wordpress 4.7.2<br>
+SyntaxHighlighter Evolved 3.2.1<br>
+※前提条件として、Wordpressを置いてあるサーバを操作できる権限があることとします</p>
+<p>『SyntaxHighlighter Evolved』は各種言語に対応しているのですが、<br>
+実際、自分は書かないなーという言語も入っているので、不要なものは<br>
+プラグインで読み込まないようにします。</p>
+<p>具体的には、プラグイン内のPHPファイルを修正し、不要な言語の設定を読み込んでいそうな行を<br>
+コメントアウトします。</p>
+<pre tabindex="0"><code># cd /{wordpressが配置されているディレクトリ}/wp-content/plugins/syntaxhighlighter  
+# vim syntaxhighlighter.php
+</code></pre><p>コメントアウト箇所は114行目あたりから始まる以下の部分です。</p>
+<pre tabindex="0"><code>wp_register_script( &#39;syntaxhighlighter-brush-○○○&#39;,〜〜〜　$this-&gt;agshver );
+</code></pre><p>上記の「○○○」部分に言語名が入っているので、不要な言語の行はコメントアウトします。</p>
+<p>あと、あまり効果があるか分かりませんが、テーマも使わないものはコメントアウトしてしまいました。<br>
+該当箇所は149行目あたりから始まる以下の部分です。</p>
+<pre tabindex="0"><code>wp_register_stype( &#39;syntaxhighlighter-theme-○○○&#39;,〜〜〜　$this-&gt;agshver );
+</code></pre><p>上記の「○○○」部分にテーマ名が入ります。</p>
+<p>上記でコメントアウトした言語、テーマについて<br>
+下の方の行で配列に格納されているので、そこもコメントアウトします。</p>
+<p>言語についての配列は、162行目あたりにあります。</p>
+<pre tabindex="0"><code>$this-&gt;brushes = (array) apply_filters( &#39;syntaxhighlighter_brushes&#39;, array(  
+    &#39;as3&#39;           =&gt; &#39;as3&#39;,  
+    &#39;actionscript3&#39; =&gt; &#39;as3&#39;,  
+    &#39;bash&#39;          =&gt; &#39;bash&#39;,  
+    &#39;shell&#39;         =&gt; &#39;bash&#39;,  
+    以下略
+</code></pre><p>テーマについての配列は、243行目あたりにあります。</p>
+<pre tabindex="0"><code>$this-&gt;themes = (array) apply_filters( &#39;syntaxhighlighter_themes&#39;, array(  
+    &#39;default&#39;    =&gt; __( &#39;Default&#39;,      &#39;syntaxhighlighter&#39; ),  
+    &#39;django&#39;     =&gt; __( &#39;Django&#39;,       &#39;syntaxhighlighter&#39; ),  
+    &#39;eclipse&#39;    =&gt; __( &#39;Eclipse&#39;,      &#39;syntaxhighlighter&#39; ),  
+    &#39;emacs&#39;      =&gt; __( &#39;Emacs&#39;,        &#39;syntaxhighlighter&#39; ),  
+    &#39;fadetogrey&#39; =&gt; __( &#39;Fade to Grey&#39;, &#39;syntaxhighlighter&#39; ),  
+    &#39;midnight&#39;   =&gt; __( &#39;Midnight&#39;,     &#39;syntaxhighlighter&#39; ),  
+    &#39;rdark&#39;      =&gt; __( &#39;RDark&#39;,        &#39;syntaxhighlighter&#39; ),  
+    &#39;none&#39;       =&gt; __( &#39;[None]&#39;,       &#39;syntaxhighlighter&#39; ),  
+) );
+</code></pre><p>上記箇所を適当にコメントアウトすると、画面表示がいくらか早くなりました。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

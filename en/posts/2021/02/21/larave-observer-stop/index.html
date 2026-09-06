@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Laravel】Observer Not Executing|Logical Dice Techblog</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice Techblog" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/en/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice Techblog" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Laravel】Observer Not Executing</h1>
+		<div class="post-info">
+				<p class="publish-date">posted: <time datetime="2021-02-21 00:00:00 &#43;0000 UTC" class="catalogue-time">2021-02-21</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/laravel/">Laravel</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="environment">Environment</h2>
+<ul>
+<li>Laravel 5.8</li>
+</ul>
+<hr>
+<p>I encountered a situation where the processing of an Observer configured in Laravel did not execute, so here are my investigation notes.</p>
+<h2 id="issue">Issue</h2>
+<p>I tried to use a Laravel Observer to run a process during the <code>updating</code> event of a Model, but the <code>updating</code> process I wrote was not executed.</p>
+<p>When I wrote <code>updated</code>, <code>saving</code>, and <code>saved</code> processes in the same class as the <code>updating</code> process, they were executed, so it didn&rsquo;t seem like the Observer class itself wasn&rsquo;t being loaded.</p>
+<h2 id="cause">Cause</h2>
+<p>In this case, another Observer was already configured for the class I was trying to set up the Observer for.<br>
+This itself is not a problem, but the existing Observer was returning a value in its <code>updating</code> method.</p>
+<p>Reading the Laravel source code, it seems that if multiple Observers are configured for the same event, subsequent Observers will not be executed if a preceding Observer returns a value.<br>
+<a href="https://github.com/laravel/framework/blob/5.8/src/Illuminate/Events/Dispatcher.php#L198-L203">https://github.com/laravel/framework/blob/5.8/src/Illuminate/Events/Dispatcher.php#L198-L203</a></p>
+<p>Unless there is a specific reason to do so, it seems better not to return values within Observer methods.</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>CircleCI on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/circleci/</link>
+		<description>Recent content in CircleCI on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Mon, 04 Mar 2019 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/circleci/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>CircleCIからAWS Code Deployを実行する</title>
+				<link>https://www.logical-dice.com/posts/2019/03/04/aws-code-deploy-circleci/</link>
+				<pubDate>Mon, 04 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/04/aws-code-deploy-circleci/</guid>
+				<description>S3を使わずCircleCIからAWS Code Deployを実行する方法です</description>
+			</item>
+			<item>
+				<title>CircleCIの通知をSlackへ飛ばす</title>
+				<link>https://www.logical-dice.com/posts/wp/1573/</link>
+				<pubDate>Sun, 14 Oct 2018 22:01:37 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1573/</guid>
+				<description>参考サイトCircleCIの結果をSlackに通知する以下のCircle CIの基本設定は完了している前提とします。Circle&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CircleCIで自動デプロイする</title>
+				<link>https://www.logical-dice.com/posts/wp/1538/</link>
+				<pubDate>Sat, 13 Oct 2018 23:20:06 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1538/</guid>
+				<description>参考サイトCircle CIでwebサイトを自動デプロイGitHubのmasterブランチへマージされたらサーバーにデプロイされ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CircleCIでプルリク時にUnitテストが走るようにする</title>
+				<link>https://www.logical-dice.com/posts/wp/1477/</link>
+				<pubDate>Tue, 14 Aug 2018 01:30:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1477/</guid>
+				<description>CircleCIを使って、GitHubにてプルリクエストを投げた際にUnitテストが走るようにします。ソースコードはPHPで、U&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

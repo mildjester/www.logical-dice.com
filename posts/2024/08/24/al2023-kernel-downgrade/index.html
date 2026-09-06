@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>AmazonLinux2023のカーネルをダウングレードする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">AmazonLinux2023のカーネルをダウングレードする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2024-08-24 00:00:00 &#43;0000 UTC" class="catalogue-time">2024年08月24日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Amazon Linux 2023.5.20240819</li>
+</ul>
+<hr>
+<h2 id="概要">概要</h2>
+<p>AmazonLinux2023のカーネルをアップグレードしたところ、動作しなくなるツールが出てきてしまったためダウングレードしました。<br>
+その操作手順の記録です。</p>
+<h2 id="手順">手順</h2>
+<p>まず、現在のカーネルの状態を確認します。</p>
+<pre tabindex="0"><code>$uname -r
+6.1.102-111.182.amzn2023.x86_64
+
+$ sudo dnf list kernel
+kernel.x86_64   6.1.92-99.174 amzn2023     @amazonlinux
+kernel.x86_64   6.1.96-102.177.amzn2023    @amazonlinux
+kernel.x86_64   6.1.102-111.182.amzn2023   @amazonlinux
+</code></pre><p>現状は6.1.102になっていますが、6.1.96にダウングレードしていきます。</p>
+<h3 id="おそらく最短の方法">おそらく最短の方法</h3>
+<p>まず、ダウングレードして再起動します。<br>
+「パッケージ名-バージョン」と指定をすることで特定のバージョンに戻れるようです。</p>
+<pre tabindex="0"><code>$ sudo dnf downgrade kernel-6.1.96-102.177.amzn2023
+$ sudo reboot
+</code></pre><p>再起動後、カーネルを確認するとダウングレードできているはずです。</p>
+<pre tabindex="0"><code>$ uname -r
+6.1.96-102.177.amzn2023.x86_64
+</code></pre><p>適用されているバージョンは戻しましたが、最新バージョンのパッケージは残っているので削除しておきます。<br>
+こちらも「パッケージ名-バージョン」で特定バージョンのremoveができます。</p>
+<pre tabindex="0"><code>$ sudo dnf remove kernel-6.1.102-111.182.amzn2023
+</code></pre><p>これでダウングレード完了です。</p>
+<h3 id="参考実際にやった手順">参考：実際にやった手順</h3>
+<p>思考錯誤しながらやっていたので結構遠回しをしました。<br>
+まず、ダウングレードして再起動します。</p>
+<pre tabindex="0"><code>$ sudo dnf downgrade kernel
+$ sudo reboot
+</code></pre><p>再起動後、カーネルを確認してみます。</p>
+<pre tabindex="0"><code>$ uname -r
+6.1.92-99.174.amzn2023.x86_64
+</code></pre><p>戻りすぎてしまいました。<br>
+どうやらバージョン指定をしないと戻れるだけ戻ってしまうようです。</p>
+<p>なので、狙いのバージョンにアップデートします。<br>
+該当バージョンを一度削除しないとバージョンアップできないので、現バージョンより新しいものは一旦削除します。</p>
+<pre tabindex="0"><code>$ sudo dnf remove kernel-6.1.96-102.177.amzn2023
+$ sudo dnf remove kernel-6.1.102-111.182.amzn2023
+</code></pre><p>アップデートして再起動します。<br>
+この際、また新しくなり過ぎないようにreleaseverでOSのバージョンを指定します。<br>
+※後で思ったが、kernelのバージョンを指定すれば良いだけだったしれない。</p>
+<pre tabindex="0"><code>$ sudo dnf list kernel --releasever=2023.5.20240708
+kernel.x86_64   6.1.92-99.174 amzn2023     @amazonlinux
+kernel.x86_64   6.1.96-102.177.amzn2023    @amazonlinux
+↑狙いのバージョンが最新になっている事を確認。違ったらreleaseverを変える。
+
+$ sudo dnf update kernel --releasever=2023.5.20240708
+$ sudo reboot
+</code></pre><p>releaseverで指定するバージョンはAL2023のリリースノートなどを参照してください。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/linux/al2023/release-notes/relnotes.html">https://docs.aws.amazon.com/ja_jp/linux/al2023/release-notes/relnotes.html</a></p>
+<p>再起動後、カーネルを確認したら無事狙いのバージョンになっていました。</p>
+<pre tabindex="0"><code>$ uname -r
+6.1.96-102.177.amzn2023.x86_64
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

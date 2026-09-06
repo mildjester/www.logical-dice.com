@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>CircleCIでプルリク時にUnitテストが走るようにする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">CircleCIでプルリク時にUnitテストが走るようにする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-08-14 01:30:40 &#43;0000 UTC" class="catalogue-time">2018年08月14日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/circleci/">CircleCI</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/git/">git</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>CircleCIを使って、GitHubにてプルリクエストを投げた際に<br>
+Unitテストが走るようにします。</p>
+<p>ソースコードはPHPで、Unitテストにはphpunitを使っている前提とします。</p>
+<h3 id="circle-ciのアカウント登録">Circle CIのアカウント登録</h3>
+<p>Circle CIのホームページにアクセスし、右上の<code>Sign Up</code>をクリックします。<br>
+<a href="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-24-01.png"><img class="alignnone size-large wp-image-1478" src="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-24-01.png" alt="" /></a></p>
+<p>GitHubかBitBucketのアカウントでログインできるようです。<br>
+今回はGitHubのアカウントでログインしました。<br>
+<a href="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-24-25.png"><img class="alignnone size-large wp-image-1479" src="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-24-25.png" alt="" /></a></p>
+<p>連携を許可するか聞かれるので<code>Authorize circleci</code>をクリックします。<br>
+<a href="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-24-56.png"><img class="alignnone size-full wp-image-1480" src="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-24-56.png" alt="" /></a></p>
+<h3 id="circle-ciにプロジェクト作成">Circle CIにプロジェクト作成</h3>
+<p>アカウント作成が完了したらプロジェクト作成するため<code>Add Projects</code>をクリックします。<br>
+<a href="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-25-44.png"><img class="alignnone size-full wp-image-1481" src="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-25-44.png" alt="" /></a></p>
+<p>紐付けるリポジトリの<code>Set Up Project</code>をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-26-20.png" alt="" /></p>
+<p>対象リポジトリの環境を設定します。<br>
+該当するものをクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-30-49.png" alt="" /></p>
+<p>下にスクロールすると今後の流れが書いてあります。<br>
+<img src="https://www.logical-dice.com/images/2018/08/Screenshot-from-2018-08-11-00-31-51.png" alt="" /></p>
+<p>まず該当リポジトリに<code>.circleci/config.yml</code>を作成します。<br>
+config.ymlの内容はとりあえず内容はCopy To Clipboardでコピーしたもの(2018/8/11現在)に<br>
+以下の修正を加えたものにしています。<br>
+<b>①Dockerイメージ変更</b> <br>
+Dockerイメージを自分のサーバーの環境に近いものに変更します。<br>
+どのようなイメージがあるかは詳細はDockerHubで確認してください。<br>
+<a href="https://hub.docker.com/r/circleci/" rel="noopener" target="_blank"><a href="https://hub.docker.com/r/circleci/">https://hub.docker.com/r/circleci/</a></a><br>
+(使いたいDockerイメージが別にであるなら、circleci公式のイメージじゃなくても動くらしい)</p>
+<p>なお、サンプルのconfig.ymlに書いてあった<code>circleci/php:7.1.5-browsers</code>は存在しません。<br>
+サンプルのまま実行すると以下のエラーが発生します。</p>
+<pre tabindex="0"><code>Error response from daemon: manifest for circleci/php:7.1.5-browsers not found  
+</code></pre><p><b>②phpunit実行コマンドを変更</b><br>
+composerなどでphpunitを入れている場合はコマンドが違うと思うので変更します。</p>
+<p>出来上がったconfig.ymlが以下です</p>
+<pre tabindex="0"><code># PHP CircleCI 2.0 configuration file  
+#  
+# Check https://circleci.com/docs/2.0/language-php/ for more details  
+#  
+version: 2  
+jobs:  
+  build:  
+    docker:  
+      # specify the version you desire here  
+      #- image: circleci/php:7.1.5-browsers  
+      - image: circleci/php:7.1-fpm-node-browsers  
+  
+      # Specify service dependencies here if necessary  
+      # CircleCI maintains a library of pre-built images  
+      # documented at https://circleci.com/docs/2.0/circleci-images/  
+      # - image: circleci/mysql:9.4  
+  
+    working_directory: ~/repo  
+  
+    steps:  
+      - checkout  
+  
+      # Download and cache dependencies  
+      - restore_cache:  
+          keys:  
+          - v1-dependencies-{{ checksum &#34;composer.json&#34; }}  
+          # fallback to using the latest cache if no exact match is found  
+          - v1-dependencies-  
+  
+      - run: composer install -n --prefer-dist  
+  
+      - save_cache:  
+          paths:  
+            - ./vendor  
+          key: v1-dependencies-{{ checksum &#34;composer.json&#34; }}  
+  
+      # run tests!  
+      #- run: phpunit  
+      - run: vendor/phpunit/phpunit/phpunit tests/  
+</code></pre><p>これで作成したconfig.ymlをmasterリポジトリにpushしておき<br>
+さきほどのCircle CIの画面にて『Start building』をクリックします。<br>
+これで登録は完了です。</p>
+<p>該当リポジトリにてプルリクを投げると自動でphpunitのテストが走るようになります。<br>
+また、CircleCIの実行結果はデフォルトではCircleCIに設定したメールアドレスに届くようになります。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>gitコマンドチートシート(応用編)|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">gitコマンドチートシート(応用編)</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-02-01 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年02月01日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/git/">git</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>gitコマンドの応用的な使い方です。<br>
+これができればgit中級者になれるかもしれません。</p>
+<h2 id="削除されたリモートブランチの情報を削除する">削除されたリモートブランチの情報を削除する</h2>
+<p>gitはプルをする度にリモートに存在するブランチの情報を取得します。<br>
+（<code>git branch -a</code>で見れる<code>remote/xxxxx</code>がそれです)</p>
+<p>普通に<code>git pull</code>を実行するとリモートブランチの取得はしますが<br>
+リモートで削除されたブランチについては何もしてくれないので<br>
+ローカルにリモート情報として残り続けてしまいます。</p>
+<p>リモートで削除されたブランチ情報をローカルから削除したい場合は<br>
+プル実行時に以下のオプションを付与します。</p>
+<pre tabindex="0"><code>git pull --prune
+</code></pre><h2 id="強制プルforce-pull">強制プル(force pull)</h2>
+<p>ブランチの状態を強制的にリモートの状態に合わせます。<br>
+ローカルのブランチがよく分からない状態になって捨てたい時や<br>
+誰かがリモートにforce pushした物を取り込む時に使えます。<br>
+(複数人が見てるブランチでforce pushするのは外道ですが…)</p>
+<pre tabindex="0"><code>git fetch
+git reset --hard origin/{ブランチ名}
+</code></pre><p>※リモートはoriginの前提</p>
+<h2 id="直前のコミットに追加修正する">直前のコミットに追加修正する</h2>
+<p>ちょっと修正が漏れていた時などに直前のコミットに追加修正を混ぜ込む方法です。<br>
+これを使うとコミット履歴を増やさずに済みます。</p>
+<pre tabindex="0"><code>git add .
+git commit --fixup=HEAD
+git rebase -i --autosquash HEAD~2
+(このあとのrebase画面はそのまま保存して閉じる)
+</code></pre><h4 id="注意">★注意★</h4>
+<p>直前のコミットがプッシュ済みであった場合<br>
+上記コマンド後にforce pushが必要になります。<br>
+他の人と共有しているブランチにてforce pushをすると<br>
+他の人がpullできなくなる恐れがあります。<br>
+自分だけが触っているブランチで行いましょう。</p>
+<h2 id="マージ時にコミットログを1つにまとめる">マージ時にコミットログを1つにまとめる</h2>
+<p>細かくコミットをしながら作業を進めたい時などに<br>
+作業ブランチを作り、そこで遠慮なくコミットを沢山し、<br>
+その作業ブランチを元ブランチに戻す時にコミットログを1つに集約できます。</p>
+<pre tabindex="0"><code>git merge --squash {マージ対象ブランチ}
+git commit
+</code></pre><p>Commitコメントに元々のCommitログがデフォルトで記載されていますが<br>
+そこは削除してしまっても構いません。<br>
+(残しておいても良いです)</p>
+<h2 id="現在のブランチとmasterブランチの差分を確認する">現在のブランチとmasterブランチの差分を確認する</h2>
+<p>githubでプルリク送る時に見れるアレですね。<br>
+コマンドからも確認することができます。</p>
+<p>bオプションをつけることで空白の差分は無視しています。</p>
+<pre tabindex="0"><code>git diff -b origin/master
+</code></pre><p>※補足<br>
+git diffの空白無視について、bオプションとwオプションがあり<br>
+以下のような違いがあるようです。</p>
+<table>
+	<thead>
+			<tr>
+					<th>オプション</th>
+					<th>説明</th>
+					<th>「a=␣b」=&gt;「a=␣ ␣b」</th>
+					<th>「a=b」=&gt;「a=␣b」</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>b</td>
+					<td>スペースの数を無視する</td>
+					<td>無視する</td>
+					<td>無視しない</td>
+			</tr>
+			<tr>
+					<td>w</td>
+					<td>空白は全て無視する</td>
+					<td>無視する</td>
+					<td>無視する</td>
+			</tr>
+	</tbody>
+</table>
+<p>※上記表の「␣」は半角スペースとする</p>
+<h2 id="指定ファイルの指定コミットでの変更箇所を確認する">指定ファイルの指定コミットでの変更箇所を確認する</h2>
+<p>こちらもgithubでコミットログ見た時にみれるアレです。</p>
+<pre tabindex="0"><code>git diff -w {コミットID}...HEAD {ファイル名}
+例： git diff -w 11b2233...HEAD app/Controller/HogeController.php
+</code></pre><p>また、あまり使わないかもしれませんが、もし差分行だけでなくファイル全てを表示したい場合は<br>
+Uオプション(差分の前後何行を表示するかを指定する)で10000行など大きい数字を指定すれば良いです。</p>
+<pre tabindex="0"><code>git diff -w -U10000 {コミットID}...HEAD {ファイル名}
+</code></pre><h2 id="少し詳細なコミット履歴を表示する">少し詳細なコミット履歴を表示する</h2>
+<p><code>stat</code>オプションをつけることで、どのコミットでどのファイルを変更したのかが分かります。<br>
+また、<code>graph</code>オプションをつけるとブランチのマージ履歴もグラフィカルに確認できます。</p>
+<pre tabindex="0"><code>git log --stat --graph
+</code></pre><h2 id="gitコマンドのエイリアスを作る">gitコマンドのエイリアスを作る</h2>
+<p>~/.gitconfigに以下のような記載をすることでエイリアスが登録できます。</p>
+<pre tabindex="0"><code>[alias]
+	co = checkout
+	br = branch
+	logs = log --stat --graph
+</code></pre><p>こうしておくと、<code>git co</code>が<code>git checkout</code>と同様になり<br>
+<code>git logs</code>が<code>git log --stat --graph</code>と同様になったりします。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

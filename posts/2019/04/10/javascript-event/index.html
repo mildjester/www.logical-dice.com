@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>IME有効時の入力イベントを調べる|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">IME有効時の入力イベントを調べる</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-04-10 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年04月10日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/javascript/">javascript</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>PC/Android/iOSでIME有効時に入力イベントが結構違ったので調べました。<br>
+調べた環境は以下の通りです。</p>
+<table>
+	<thead>
+			<tr>
+					<th>OS</th>
+					<th>ブラウザ</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>PC (Linux Mint 19.1 MATE)</td>
+					<td>Chrome Ver.73.0</td>
+			</tr>
+			<tr>
+					<td>Android 8.0.0 (Galaxy S8)</td>
+					<td>Chrome Ver.73.0</td>
+			</tr>
+			<tr>
+					<td>iOS 12.2 (iPhone 6)</td>
+					<td>Safari 12.1</td>
+			</tr>
+	</tbody>
+</table>
+<p>テキストボックスに文字を入力した際のイベントを調べました。<br>
+調べたイベントは<code>keydown</code>, <code>keyup</code>, <code>keypress</code>, <code>textInput</code>, <code>input</code>です。</p>
+<p>（Androidはブラウザ以外にもキーボードアプリも影響あるのかな？）</p>
+<h2 id="ime有効-入力中未確定">IME有効 入力中（未確定）</h2>
+<p>ひらがなで文字を1文字ずつ入力している時のイベントです。</p>
+<table>
+	<thead>
+			<tr>
+					<th>イベント</th>
+					<th style="text-align: center">PC</th>
+					<th style="text-align: center">Android</th>
+					<th style="text-align: center">iOS</th>
+					<th>取れる値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>keydown</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>今回入力前の文字列</td>
+			</tr>
+			<tr>
+					<td>keyup</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>※OSにより違う</td>
+			</tr>
+			<tr>
+					<td>keypress</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center">○</td>
+					<td>今回入力前の文字列</td>
+			</tr>
+			<tr>
+					<td>textInput</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>input</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>今回入力後の文字列</td>
+			</tr>
+	</tbody>
+</table>
+<p>※keyupで取れる値は以下の通りでした。<br>
+PC: 前回確定済みの文字列<br>
+スマホ: 今回入力後の文字列</p>
+<p>Androidは2文字目以降はなぜか上記イベントが2周走りました。<br>
+しかも2周目はkeydownでも今回入力後の文字列が取れてます。</p>
+<h2 id="ime有効-確定時">IME有効 確定時</h2>
+<p>入力した文字を確定した時のイベントです。<br>
+PCであればEnterキーを押したタイミングの事ですね。</p>
+<p>なお、スマホでは半角英数を入力していても確定処理はあり、<br>
+挙動は以下と同じでした。</p>
+<table>
+	<thead>
+			<tr>
+					<th>イベント</th>
+					<th style="text-align: center">PC</th>
+					<th style="text-align: center">Android</th>
+					<th style="text-align: center">iOS</th>
+					<th>取れる値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>keydown</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center"></td>
+					<td>※OSにより違う</td>
+			</tr>
+			<tr>
+					<td>keyup</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center"></td>
+					<td>今回確定後の文字列</td>
+			</tr>
+			<tr>
+					<td>keypress</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>textInput</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>※OSにより違う</td>
+			</tr>
+			<tr>
+					<td>input</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>今回確定後の文字列</td>
+			</tr>
+	</tbody>
+</table>
+<p>※keydownで取れる値は以下の通りでした。<br>
+PC: 前回確定済みの文字列<br>
+Android: 今回確定後の文字列</p>
+<p>※textInputで取れる値は以下の通りでした。<br>
+PC, iOS: 前回確定済みの文字列<br>
+Android: 今回確定後の文字列</p>
+<p>iOSはなぜかinputイベントが3回走ります。<br>
+しかも、うち1回は前回確定済みの文字列がとれ、<br>
+2回は今回確定後の文字列が取れていました。</p>
+<h2 id="ime無効-入力時">IME無効 入力時</h2>
+<p>IMEを無効にして半角英数字などを入力した時のイベントです。<br>
+スマホではIMEという概念がないので、IME有効時で書いた結果と同じです。<br>
+ただし、Androidのイベントが2周走る件は発生しません。</p>
+<table>
+	<thead>
+			<tr>
+					<th>イベント</th>
+					<th style="text-align: center">PC</th>
+					<th style="text-align: center">Android</th>
+					<th style="text-align: center">iOS</th>
+					<th>取れる値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>keydown</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>入力する前の文字列</td>
+			</tr>
+			<tr>
+					<td>keyup</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>入力した後の文字列</td>
+			</tr>
+			<tr>
+					<td>keypress</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center">○</td>
+					<td>入力する前の文字列</td>
+			</tr>
+			<tr>
+					<td>textInput</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td>入力する前の文字列</td>
+			</tr>
+			<tr>
+					<td>input</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>入力した後の文字列</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="文字削除時">文字削除時</h2>
+<p>BackspaceやDeleteで文字を削除した際のイベントです。<br>
+これはOSによる差分はなさそうです。</p>
+<table>
+	<thead>
+			<tr>
+					<th>イベント</th>
+					<th style="text-align: center">PC</th>
+					<th style="text-align: center">Android</th>
+					<th style="text-align: center">iOS</th>
+					<th>取れる値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>keydown</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>削除する前の文字列</td>
+			</tr>
+			<tr>
+					<td>keyup</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>削除した後の文字列</td>
+			</tr>
+			<tr>
+					<td>keypress</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>textInput</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>input</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>削除した後の文字列</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="文字列切り取りカット時のイベント">文字列切り取り(カット)時のイベント</h2>
+<p>PCだと右クリック、スマホだと長押しして文字列の切り取りをした時のイベントです。<br>
+こちらもOSによる差分はなさそうです。</p>
+<p>なお、PCでCtrl+xで文字を切り取った場合は<br>
+文字削除時の挙動と同じでした。<br>
+(たぶんキー入力による文字削除という点で同じなのかと)</p>
+<table>
+	<thead>
+			<tr>
+					<th>イベント</th>
+					<th style="text-align: center">PC</th>
+					<th style="text-align: center">Android</th>
+					<th style="text-align: center">iOS</th>
+					<th>取れる値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>keydown</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>keyup</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>keypress</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>textInput</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>input</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>削除した後の文字列</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="文字列貼り付けペースト時のイベント">文字列貼り付け(ペースト)時のイベント</h2>
+<p>PCだと右クリック、スマホだと長押しして<br>
+文字列を貼り付けした時のイベントです。<br>
+こちらもOSによる差分はなさそうです。</p>
+<table>
+	<thead>
+			<tr>
+					<th>イベント</th>
+					<th style="text-align: center">PC</th>
+					<th style="text-align: center">Android</th>
+					<th style="text-align: center">iOS</th>
+					<th>取れる値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>keydown</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>keyup</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>keypress</td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>textInput</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>貼り付けする前の文字列</td>
+			</tr>
+			<tr>
+					<td>input</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td style="text-align: center">○</td>
+					<td>貼り付けした後の文字列</td>
+			</tr>
+	</tbody>
+</table>
+<p>なお、PCでCtrl+vで貼り付けした場合は以下でした。</p>
+<table>
+	<thead>
+			<tr>
+					<th>イベント</th>
+					<th style="text-align: center">PC</th>
+					<th>取れる値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>keydown</td>
+					<td style="text-align: center">○</td>
+					<td>貼り付けする前の文字列</td>
+			</tr>
+			<tr>
+					<td>keyup</td>
+					<td style="text-align: center">○</td>
+					<td>貼り付けした後の文字列</td>
+			</tr>
+			<tr>
+					<td>keypress</td>
+					<td style="text-align: center"></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>textInput</td>
+					<td style="text-align: center">○</td>
+					<td>貼り付けする前の文字列</td>
+			</tr>
+			<tr>
+					<td>input</td>
+					<td style="text-align: center">○</td>
+					<td>貼り付けした後の文字列</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="総評">総評</h2>
+<p>レスポンシブなサイトを作るのであれば、OSにより差分のあるイベントはフックに使わない方が安全かもしれません。<br>
+使うのであれば差分をしっかり把握した上で使わないと事故りそうです。</p>
+<p>取れる値が各イベント操作前の状態だったり操作後の状態だったりしますが<br>
+このへんはsetTimeoutをうまく使えば全て操作後の状態を取れる気がします。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

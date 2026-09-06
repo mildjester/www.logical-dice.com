@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Ruby on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/ruby/</link>
+		<description>Recent content in Ruby on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Mon, 27 Feb 2017 15:16:05 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/ruby/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Redmine2.3.2にグループ管理プラグインを入れる</title>
+				<link>https://www.logical-dice.com/posts/wp/444/</link>
+				<pubDate>Mon, 27 Feb 2017 15:16:05 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/444/</guid>
+				<description>redmineにグループ管理のプラグインを入れたが、ちゃんと動かなかったのでつまづいた所をメモする。※補足Ruby on Rai&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

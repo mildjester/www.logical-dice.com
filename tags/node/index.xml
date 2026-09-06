@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Node on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/node/</link>
+		<description>Recent content in Node on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Tue, 15 Sep 2020 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/node/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>swiper.scssがwebpackで取り込まれない</title>
+				<link>https://www.logical-dice.com/posts/2020/09/15/webpack-swiper-env-diff/</link>
+				<pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/15/webpack-swiper-env-diff/</guid>
+				<description>webpackでswiperをバンドルした際に本番環境だけswiper.scssが取り込まれなかった話です</description>
+			</item>
+			<item>
+				<title>gulp-uglifyで圧縮時に変数／関数名を圧縮させない</title>
+				<link>https://www.logical-dice.com/posts/2020/04/15/gulp-uglify-keep-name/</link>
+				<pubDate>Wed, 15 Apr 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/04/15/gulp-uglify-keep-name/</guid>
+				<description>gulp-uglifyでJSファイルを圧縮する際に変数名や関数名をそのままにする方法です。</description>
+			</item>
+			<item>
+				<title>【node】foreverチートシート</title>
+				<link>https://www.logical-dice.com/posts/wp/677/</link>
+				<pubDate>Mon, 31 Jul 2017 01:44:06 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/677/</guid>
+				<description>起動forever start {jsファイル}起動中一覧表示forever list停止forever stop {停止対象の&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Vue.js &#43; foreverでのアプリ起動</title>
+				<link>https://www.logical-dice.com/posts/wp/674/</link>
+				<pubDate>Mon, 31 Jul 2017 01:32:53 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/674/</guid>
+				<description>■環境CentOS 7.3npm 3.10.10=====2017/12/27追記=====久しぶりに本手順を試したところ、vu&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

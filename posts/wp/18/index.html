@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>メールサーバ構築（②dovecot編）|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">メールサーバ構築（②dovecot編）</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2015-08-08 15:35:56 &#43;0000 UTC" class="catalogue-time">2015年08月08日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/centos/">CentOS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>■環境<br>
+CentOS 7<br>
+dovecot 2.2.10</p>
+<p>事前に<a href="/posts/wp/9">①postfix編</a>が終わっている前提とします。</p>
+<p>必要な物をインストール</p>
+<pre tabindex="0"><code>yum -y install dovecot
+</code></pre><p>メイン設定ファイルの修正(vi /etc/dovecot/dovecot.conf)</p>
+<pre tabindex="0"><code>protocols = imap pop3  
+listen = *
+</code></pre><p>認証設定ファイルの修正(vi /etc/dovecot/conf.d/10-auth.conf)<br>
+今回はパスワードファイルでの認証方式としてます</p>
+<pre tabindex="0"><code>#disable_plaintext_auth = yes  
+auth_mechanisms = plain login digest-md5 cram-md5  
+#!include auth-system.conf.ext  
+!include auth-passwdfile.conf.ext
+</code></pre><p>メール設定ファイルの修正(vi /etc/dovecot/conf.d/10-mail.conf)</p>
+<pre tabindex="0"><code>mail_location = maildir:~/Maildir
+</code></pre><p>マスター設定ファイルの修正(vi /etc/dovecot/conf.d/10-master.conf)</p>
+<pre tabindex="0"><code>unix_listener /var/spool/postfix/private/auth {  
+  mode = 0666  
+  user = postfix  
+  group = postfix  
+}
+</code></pre><p>SSL設定ファイルの修正(vi /etc/dovecot/conf.d/10-ssl.conf)</p>
+<pre tabindex="0"><code>ssl_cert = &lt;/etc/pki/sample/sample.crt  
+ssl_key = &lt;/etc/pki/sample/sample.key  
+ssl_ca = &lt;/etc/pki/sample/sampleCA.crt  
+</code></pre><p>認証パスワードのCRAM-MD5で暗号化した文字列を生成します。</p>
+<pre tabindex="0"><code>doveadm pw -s CRAM-MD5  
+Enter new password: 設定したいパスワードを入力  
+Retype new password: 設定したいパスワードを再入力  
+{CRAM-MD5}256f41a2b646bf66ae494370947623fd7a1f496442c81a0fdd9c2b1d994eb816
+</code></pre><p>対象アカウントの情報を確認します。<br>
+このアカウント名〜ホームディレクトリまでの部分を後で使います。</p>
+<pre tabindex="0"><code>grep demouser1 /etc/passwd  
+demouser1:x:1000:1000::/home/demouser1:/sbin/nologin
+</code></pre><p>パスワードファイルを作成します(vi /etc/dovecot/users)<br>
+先ほど確認したpasswdファイルのアカウント名〜ホームディレクトリ部分をコピーし、『x』の部分に生成したCRAM-MD5の文字列をはめ込んだ行を記載すればOKです。</p>
+<pre tabindex="0"><code>demouser1:{CRAM-MD5}256f〜省略〜816:1000:1000::/home/demouser1/
+</code></pre><p>サービス起動</p>
+<pre tabindex="0"><code>systemctl start dovecot.service
+</code></pre><p>サービスの自動起動設定</p>
+<pre tabindex="0"><code>systemctl enable dovecot.service
+</code></pre><p>これでdovecotの設定は完了です。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

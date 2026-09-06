@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>gitコマンドで複数のGitHubアカウントを使い分ける|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">gitコマンドで複数のGitHubアカウントを使い分ける</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-11-14 20:37:00 &#43;0000 UTC" class="catalogue-time">2018年11月14日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/git/">git</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">環境</h3>
+<p>Mac OS<br>
+(Linuxでも動く気がします）</p>
+<hr>
+<h4 id="-2019329追記">※ 2019/3/29追記</h4>
+<p>GitHubの利用規約にて1個人で複数の無料アカウントを運用する事は禁止されているようでした。<br>
+<a href="https://help.github.com/en/posts/github-terms-of-service#b-account-terms">https://help.github.com/en/posts/github-terms-of-service#b-account-terms</a></p>
+<p>もし複数の無料アカウントを利用している場合はアカウントの統合などを検討した方が良いです。<br>
+無料アカウントと有料アカウントを使い分ける場合などは本手順を参考にして貰えればと思います。</p>
+<h3 id="概要">概要</h3>
+<p>GitHubではアカウントに秘密鍵が紐づいており<br>
+<code>git</code> コマンドを実行した際に指定した秘密鍵で利用アカウントを判定しています。<br>
+（秘密鍵未指定の場合はデフォルトの秘密鍵）</p>
+<p>フリーランスをしていると自分のGitHubアカウントとは別で<br>
+取引先様のGitHubアカウントを作成する必要があったりするのですが<br>
+１台のPCで複数GitHubアカウントを使っていると秘密鍵の切り替えが面倒です。</p>
+<p>私も最初はこちらの記事のように<code>.ssh/config</code>に別ホストとして設定していたのですが<br>
+これだとcloneする時などにいちいちホスト名を書き換えたりしなければいけなかったりして<br>
+それも少し面倒でした。（特にリポジトリが沢山あるプロジェクトだったので）<br>
+<a href="https://qiita.com/yamataku29/items/4744c9c70ad793c83b82" rel="noopener" target="_blank"><a href="https://qiita.com/yamataku29/items/4744c9c70ad793c83b82">https://qiita.com/yamataku29/items/4744c9c70ad793c83b82</a></a></p>
+<p>というわけで<br>
+リポジトリ所有者（ユーザーもしくはOrganizations）と秘密鍵の紐づけを設定しておけば<br>
+自動でgitコマンド実行時に秘密鍵を使い分けてくれるスクリプトを作りました。</p>
+<p>こちらです<br>
+<a href="https://github.com/mildjester/gits" rel="noopener" target="_blank"><a href="https://github.com/mildjester/gits">https://github.com/mildjester/gits</a></a></p>
+<hr>
+<h3 id="使い方">使い方</h3>
+<p>①cloneでもZIPダウンロードでも良いので上記リポジトリをダウンロードしてきます。</p>
+<p>②<code>config_template</code>を同ディレクトリに<code>config</code>という名前でコピーします。</p>
+<p>③コピーして生成した<code>config</code>の以下変数を設定します<br>
+■defaultKey<br>
+デフォルトの秘密鍵へのパス。基本的にテンプレートのままでいいはず。</p>
+<p>■specialKeys<br>
+デフォルト以外の秘密鍵を使うリポジトリ所有者と秘密鍵の紐付け一覧。<br>
+形式は『リポジトリ所有者::秘密鍵のパス』なので<br>
+例えば「所有者AAA」のリポジトリに使う秘密鍵は<code><del>/.ssh/id_rsa_1</code>、<br>
+「所有者BBB」のリポジトリに使う秘密鍵は<code></del>/.ssh/id_rsa_2</code>とする場合は<br>
+以下のようになります。</p>
+<pre tabindex="0"><code>specialKeys=(  
+    &#39;AAA::~/.ssh/id_rsa_1&#39;  
+    &#39;BBB::~/.ssh/id_rsa_2&#39;  
+)  
+</code></pre><p>④<code>~/.bashrc</code>に以下のエイリアスを追記しておきます。<br>
+通常使っているシェルがbash以外（zshやfishなど）の場合は、そちらの設定ファイルへ追記してください。</p>
+<pre tabindex="0"><code># gitコマンドを置き換える  
+alias git=&#34;/path-to-gits-repository/gits.sh&#34;  
+</code></pre><p>※path-to-gits-repositoryはリポジトリをcloneまたはダウンロードしてきたディレクトリを指定してください</p>
+<p>これで何も考えずにgitコマンドを打っても、裏で勝手に秘密鍵を切り替えてくれるようになります。</p>
+<h3 id="備考ghqを使っている場合">備考：ghqを使っている場合</h3>
+<p>私は<code>git clone</code>よりも<code>ghq get</code>をよく使うので、そのスクリプトも用意しました。<br>
+基本的な設定は上記と同じで、エイリアスの設定だけ追加します。</p>
+<pre tabindex="0"><code>alias ghq_get=&#34;~/git/github.com/mildjester/gits/ghq_get.sh&#34;  
+</code></pre><p>こちらは完全にコマンドを置き換える訳ではないのですが<br>
+以下のコマンドでリポジトリを取得する事ができるようになります。<br>
+(ghqとgetの間がスペースではなくアンダーバーになるだけ)</p>
+<pre tabindex="0"><code>ghq_get git@github.com:AAAA/hogehoge.git  
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Vue.js on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/vue.js/</link>
+		<description>Recent content in Vue.js on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 07 Jan 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/vue.js/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Typescript &#43; Vue.jsで子コンポーネントのプロパティにアクセスする</title>
+				<link>https://www.logical-dice.com/posts/2021/01/07/git-revert-revert/</link>
+				<pubDate>Thu, 07 Jan 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/01/07/git-revert-revert/</guid>
+				<description>Typescript + Vue.jsで子コンポーネントのプロパティにアクセスする方法です。</description>
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【AWS】Setting Up a VPN Server in India Using Lightsail|Logical Dice Techblog</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice Techblog" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/en/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice Techblog" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【AWS】Setting Up a VPN Server in India Using Lightsail</h1>
+		<div class="post-info">
+				<p class="publish-date">posted: <time datetime="2023-07-04 00:00:00 &#43;0000 UTC" class="catalogue-time">2023-07-04</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>Due to certain requirements, I needed an Indian IP address, so I set up a VPN server in India.<br>
+To keep things simple, I used AWS Lightsail.</p>
+<h1 id="-setup-steps">■ Setup Steps</h1>
+<p>※Assumes you already have an AWS account.</p>
+<p>Open the Lightsail management console and create a new instance.<br>
+<img src="https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india001.png"/></p>
+<p>Set the instance region to <strong>Mumbai, India (ap-south-1a)</strong> and launch it with only <strong>Amazon Linux</strong> as the OS.<br>
+<img src="https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india002.png"/></p>
+<p>Since this VPN was for personal use, I selected the cheapest pricing plan.<br>
+Feel free to choose a plan based on your needs.<br>
+<img src="https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india003.png"/></p>
+<p>Now, create the instance.<br>
+After a short wait, the instance will be up and running. Click <strong>&ldquo;Connect&rdquo;</strong> from the vertical three-dot menu.<br>
+<img src="https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india004.png"/></p>
+<p>A console will open in the web browser, where you can launch a VPN server using a Docker image.<br>
+Feel free to modify the following values as needed:</p>
+<ul>
+<li><strong>common_key</strong>: Pre-shared key for VPN authentication</li>
+<li><strong>user</strong>: VPN username</li>
+<li><strong>password</strong>: VPN password</li>
+</ul>
+<pre tabindex="0"><code>$ sudo -i
+# yum install -y docker
+# systemctl start docker
+# systemctl enable docker
+# docker run -d --privileged -p 500:500/udp -p 4500:4500/udp -p 1701:1701/tcp -p 5555:5555/tcp -e PSK=&#39;common_key&#39; -e USERS=&#39;user:password&#39; siomiz/softethervpn
+</code></pre><p>This completes the setup inside the instance.<br>
+Next, configure the network settings.</p>
+<p>Go to the instance settings page in the Lightsail console and navigate to the <strong>Networking</strong> tab.<br>
+Click <strong>&ldquo;Attach Static IP&rdquo;</strong> and follow the prompts to assign a static IP address.<br>
+<img src="https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india005.png"/></p>
+<p>Next, modify the <strong>Firewall settings</strong> to allow the following ports:</p>
+<ul>
+<li><strong>TCP 1701</strong></li>
+<li><strong>TCP 5555</strong></li>
+<li><strong>UDP 500</strong></li>
+<li><strong>UDP 4500</strong></li>
+</ul>
+<p>For security, consider closing ports like <strong>22 (SSH)</strong> and <strong>80 (HTTP)</strong> if not needed.<br>
+<img src="https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india006.png"/></p>
+<p>With this, the VPN server setup is complete.<br>
+Now, let&rsquo;s connect from a Mac.</p>
+<p>In <strong>Network Preferences</strong>, add a new <strong>L2TP over IPsec VPN</strong> connection.<br>
+Use the <strong>static IP address</strong> assigned to your instance as the server address.<br>
+Enter the <strong>username and password</strong> you specified in the VPN setup command.<br>
+<img src="https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india007.png"/></p>
+<p>Under VPN options, enable <strong>&ldquo;Send all traffic over VPN connection&rdquo;</strong> to route all traffic through the VPN.<br>
+<img src="https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india008.png"/></p>
+<p>Once the settings are complete, click <strong>OK</strong> and connect to the VPN.<br>
+You can verify that your IP is now in <strong>Mumbai</strong> using the following tool:<br>
+<a href="https://rakko.tools/tools/2/">https://rakko.tools/tools/2/</a></p>
+<p>That&rsquo;s it! Your VPN server is now ready to use.</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Javascript on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/javascript/</link>
+		<description>Recent content in Javascript on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Sun, 06 Jun 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>lodashのdebounceとthrottleの違い</title>
+				<link>https://www.logical-dice.com/posts/2021/06/06/lodash-debounce-vs-throttle/</link>
+				<pubDate>Sun, 06 Jun 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/06/06/lodash-debounce-vs-throttle/</guid>
+				<description>debounceとthrottleの違いを調べた際のメモです。</description>
+			</item>
+			<item>
+				<title>javascriptでライブラリ無しでオートコンプリート</title>
+				<link>https://www.logical-dice.com/posts/2020/10/25/javascript-autocomplete/</link>
+				<pubDate>Sun, 25 Oct 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/10/25/javascript-autocomplete/</guid>
+				<description>javascriptでライブラリを使わずにカーソルキーで選択できるオートコンプリートを実装します。</description>
+			</item>
+			<item>
+				<title>GitHubの草を炭治郎柄にする</title>
+				<link>https://www.logical-dice.com/posts/2020/07/16/bookmarklet-kimetsu/</link>
+				<pubDate>Thu, 16 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/07/16/bookmarklet-kimetsu/</guid>
+				<description>Bookmarkletを使ってGitHubの草を炭治郎の着物柄にします。</description>
+			</item>
+			<item>
+				<title>Bookmarklet(ブックマークレット)の作り方</title>
+				<link>https://www.logical-dice.com/posts/2020/07/15/howto-make-bookmarklet/</link>
+				<pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/07/15/howto-make-bookmarklet/</guid>
+				<description>uglify-jsを使ってBookmarkletを作る方法をざっくりと説明</description>
+			</item>
+			<item>
+				<title>gulp-uglifyで圧縮時に変数／関数名を圧縮させない</title>
+				<link>https://www.logical-dice.com/posts/2020/04/15/gulp-uglify-keep-name/</link>
+				<pubDate>Wed, 15 Apr 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/04/15/gulp-uglify-keep-name/</guid>
+				<description>gulp-uglifyでJSファイルを圧縮する際に変数名や関数名をそのままにする方法です。</description>
+			</item>
+			<item>
+				<title>javascriptの入力イベントでIME未確定時は発火させない設定方法</title>
+				<link>https://www.logical-dice.com/posts/2020/03/20/javascript-input-event/</link>
+				<pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/20/javascript-input-event/</guid>
+				<description>テキスト入力イベントでIME未確定時には発火させたくないので調べました</description>
+			</item>
+			<item>
+				<title>Bookmarkletでパスワードを自動で入力させる</title>
+				<link>https://www.logical-dice.com/posts/2019/10/02/bookmarklet-mizuho/</link>
+				<pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/10/02/bookmarklet-mizuho/</guid>
+				<description>みずほダイレクトで振込時の第2暗証番号を調べるのが面倒だったので、ワンクリックで自動抽出できるようにしました</description>
+			</item>
+			<item>
+				<title>IME有効時の入力イベントを調べる</title>
+				<link>https://www.logical-dice.com/posts/2019/04/10/javascript-event/</link>
+				<pubDate>Wed, 10 Apr 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/04/10/javascript-event/</guid>
+				<description>PC/Android/iOSでIME有効時に入力イベントが結構違ったので調べました。</description>
+			</item>
+			<item>
+				<title>window.onloadが動かない</title>
+				<link>https://www.logical-dice.com/posts/2019/01/26/javascript-window-load/</link>
+				<pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/26/javascript-window-load/</guid>
+				<description>window.onloadが動かない原因の1つについて</description>
+			</item>
+			<item>
+				<title>同じForm内に複数のreCAPTCHA認証ボタンを設置する</title>
+				<link>https://www.logical-dice.com/posts/wp/1627/</link>
+				<pubDate>Fri, 26 Oct 2018 13:27:25 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1627/</guid>
+				<description>WEBページのreCAPTCHA対応しているform内に複数のsubmitボタンを設置する方法です。前提としてPOSTデータより&amp;hellip;</description>
+			</item>
+			<item>
+				<title>数字入力フォームに文字数制限をつける</title>
+				<link>https://www.logical-dice.com/posts/wp/1352/</link>
+				<pubDate>Fri, 18 May 2018 21:53:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1352/</guid>
+				<description>数字入力フォームに文字数制限をつける方法です</description>
+			</item>
+	</channel>
+</rss>

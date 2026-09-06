@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Ubuntu on Logical Dice Techblog</title>
+		<link>https://www.logical-dice.com/en/tags/ubuntu/</link>
+		<description>Recent content in Ubuntu on Logical Dice Techblog</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Wed, 17 Feb 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/en/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Using Howdy for Face Recognition on Ubuntu</title>
+				<link>https://www.logical-dice.com/en/posts/2021/02/17/ubuntu-howdy/</link>
+				<pubDate>Wed, 17 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/02/17/ubuntu-howdy/</guid>
+				<description>Configuration for enabling face recognition on Ubuntu 20.10.</description>
+			</item>
+			<item>
+				<title>Setting Up a Multifunction Mouse on Ubuntu</title>
+				<link>https://www.logical-dice.com/en/posts/2021/02/14/ubuntu-mouse-keymap/</link>
+				<pubDate>Sun, 14 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/02/14/ubuntu-mouse-keymap/</guid>
+				<description>Notes on button mapping for a multifunction mouse on Ubuntu 20.10.</description>
+			</item>
+			<item>
+				<title>Initial Setup for Ubuntu 20.10</title>
+				<link>https://www.logical-dice.com/en/posts/2021/02/11/ubuntu-20-10-initialize/</link>
+				<pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/02/11/ubuntu-20-10-initialize/</guid>
+				<description>Notes on installing Ubuntu 20.10 on a Thinkpad T480.</description>
+			</item>
+	</channel>
+</rss>

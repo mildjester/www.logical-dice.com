@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>terminator &#43; fish &#43; fishermanの導入|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">terminator &#43; fish &#43; fishermanの導入</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-03-10 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年03月10日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/ubuntu/">ubuntu</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>Linux Mint 19.1 &ldquo;Tessa&rdquo; - MATE (64-bit)<br>
+ubuntu 19.10</p>
+<hr>
+<p>※以降のaptコマンドはUbuntuの場合はsudoを付けてください。</p>
+<h2 id="terminatorインストール">terminatorインストール</h2>
+<p>terminatorをインストールします。</p>
+<pre tabindex="0"><code>apt install terminator
+</code></pre><blockquote>
+<p>(※2019年11月追記)<br>
+Terminatorもいいですが、Tilixというターミナルも良いです。<br>
+詳しくは↓こちら↓<br>
+<a href="/posts/2019/11/08/ubuntu-tilix/">Linux用ターミナル『Tilix』</a></p>
+</blockquote>
+<h2 id="fishインストール">fishインストール</h2>
+<p>fishをインストールします。</p>
+<pre tabindex="0"><code>apt install fish
+</code></pre><p>インストール後、反映するため一度ログアウトします。</p>
+<p>なお、Terminatorはデフォルトのウィンドウサイズが微妙なので変更した方が良いです。<br>
+<a href="/posts/2019/03/10/linux-mint-terminator-size/">Terminatorのデフォルトサイズを変更する</a></p>
+<h2 id="fishをデフォルトシェルに設定">fishをデフォルトシェルに設定</h2>
+<pre tabindex="0"><code>$ grep fish /etc/shells  
+/usr/bin/fish   ←表示されなかったら`which fish`の結果を/etc/shellsに追記する  
+$ chsh -s /usr/bin/fish  
+</code></pre><h2 id="fishermanのインストール">fishermanのインストール</h2>
+<p>fishermanというfishのプラグイン管理ツールがあります。</p>
+<p>fishermanのgithubベージにインストールコマンドが載っています。<br>
+<a href="https://github.com/fisherman/fisherman">https://github.com/fisherman/fisherman</a></p>
+<pre tabindex="0"><code>$ curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish  
+$ fisher -v  
+fisher version 3.1.1 ~/.config/fish/functions/fisher.fish  
+</code></pre><p>※<code>fisher -v</code>でバージョンが出ない場合は、一回ターミナルを開き直してください。</p>
+<h2 id="テーマの変更">テーマの変更</h2>
+<p>fishはテーマを変更することで見栄えが変えられます。<br>
+どのようなテーマがあるかは、以下ページが参考になります。<br>
+<a href="https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md">https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md</a></p>
+<p>私は「bobthefish」というテーマを利用しており、以下手順でインストールしています。</p>
+<pre tabindex="0"><code>$ fisher install oh-my-fish/theme-bobthefish     # fisherのバージョンによってはfisher installではなくfisher add
+</code></pre><p>bobthefishではPowerLineのフォントが必要なので、そちらもインストールします。</p>
+<blockquote>
+<p>2020/09/02追記<br>
+windows terminalでは下記のコマンドでインストールしたフォントが上手く使えませんでした。<br>
+Cascadia Codeというフォントをインストールしてください。<br>
+<a href="https://docs.microsoft.com/ja-jp/windows/terminal/cascadia-code">https://docs.microsoft.com/ja-jp/windows/terminal/cascadia-code</a><br>
+ダウンロードしたttfファイルを右クリックからインストールすると使えるようになります。</p>
+</blockquote>
+<pre tabindex="0"><code>$ git clone https://github.com/powerline/fonts.git  
+$ fonts/install.sh  
+$ rm -rf fonts  
+</code></pre><p>上記コマンド実施後、ターミナルアプリの設定でインストールしたフォントを指定してください。<br>
+terminatorであればターミナル上で右クリックをして「設定」を開き、<br>
+「プロファイル＞一般＞Font」にてフォントを「○○○ for Powerline」のどれかに変更してください。<br>
+フォントを変更できない場合は「システムの固定幅フォントを使う」のチェックを外してください。</p>
+<p>個人的には「Meslo LG M for Powerline」が好きです。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-11-10-05-46.png" alt=""/></p>
+<h2 id="その他プラグイン">その他プラグイン</h2>
+<p>fishermanを使って他にも様々なプラグインをインストールできます。</p>
+<h4 id="peco">■peco</h4>
+<p>pecoをインストールします。<br>
+(ubuntuの場合はaptの前にsudoを付けてください)</p>
+<pre tabindex="0"><code>apt install peco
+fisher install oh-my-fish/plugin-peco
+</code></pre><p>インストール後、fishのコンフィグファイル(~/.config/fish/config.fish)へ以下のように記載します。<br>
+fishのコンフィグファイルが存在しない場合は新規作成してください。</p>
+<pre tabindex="0"><code>function fish_user_key_bindings
+  bind \cr &#39;peco_select_history (commandline -b)&#39; # peco
+end
+</code></pre><p>【使い方】<br>
+「Ctrl + R」でコマンド履歴検索画面が開きます。<br>
+検索画面では直近のコマンドから選択することもできますし、文字列を入力すれば該当の文字列を含むコマンド履歴に絞ることもできます。</p>
+<h4 id="ghq">■ghq</h4>
+<p>まずgolangをインストールします。</p>
+<blockquote>
+<p>※2020年7月追記<br>
+Linux Mint 20では<code>apt install golang</code>だけで大丈夫です。</p>
+</blockquote>
+<blockquote>
+<p>※2020年3月追記<br>
+デフォルトでインストールできるgolangのバージョンはLinux Mintは1.10,Ubuntuは1.12なのですが(2020年3月現在)<br>
+ver.1.12ではghqインストール時にエラーが出てしまうので新バージョンのgolangを取得できるようにします。</p>
+<p>GitHubのgolangのwikiを見て作業します。<br>
+<a href="https://github.com/golang/go/wiki/Ubuntu">https://github.com/golang/go/wiki/Ubuntu</a></p>
+<p>2020年3月現在の手順は以下の通りでした。</p>
+</blockquote>
+<pre tabindex="0"><code>sudo add-apt-repository ppa:longsleep/golang-backports
+sudo apt update
+sudo apt install golang-go
+</code></pre><p>インストールが完了したらgoの設定をします。</p>
+<pre tabindex="0"><code>echo &#39;set -x GOPATH $HOME/go&#39; &gt;&gt; ~/.config/fish/config.fish
+echo &#39;set -x PATH $GOPATH/bin $PATH&#39; &gt;&gt; ~/.config/fish/config.fish
+mkdir -p ~/go/bin
+source ~/.config/fish/config.fish
+</code></pre><p>続いてghqをインストールします。<br>
+ghqのfisherman用リポジトリは元々<code>yoshiori/fish-peco_select_ghq_repository</code>なのですが<br>
+そちらだとgitリポジトリ遷移時にシェルが多重で開くようになってしまったので<br>
+シェルが多重で開かない版を自分のリポジトリ(<code>mildjester/fish-peco_select_ghq_repository</code>)に用意してあります。</p>
+<p>※yoshioriさんのソースに不具合があるのではなく、あるべき形になったらLinux系のシェル(?)と相性が悪くなっただけだと思います。</p>
+<pre tabindex="0"><code>go get github.com/motemen/ghq
+fisher install mildjester/fish-peco_select_ghq_repository
+</code></pre><p>インストール後、fishのコンフィグファイル(~/.config/fish/config.fish)へ以下のように記載します。<br>
+上記のpecoの設定に追記する前提としています。</p>
+<pre tabindex="0"><code>function fish_user_key_bindings
+  bind \cr &#39;peco_select_history (commandline -b)&#39; # peco
+  bind \c] peco_select_ghq_repository # ghq
+end
+</code></pre><p>【使い方】<br>
+<code>ghq get {gitリポジトリURL}</code> コマンドで新規gitリポジトリをローカルに取得します。<br>
+(<code>git clone</code>を<code>ghq get</code>に置き換えるだけ)</p>
+<p>「Ctrl + ]」でghqで管理しているgitリポジトリを選択してディレクトリへ移動できます。<br>
+デフォルトでは<code>ghq get</code>で取得したリポジトリは<code>~/ghq</code>配下に格納されるのですが<br>
+<code>~/.gitconfig</code>に以下を記載しておくと任意の階層に格納するよう変更できます。</p>
+<pre tabindex="0"><code>[ghq]
+    root = 好きなディレクトリ
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>MySQLの文字コードを設定する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">MySQLの文字コードを設定する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2016-01-20 22:36:39 &#43;0000 UTC" class="catalogue-time">2016年01月20日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/mysql/">MySQL</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>MySQLで文字コードを設定する方法です。<br>
+■環境<br>
+MySQL 5.6.26</p>
+<p>これからDBの作成をする場合は、設定ファイル「/etc/my.cnf」に追記することで<br>
+作成するDBの文字コードを設定できます。</p>
+<pre tabindex="0"><code>[mysqld]  
+character-set-server=utf8  
+[client]  
+default-character-set=utf8
+</code></pre><p>作成済みDBの文字コードを設定する場合は以下のコマンドを実行してください。</p>
+<pre tabindex="0"><code># mysql  
+mysql&gt; ALTER DATABASE sample_db CHARACTER SET utf8;  
+mysql&gt; SHOW CREATE DATABASE sample_db;
+</code></pre><p>作成済みテーブルの文字コードを設定する場合は以下のコマンドを実行してください。</p>
+<pre tabindex="0"><code># mysql  
+【テーブルとカラム両方に設定する場合】mysql&gt; ALTER TABLE sample_table CONVERT TO CHARACTER SET utf8;  
+【テーブルのみ設定する場合】mysql&gt; ALTER TABLE sample_table charset=utf8;  
+mysql&gt; SHOW CREATE TABLE sample_table;
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

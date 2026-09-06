@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>CircleCIからAWS Code Deployを実行する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">CircleCIからAWS Code Deployを実行する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-03-04 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年03月04日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/circleci/">CircleCI</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p><a href="/posts/2019/02/28/aws-code-deploy/">前記事</a>にてCodeDeployの設定は完了したので、それをCircleCIから実行します。</p>
+<p>公式の手順ではS3に一度ソースコードを置いてからEC2に展開しているのですが、<br>
+できればS3は使いたくなかったのでこちらの記事を参考にしました。<br>
+<a href="https://qiita.com/devalon/items/99373f54998f238ec47a">CircleCI+AWS-CodedeployでStaging環境などに自動デプロイさせる</a></p>
+<h2 id="iam準備">IAM準備</h2>
+<p>CircleCI用のIAMユーザーを作成します。<br>
+まず適当なユーザー名をつけ、アクセスの種類は『プログラムによるアクセス』にチェックをつけ次のステップへ進みます。<br>
+<img src="https://www.logical-dice.com/images/2019/03/AWS-CodeDeploy-CircleCI-001.png"/></p>
+<p>既存ポリシーの『AWSCodeDeployFullAccess』を付与して次のステップへ進みます。<br>
+<img src="https://www.logical-dice.com/images/2019/03/AWS-CodeDeploy-CircleCI-002.png"/></p>
+<p>タグは不要なので、そのまま次のステップに進んで大丈夫です。<br>
+<img src="https://www.logical-dice.com/images/2019/03/AWS-CodeDeploy-CircleCI-003.png"/></p>
+<p>ユーザーの作成をします。<br>
+<img src="https://www.logical-dice.com/images/2019/03/AWS-CodeDeploy-CircleCI-004.png"/></p>
+<p>作成したユーザーの「アクセスキーID」と「シークレットアクセスキー」をメモして終了です。<br>
+※シークレットアクセスキーはこのタイミングでしか確認できないので忘れないよう注意<br>
+<img src="https://www.logical-dice.com/images/2019/03/AWS-CodeDeploy-CircleCI-005.png"/></p>
+<h2 id="circleciの設定ファイル作成">CircleCIの設定ファイル作成</h2>
+<p>リポジトリ内に<code>.circleci/config.yml</code>を作成し、以下のように記載します。</p>
+<pre tabindex="0"><code>version: 2
+jobs:
+  deploy:
+    docker:
+      - image: cdssnc/aws-cli
+    steps:
+      - run:
+          name: &#34;Set AWS region&#34;
+          command: aws configure set region ap-northeast-1
+      - run:
+          name: &#34;Run AWS CodeDeploy&#34;
+          command: aws deploy create-deployment --application-name ${DEPLOY_APPLICATION} --deployment-group-name ${DEPLOY_GROUP} --github-location repository=&#34;${DEPLOY_REPOSITORY}&#34;,commitId=&#34;${CIRCLE_SHA1}&#34;
+workflows:
+  version: 2
+  build_deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only: master
+</code></pre><p>AWS CodeDeployをキックすることしか記載していないので、他にも処理が必要な場合は追記してください。</p>
+<p>なお、以下の値は後ほどCircleCIの環境変数にて設定するので変数にしています。<br>
+変数にせずに直接<code>config.yml</code>に書き込んでも良いです。</p>
+<table>
+	<thead>
+			<tr>
+					<th>変数名</th>
+					<th>内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>DEPLOY_APPLICATION</td>
+					<td>前記事にて設定したCodeDeployのアプリケーション名</td>
+			</tr>
+			<tr>
+					<td>DEPLOY_GROUP</td>
+					<td>前記事にて設定したCodeDeployのデプロイグループ</td>
+			</tr>
+			<tr>
+					<td>DEPLOY_REPOSITORY</td>
+					<td>デプロイ対象のGitHubリポジトリ(「ユーザー名/リポジトリ名」形式)</td>
+			</tr>
+	</tbody>
+</table>
+<p>作成できたらGitHubのmasterブランチにプッシュしておきます。</p>
+<h2 id="circleciの設定">CircleCIの設定</h2>
+<p>まずCircleCIにさきほどのconfig.ymlに設定した環境変数を設定します。</p>
+<p>CircleCIの基本的な設定はこちらを参照してください。</p>
+<ul>
+<li><a href="/posts/wp/1477/">アカウント作成〜基本設定</a></li>
+<li><a href="/posts/wp/1538/">環境変数の設定方法</a></li>
+</ul>
+<p>次に作成したAWSのIAMユーザーのキーを設定します。<br>
+CircleCIのプロジェクトの設定画面を開き（プロジェクト画面で歯車ボタンをクリック）<br>
+『PERMISSIONS &gt; AWS Permissions』を開くと設定できます。<br>
+<img src="https://www.logical-dice.com/images/2019/03/AWS-CodeDeploy-CircleCI-006.png"/></p>
+<p>これで設定は完了です。<br>
+masterブランチにマージorプッシュされるとCircleCIとCodeDeployが走って自動デプロイされます。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Wordpressの画像をS3&#43;CloudFrontで配信する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Wordpressの画像をS3&#43;CloudFrontで配信する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-12-11 19:30:54 &#43;0000 UTC" class="catalogue-time">2018年12月11日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/wordpress/">Wordpress</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<p>WordPress 4.8.3</p>
+<hr>
+<h2 id="aws設定手順">AWS設定手順</h2>
+<h3 id="iam設定">IAM設定</h3>
+<p>まず、WordpressとAWSの連携に使うIAMユーザーを準備します<br>
+今回の手順ではバケット側のポリシーで権限付与するので<br>
+IAM側の権限設定は適当で良いです</p>
+<p>準備したIAMユーザーの以下を控えておいてください<br>
+・ARN<br>
+・アクセスキーID<br>
+・シークレットアクセスキー</p>
+<h3 id="s3設定">S3設定</h3>
+<p>次にS3にてWordpress用のバケットを用意し<br>
+バケットポリシーに以下を設定します</p>
+<pre tabindex="0"><code>{  
+    &#34;Version&#34;: &#34;2012-10-17&#34;,  
+    &#34;Statement&#34;: [  
+        {  
+            &#34;Sid&#34;: &#34;AllowBucketAccess&#34;,  
+            &#34;Effect&#34;: &#34;Allow&#34;,  
+            &#34;Principal&#34;: {  
+                &#34;AWS&#34;: &#34;arn:aws:iam::準備したIAMのARN&#34;  
+            },  
+            &#34;Action&#34;: [  
+                &#34;s3:GetBucketLocation&#34;,  
+                &#34;s3:ListBucket&#34;,  
+                &#34;s3:PutObject&#34;,  
+                &#34;s3:PutObjectAcl&#34;,  
+                &#34;s3:GetObject&#34;,  
+                &#34;s3:DeleteObject&#34;  
+            ],  
+            &#34;Resource&#34;: [  
+                &#34;arn:aws:s3:::対象のバケット/*&#34;,  
+                &#34;arn:aws:s3:::対象のバケット&#34;  
+            ]  
+        }  
+    ]  
+}  
+</code></pre><h3 id="cloudfront設定">CloudFront設定</h3>
+<p>ユーザーにS3へ直接画像を取りに来させる事も可能なのですが<br>
+転送料金が結構高くなるのでCloudFront経由でS3に繋がせるようにします</p>
+<p>まずloudFrontの設定画面にて「Create Distribution」をクリックします</p>
+<h2><a href="https://www.logical-dice.com/images/2018/12/CloudFront001.png"><img class="alignnone wp-image-1808 size-large" src="https://www.logical-dice.com/images/2018/12/CloudFront001.png" alt="" width="648" height="97"></a></h2>
+<p>次にWebの「Get Started」をクリックします。</p>
+<h2><a href="https://www.logical-dice.com/images/2018/12/CloudFront002.png"><img class="alignnone wp-image-1809 size-large" src="https://www.logical-dice.com/images/2018/12/CloudFront002.png" alt="" width="648" height="184"></a></h2>
+<p>「Origin Domain Name」にCloud Front経由にしたいS3バケットを指定します<br>
+テキストボックスに見えますが、クリックすると選択肢が表示されます<br>
+「Origin Domain Name」を選択すると、「Origin ID」にも勝手に値が入ります</p>
+<h2><a href="https://www.logical-dice.com/images/2018/12/CloudFront003.png"><img class="alignnone wp-image-1810 size-large" src="https://www.logical-dice.com/images/2018/12/CloudFront003.png" alt="" width="648" height="220"></a></h2>
+<p>上記入力したら下までスクロールして「Create Distribution」をクリックします</p>
+<p>CloudFrontの一覧に戻りますので<br>
+先ほど作成したDistributionのStatusが『Deployed』になるのを待ちます</p>
+<h2><a href="https://www.logical-dice.com/images/2018/12/CloudFront004.png"><img class="alignnone size-large wp-image-1811" src="https://www.logical-dice.com/images/2018/12/CloudFront004.png" alt="" width="648" height="205"></a></h2>
+<p>これでCloudFront経由でS3へアクセスできるようになりました<br>
+アクセスできるドメインは上図の「Domain Name」を参照してください</p>
+<p>独自ドメインでアクセスしたい場合は上部メニューの<br>
+「Distribution Settings」より編集画面を開き<br>
+以下のように設定してください</p>
+<h2><a href="https://www.logical-dice.com/images/2018/12/CloudFront005.png"><img class="alignnone size-large wp-image-1812" src="https://www.logical-dice.com/images/2018/12/CloudFront005.png" alt="" width="648" height="318"></a></h2>
+<h3 id="route-53設定">Route 53設定</h3>
+<p>CloudFrontを独自ドメインで使う場合はDNS設定もしておきます</p>
+<h2><a href="https://www.logical-dice.com/images/2018/12/Route53-001.png"><img class="alignnone size-full wp-image-1813" src="https://www.logical-dice.com/images/2018/12/Route53-001.png" alt="" width="412" height="435"></a></h2>
+<h2 id="wordpress設定">Wordpress設定</h2>
+<p>まずは普通にWordpressを構築します<br>
+（ここは手順割愛）</p>
+<h3 id="プラグインamazon-web-services">プラグイン：Amazon Web Services</h3>
+<p>プラグインの新規追加で『Amazon Web Services』を入れます<br>
+<a href="https://www.logical-dice.com/images/2018/12/Wordpress-S3-001.png"><img class="alignnone size-medium wp-image-1775" src="https://www.logical-dice.com/images/2018/12/Wordpress-S3-001.png" alt="" width="300" height="178"></a></p>
+<p>次にwp-config.phpにIAMのアクセスキーを設定します<br>
+（下記「AAA…」と「BBB…」は該当のものに書き換えてください）</p>
+<pre tabindex="0"><code>define( &#39;DBI_AWS_ACCESS_KEY_ID&#39;, &#39;AAAAAAAAAAAAAAAAA&#39; );  
+define( &#39;DBI_AWS_SECRET_ACCESS_KEY&#39;, &#39;BBBBBBBBBBBBBBB&#39; );  
+</code></pre><p>これでWordpressとAWSの連携ができるようになります</p>
+<h3 id="プラグインwp-offload-media-lite">プラグイン：WP Offload Media Lite</h3>
+<p>次にプラグインの新規追加で『WP Offload Media Lite』を入れます<br>
+<a href="https://www.logical-dice.com/images/2018/12/Wordpress-S3-002.png"><img class="alignnone size-medium wp-image-1776" src="https://www.logical-dice.com/images/2018/12/Wordpress-S3-002.png" alt="" width="300" height="206"></a></p>
+<p>インストール＆有効化後、設定メニューに「Offload Media」が追加されるので<br>
+利用するバケットを指定します<br>
+左下の『Browse existing buckets』から選択するのが楽だと思います<br>
+<a href="https://www.logical-dice.com/images/2018/12/Wordpress-S3-003-2.png"><img class="alignnone wp-image-1783 size-large" src="https://www.logical-dice.com/images/2018/12/Wordpress-S3-003-2.png" alt="" width="648" height="403"></a></p>
+<p>バケット選択後、いくつか設定項目が出てきます<br>
+まず、デフォルトでは画像URLがS3直アクセスになってしまうので<br>
+「Custom Domain」をCloudFront経由のURLに変更します<br>
+（xxxxx.cloudfront.net または 指定した独自ドメイン）</p>
+<h2><a href="https://www.logical-dice.com/images/2018/12/Wordpress-S3-005.png"><img class="alignnone size-full wp-image-1818" src="https://www.logical-dice.com/images/2018/12/Wordpress-S3-005.png" alt="" width="659" height="155"></a></h2>
+<p>サーバー側に画像ファイルを残したくない場合は<br>
+『Remove Files From Server』をONにしておきます。<br>
+<a href="https://www.logical-dice.com/images/2018/12/Wordpress-S3-004.png"><img class="alignnone size-full wp-image-1784" src="https://www.logical-dice.com/images/2018/12/Wordpress-S3-004.png" alt="" width="675" height="171"></a></p>
+<p>※注意<br>
+上図Warningにも出てますが、もしかしたらプラグインによってはサーバー内に<br>
+画像ファイルを残しておかないと正常に動かないものもあるかもしれません<br>
+その場合はOFFにするかプラグイン側をどうにかするかしてください</p>
+<h2 id="既存の画像ファイルをs3に移行したい場合">既存の画像ファイルをS3に移行したい場合</h2>
+<p>こちらを参考にしました<br>
+<a href="https://php-java.com/archives/2228" target="_blank" rel="noopener"><a href="https://php-java.com/archives/2228">https://php-java.com/archives/2228</a></a></p>
+<p>まず既存画像ファイルをS3にアップロードします<br>
+階層は「wp-content/uploads/2018/・・・」のようにします</p>
+<p>次にSQLでDBを更新します<br>
+SQL内の以下部分は各環境に合わせて書き替えてください<br>
+<code>webserver_hostname</code>：WEBサーバーのホスト名<br>
+<code>cloudfront_hostname</code>：CloudFrontのホスト名</p>
+<p>以下、S3のリージョンは東京である前提にしています<br>
+東京でない場合はS3のホスト名も該当のものに書き換えてください</p>
+<p>まず記事内の画像URL差し替え</p>
+<pre tabindex="0"><code>UPDATE wp_posts  
+SET post_content = REPLACE(post_content, &#34;https://webserver_hostname/wp-content/uploads/&#34;, &#34;https://cloudfront_hostname/wp-content/uploads/&#34;);  
+</code></pre><p>次にアイキャッチの画像URL差し替え</p>
+<pre tabindex="0"><code>UPDATE wp_posts  
+SET guid = REPLACE(guid, &#34;https://webserver_hostname/wp-content/uploads/&#34;, &#34;https://cloudfront_hostname/wp-content/uploads/&#34;);  
+</code></pre><p>次にmeta情報に各画像ファイルのS3の情報を追加します<br>
+（UPDATEではなくINSERT）</p>
+<p>以下のSELECT文にてINSERT文を生成できるので<br>
+生成したINSERT文を実行すれば完了です<br>
+SQL内の <code>s3_bucket_name</code> の部分は対象バケット名に書き換えてください<br>
+また、S3バケットが東京リージョンでない場合は<code>ap-northeast-1</code>の部分も書き換えてください</p>
+<pre tabindex="0"><code>SELECT  CONCAT(&#39;insert into wp_postmeta(post_id, meta_key, meta_value) values(&#39;  
+, post_id, &#39;, \&#39;amazonS3_info\&#39;, \&#39;a:4:{s:8:\&#34;provider\&#34;;s:3:\&#34;aws\&#34;;s:6:\&#34;region\&#34;;s:14:\&#34;ap-northeast-1\&#34;;s:6:\&#34;bucket\&#34;;s:14:\&#34;s3_bucket_name\&#34;;s:3:\&#34;key\&#34;;s:&#39;,length(meta_value) + 19,&#39;:\&#34;wp-content/uploads/&#39;, meta_value, &#39;\&#34;;}\&#39;);&#39;  
+) AS record from wp_postmeta where meta_key = &#39;_wp_attached_file&#39;;  
+</code></pre><p>Wordpressのバージョン等によってはINSERT文を少し変えないといけないかもしれません<br>
+INSERTすべき文を正確に知るためには一度Wordpress上で新規画像を登録して<br>
+wp_postmetaテーブルに追加されたレコードを確認するのが一番だと思います</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

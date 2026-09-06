@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>PHP製のCMS「pico」の紹介|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">PHP製のCMS「pico」の紹介</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-01-15 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年01月15日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/pico/">pico</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="picoとは">picoとは</h2>
+<p>PHP製のCMSで、DBなど利用せずファイルだけでWEBページが作成できます。<br>
+<a href="http://picocms.org/">公式サイト</a></p>
+<p>ページにはMarkdownを使えるので、Markdownでメモなどを取ることが多い人には<br>
+使いやすいCMSなのではないかと思います。</p>
+<h3 id="wordpressと比べてどうか">Wordpressと比べてどうか</h3>
+<h4 id="ページの書きやすさ">ページの書きやすさ</h4>
+<p>Markdownに慣れている人にとっては書きやすいと思いますが<br>
+慣れていないライターさんなどを雇っている場合などは向かないと思います。</p>
+<p><del>また、表現がMarkdownの域に絞られるので、直接HTMLを書けたWordpressの方が</del><br>
+<del>描画は自由にできるかもしれません。</del><br>
+picoでもMarkdown内にHTML書けました</p>
+<h4 id="構築のしやすさ">構築のしやすさ</h4>
+<p>基礎構築だけならソースコードを持ってきて終わりなので楽です。<br>
+ただし、プラグインを追加するにはテーマファイルに手を入れる必要があったりするので<br>
+単純に「インストール」をクリックするだけのWordpressに比べればそこが手間です。</p>
+<p>あと、日本語の情報が少ないのも構築する上ではネックになるかもしれません。</p>
+<h4 id="管理のしやすさ">管理のしやすさ</h4>
+<p>『管理画面』が無いので設定は全てソースコード上で行ないます。<br>
+なので、非エンジニアが運用するには難しいかと思います。</p>
+<p>ですが、DBがないのでバックアップ管理などは楽です。<br>
+GitHubのprivateリポジトリが無料で作れるようになったので<br>
+全てそこで管理してしまえば良いと思います。</p>
+<p>また、管理画面が無いのでセキュリティ的にも強いと思います。</p>
+<h4 id="機能面">機能面</h4>
+<p>Wordpressでデフォルトで用意されているタグやカテゴリがpicoには無いので<br>
+若干の不便さはあります。<br>
+一応プラグインで追加はできますが、やや煩雑です。</p>
+<p>また、プラグインやテーマの数でもWordpressの方が勝ります。</p>
+<h2 id="picoの導入">picoの導入</h2>
+<h3 id="プロジェクト作成">プロジェクト作成</h3>
+<p>まず、composerでプロジェクトを作成します。<br>
+※composerが分からない人は<a href="/posts/wp/515/">こちら</a></p>
+<pre tabindex="0"><code>composer create-project picocms/pico-composer pico
+</code></pre><p>生成されたpicoディレクトリをそのままWEBサーバー上に配置すれば<br>
+もう既にデフォルトのページが表示されます<br>
+デフォルトページにはコンテンツの配置方法などが記載されているので<br>
+確認しておくと良いと思います。</p>
+<h3 id="urlリライト設定">URLリライト設定</h3>
+<p>picoはURLリライトを利用します。<br>
+(必須ではないが無いとURLの見た目がカッコ悪いし、SEO的にも良くなさそう)</p>
+<p>URLリライトについてはpico内の<code>.htaccess</code>に記載されています。<br>
+<code>.htaccess</code>はApacheでなければ作動しないので、Nginxの場合は別途設定が必要です。<br>
+<a href="http://picocms.org/docs/#url-rewriting">公式のリライト設定手順</a></p>
+<h3 id="設定ファイル作成">設定ファイル作成</h3>
+<p><code>pico/config/config.yml.template</code>をコピー or リネームして<br>
+<code>pico/config/config.yml</code>を作成してください。</p>
+<p>とりあえず初期段階で書き換えるのは以下くらいかと思います。</p>
+<table>
+	<thead>
+			<tr>
+					<th>設定項目</th>
+					<th>設定内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>site_title</td>
+					<td>サイトのタイトルに書き換え</td>
+			</tr>
+			<tr>
+					<td>timezone</td>
+					<td>日本ならAsia/Tokyo</td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p>※注意<br>
+timezoneはデフォルトが<code>UTC</code>なので<code>JST</code>に変更すればいいと思わせつつ<br>
+ここは<code>Asia/Tokyo</code>でないといけません。</p>
+</blockquote>
+<p>config.ymlを配置した時点でデフォルトページは表示されなくなります<br>
+後はpico/content配下にmdファイルを作成していけばページが生成されます<br>
+主に以下のようにページを作成します</p>
+<p><strong>pico/content/index.md</strong><br>
+いわゆるインデックスページ<br>
+<a href="https://your-pico-site.com/">https://your-pico-site.com/</a> にアクセスした時に表示される</p>
+<p><strong>pico/content/404.md</strong><br>
+いわゆる404ページ<br>
+（作らなくてもデフォルトのページが表示される。カスタマイズしたいなら作る）</p>
+<p><strong>pico/content/hogehoge.md (hogehogeは任意)</strong><br>
+<a href="https://your-pico-site.com/hogehoge">https://your-pico-site.com/hogehoge</a> にアクセスした時に表示される<br>
+デフォルトテーマでは、右上のページ一覧にも表示される</p>
+<p><strong>pico/content/fooooo/hogehoge.md (foooooとhogehogeは任意)</strong><br>
+<a href="https://your-pico-site.com/fooooo/hogehoge">https://your-pico-site.com/fooooo/hogehoge</a> にアクセスした時に表示される<br>
+デフォルトテーマでは、右上のページ一覧には表示されない</p>
+<p>各ページのmdファイル構成は『YAMLヘッダー＋コンテンツ』のようにします<br>
+例えば以下のようになります</p>
+<pre tabindex="0"><code>---
+title: サンプルページ
+summary: これはサンプルページですよ
+date: 2019-01-07
+draft: false
+---
+
+これはサンプルページですよー
+</code></pre><p>YAMLヘッダーについての詳細は公式ページを参照してください。<br>
+<a href="http://picocms.org/docs/#text-file-markup">公式ページのYAMLヘッダー説明</a></p>
+<p>上記の<code>Template</code>には現在のテーマに用意してあるTwigファイル名を指定します<br>
+(デフォルトテーマは<code>pico/themes/default</code>)<br>
+例えば、上記例であれば利用するテンプレートは<code>index.twig</code>です。</p>
+<p>ブログ化する場合は<a href="/posts/2019/01/16/pico-blog/">picoでブログ構築</a>に続きます。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

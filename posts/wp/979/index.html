@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Wordpressにお問合せフォームを作る|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Wordpressにお問合せフォームを作る</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-01-17 16:18:41 &#43;0000 UTC" class="catalogue-time">2018年01月17日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/wordpress/">Wordpress</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">環境</h3>
+<p>Wordpress 4.9.1<br>
+Contact Form 7 4.9.2<br>
+WP Mail SMTP 1.2.2</p>
+<hr>
+<p>Wordpressの固定ページにお問合せフォームを作成し、<br>
+問い合わせがあった場合はメールを飛ばします。<br>
+なお、利用するメールサーバは外部のメールサーバとします。</p>
+<h3 id="構築手順">構築手順</h3>
+<h4 id="プラグインのインストール">■プラグインのインストール</h4>
+<p>以下のプラグインをインストールし、有効化します。</p>
+<ul>
+<li>Contact Form 7</li>
+<li>WP Mail SMTP</li>
+</ul>
+<p>※『Contact Form 7』は類似プラグインで『Contact Form7』(7の前にスペース無し)もあるので注意。</p>
+<h4 id="お問合せフォームの設定">■お問合せフォームの設定</h4>
+<p>インストール済みプラグイン一覧画面にて「Contact Form 7」の設定を選択します。<br>
+<img src="https://www.logical-dice.com/images/2018/01/628e302fa47057cb6fababf7cf2c276c.jpg" alt="" /></p>
+<p>フォーム一覧画面が表示され、「コンタクトフォーム1」というフォームが自動で作られているので「編集」を選択します。<br>
+<img src="https://www.logical-dice.com/images/2018/01/fc8efa2c22fd18d94177c9fd222ae944.jpg" alt="" /></p>
+<p>ここでフォーム名やフォームの内容を編集できます。<br>
+<img src="https://www.logical-dice.com/images/2018/01/dc1a82549e9de516494ea971a5636858.png" alt="" /><br>
+各タブの内容は以下の通りです。</p>
+<ul>
+<li>フォーム
+<ul>
+<li>WEB画面で表示するフォームの内容を設定できます  アスタリスクを付けると必須項目になります</li>
+</ul>
+</li>
+<li>メール
+<ul>
+<li>フォームに入力された際に送信するメールに関する設定  送信元については後工程の「WP Mail SMTP」の設定にて実施するので設定不要です</li>
+</ul>
+</li>
+<li>メッセージ
+<ul>
+<li>フォームを入力した際に画面上で表示するメッセージ</li>
+</ul>
+</li>
+<li>その他の設定</li>
+</ul>
+<p>細かいカスタマイズもできるようだが、ここでは割愛します。</p>
+<p>また、フォーム一覧画面に記載されている「ショートコード」は最終的に固定ページに埋め込むので控えておいてください。<br>
+<img src="https://www.logical-dice.com/images/2018/01/77a5f8e9ef66a160a2d5e01ab3ec7384.jpg" alt="" /></p>
+<h4 id="メールサーバの設定">■メールサーバの設定</h4>
+<p>インストール済みプラグイン一覧画面にて「WP Mail SMTP」の設定を選択します。<br>
+<img src="https://www.logical-dice.com/images/2018/01/a39551cdd2131ac2b35985849e185962.jpg" alt="" /><br>
+※左メニューより『設定 &gt; WP Mail SMTP』と選択しても良いです。</p>
+<p>送信元アドレス、送信者名を適宜入力し、メーラーは環境にあったものを選んでください。<br>
+メーラーがよく分からなければ「Other　SMTP」(よくあるメールサーバのホスト名とかを指定する方式)を選択すれば良いです。<br>
+<img src="https://www.logical-dice.com/images/2018/01/4008b278179ee30a0bbded3ed24eae15.png" alt="" /></p>
+<p>あとは選んだメーラーに依って違う詳細設定項目が下に現れるので、そこを入力して『Save Settings』をクリックすれば設定完了です。</p>
+<h4 id="固定ページの作成">■固定ページの作成</h4>
+<p>手順「お問合せフォームの設定」にて控えておいたショートコードを固定ページに記載するだけです。<br>
+必要に応じてdivタグで括ったりヘッダーを付けるなどの装飾をしてください。<br>
+<img src="https://www.logical-dice.com/images/2018/01/1805f76498b498db3246ef49b0125885.png" alt="" /></p>
+<p>以上で問い合わせフォームの作成は完了です。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

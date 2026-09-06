@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>PostgreSQL on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/postgresql/</link>
+		<description>Recent content in PostgreSQL on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Fri, 04 Dec 2015 12:59:49 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/postgresql/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>【CentOS】PostgreSQLの導入</title>
+				<link>https://www.logical-dice.com/posts/wp/127/</link>
+				<pubDate>Fri, 04 Dec 2015 12:59:49 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/127/</guid>
+				<description>CentOSにPostgreSQLを導入した際の作業メモです■環境CentOS r&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

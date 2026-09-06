@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Using AWS CLI to Search Multiple Files with S3 Select|Logical Dice Techblog</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice Techblog" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/en/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice Techblog" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Using AWS CLI to Search Multiple Files with S3 Select</h1>
+		<div class="post-info">
+				<p class="publish-date">posted: <time datetime="2024-12-12 00:00:00 &#43;0000 UTC" class="catalogue-time">2024-12-12</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="environment">Environment</h2>
+<ul>
+<li>aws-cli 2.7.14</li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>I needed to search through CloudFront logs stored in S3.<br>
+Since Athena was not available, I used S3 Select for the search.</p>
+<p>However, S3 Select can only search one file at a time.<br>
+To handle multiple files, I integrated AWS CLI into a shell script.</p>
+<h2 id="steps">Steps</h2>
+<p>Here are the conditions:</p>
+<ul>
+<li>The S3 bucket name is target-bucket-name.</li>
+<li>Files are generated in the logs-dir directory with the format AABBCCDDEE123456.YYYY-MM-DD-HH.abcdefg&hellip;.</li>
+<li>The AWS CLI profile is named my-aws-profile.</li>
+</ul>
+<p>Below is the completed script:</p>
+<pre tabindex="0"><code>bash
+# Step 1: Configuration
+PROFILE=&#34;my-aws-profile&#34;
+BUCKET=&#34;target-bucket-name&#34;
+PREFIX=&#34;logs-dir/AABBCCDDEE123456.2024-12-11&#34;    # Example: Searching files output on Dec 11, 2024.
+QUERY=&#34;SELECT * FROM s3object s&#34;                 # Example: Output all records. Adjust with SELECT columns or WHERE clause.
+
+# Step 2: Retrieve a list of objects (files)
+objects=$(aws s3api list-objects --profile $PROFILE --bucket $BUCKET --prefix $PREFIX | jq)
+
+# Step 3: Process each retrieved object
+for object in $(echo &#34;$objects&#34; | jq -c &#39;.Contents[]&#39;); do
+  key=$(echo &#34;$object&#34; | jq -r &#39;.Key&#39;)
+  echo &#34;$key&#34;
+
+  # Step 4: Output search results
+  aws s3api select-object-content --profile $PROFILE --bucket $BUCKET --key $key --expression &#34;$QUERY&#34; --expression-type SQL --input-serialization &#39;{&#34;CSV&#34;: {&#34;FileHeaderInfo&#34;: &#34;NONE&#34;, &#34;FieldDelimiter&#34;: &#34;\t&#34;}, &#34;CompressionType&#34;: &#34;GZIP&#34;}&#39; --output-serialization &#39;{&#34;CSV&#34;: {&#34;FieldDelimiter&#34;: &#34;,&#34;}}&#39; output-tmp.csv
+  cat output-tmp.csv &gt;&gt; output.csv
+done
+
+rm -f output-tmp.csv
+</code></pre><h3 id="step-1-configuration">Step 1: Configuration</h3>
+<p>Set the necessary information.</p>
+<p>Be sure to configure PREFIX to filter files properly. Searching too many files unnecessarily will increase costs.<br>
+For pricing details, see:<br>
+<a href="https://aws.amazon.com/s3/pricing/">https://aws.amazon.com/s3/pricing/</a></p>
+<p>For information on QUERY, refer to:<br>
+<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-select-sql-reference-select.html">https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-select-sql-reference-select.html</a></p>
+<h3 id="step-2-retrieve-a-list-of-objects-files">Step 2: Retrieve a List of Objects (Files)</h3>
+<p>Use the AWS CLI to retrieve a list of objects in the specified S3 bucket and prefix.<br>
+The jq command is used to parse the returned JSON.<br>
+Note: The CLI output format is set to JSON in the profile configuration.</p>
+<h3 id="step-3-process-each-retrieved-object">Step 3: Process Each Retrieved Object</h3>
+<p>The list of objects (files) is returned under the Contents key.<br>
+Use a for loop to iterate through the objects.</p>
+<h3 id="step-4-output-search-results">Step 4: Output Search Results</h3>
+<p>Since the results of S3 Select are written to a file,<br>
+the search results for the current object are first output to a temporary file (output-tmp.csv)<br>
+and then appended to the final file (output.csv).</p>
+<p>This script outputs the search results.<br>
+You can refine the query further to extract specific information as needed.</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>WSL2でUbuntuを使えるようにする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">WSL2でUbuntuを使えるようにする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-09-04 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年09月04日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/windows/">Windows</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://docs.microsoft.com/ja-jp/windows/wsl/install-win10">Windows 10 用 Windows Subsystem for Linux のインストール ガイド</a></li>
+<li><a href="https://vogel.at.webry.info/201908/article_1.html">WSL の場所を変更する|パソコン鳥のブログ</a></li>
+</ul>
+<hr>
+<p>Windows 10のWLS2でUbuntu20.04を使えるようにします。</p>
+<h2 id="windows-10のアップデート">Windows 10のアップデート</h2>
+<p>WSL2を使うにはWindowsのバージョン 1903以降、ビルド 18362以上である必要があります。<br>
+バージョンを確認するには「Winキー＋Rキー」で『ファイル名を指定して実行』を開き、<br>
+名前に<code>winver</code>を入力して「OK」をクリックします。</p>
+<p>Windows Updateで最新化できれば良いですが、更新が来ない場合もあるので<br>
+その場合は更新アシスタントを利用します。<br>
+<a href="https://www.microsoft.com/ja-jp/software-download/windows10">https://www.microsoft.com/ja-jp/software-download/windows10</a></p>
+<h2 id="wsl2をインストールする">WSL2をインストールする</h2>
+<p>管理者権限でPowerShellを開いて、以下を実行します。</p>
+<pre tabindex="0"><code>dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+</code></pre><p>ここまで実行したら一度再起動します。</p>
+<p>再起動後、再度PowerShellを管理者権限で開き、以下コマンドを実行します。</p>
+<pre tabindex="0"><code>wsl --set-default-version 2
+</code></pre><p>もしカーネルの更新が必要という旨のメッセージが表示された場合は<br>
+以下を参考にカーネルの更新をしてから再実行します。<br>
+<a href="https://docs.microsoft.com/ja-jp/windows/wsl/wsl2-kernel">https://docs.microsoft.com/ja-jp/windows/wsl/wsl2-kernel</a></p>
+<h2 id="ubuntuのインストール">Ubuntuのインストール</h2>
+<p>Microsoft Storeで「Ubuntu」と検索し、Ubuntu20.04をインストールします。<br>
+その後、Ubuntuを起動すると初期設定が走るので、アカウント設定等をします。</p>
+<p>デフォルトではaptでの取得元が海外になっているので、以下コマンドで日本に変更します。</p>
+<pre tabindex="0"><code>sudo sed -i -e &#39;s|archive.ubuntu.com|ftp.riken.go.jp/Linux|g&#39; /etc/apt/sources.list
+</code></pre><p>ここまででWSL2 でUbuntuを使えるようになりました。<br>
+ですが、デフォルトではCドライブにUbuntu用の領域をとってしまうので、Dドライブに移したいと思います。</p>
+<p>WSLの場所を移動させるツール『LxRunOffline』を利用します。<br>
+まず、GitHubより圧縮ファイルをダウンロードして解凍しておきます。(LxRunOffline-vX.X.X-mingw.zip)<br>
+<a href="https://github.com/DDoSolitary/LxRunOffline/releases">https://github.com/DDoSolitary/LxRunOffline/releases</a></p>
+<p>次にWSLを配置するフォルダを作成しておきます。<br>
+本例では<code>D:\wsl</code>を作ります。</p>
+<p>PowerShellを管理者権限で開き、以下コマンドで先ほど作成したフォルダに権限を付与します。</p>
+<pre tabindex="0"><code>icacls D:\wsl /grant $env:USERNAME&#34;:(OI)(CI)(F)&#34;
+</code></pre><p>そのままPowerShellでLxRunOfflineを解凍したフォルダに移動し、以下コマンドを実行します。</p>
+<pre tabindex="0"><code>net stop LxssManager
+.\LxRunOffline.exe move -n Ubuntu-20.04 -d d:\wsl\Ubuntu-20.04
+net start LxssManager
+</code></pre><p>これでUbuntuのインストールは完了です。<br>
+もしアンインストールする場合は以下のコマンドを実行してください。</p>
+<pre tabindex="0"><code>wsl -t Ubuntu-20.04
+.\LxRunOffline.exe ui -n Ubuntu-20.04
+</code></pre><h3 id="補足">※補足</h3>
+<p>WSL2配置の場所を移動させなくても<code>/mnt/d/</code>にDドライブがマウントされているのでDドライブを利用することは可能です。<br>
+ただし/mnt/配下のWindowsディレクトリへのアクセスは時間がかかるので、WSLの配置場所を変更する方がおススメです。</p>
+<h2 id="ubuntu内で起動しているサーバーにwindows側からローカルとしてアクセスする">Ubuntu内で起動しているサーバーにWindows側からローカルとしてアクセスする</h2>
+<p>Ubuntu内のDocker等でWEBサーバーを立ち上げた際に、Windows側のブラウザからhttp://localhostでアクセスできない場合があります。<br>
+ローカルとして繋ぐために、Windows側のホームディレクト(C:\Users\hogeUser)直下に<code>.wslconfig</code>というファイルを作成し、<br>
+以下を記載しておきます。</p>
+<pre tabindex="0"><code>[wsl2]
+localhostForwarding=True
+</code></pre><p>また、Windowsの高速スタートアップが有効になっていると上手くいかない事があるので無効にしておきます。<br>
+「設定＞システム＞電源とスリープ＞電源の追加設定＞電源ボタンの動作を選択する」を開き、<br>
+『高速スタートアップを有効にする（推奨）』のチェックボックスを外してください。</p>
+<h2 id="ubuntuから参照するdnsサーバーを変更する">Ubuntuから参照するDNSサーバーを変更する</h2>
+<p>WSLでは名前解決に使うDNSサーバーが自動で設定され、<code>/etc/resolv.conf</code>に記載されます。<br>
+このファイルは修正してもデフォルトではWSL起動の度に書き換えられてしまいます。</p>
+<p>このままだと稀にUbuntu内で名前解決ができなることがあるので、<br>
+resolv.confが自動更新されないようにして、向け先をGoogleのDNSサーバー「8.8.8.8」に変更します。</p>
+<p>まず、自動更新を止めるために<code>/etc/wsl.conf</code>に以下を追記します。（ファイルがなければ新規作成）</p>
+<pre tabindex="0"><code>[network]
+generateResolvConf = false
+</code></pre><p>※この内容は自動生成されているresolv.confにも記載されています。</p>
+<p>この状態でWSLを再起動すると設定が反映されます。<br>
+PCを再起動するか、Windows側のPowershellなどで<code>wsl --shutdown</code>を実行してください。</p>
+<p>WSLに再度アクセスして<code>/etc/resolv.conf</code>にDNS設定をします。<br>
+もし<code>/etc/resolv.conf</code>が<code>/run/～</code>へのリンボリックリンクになっている場合はunlinkコマンドでリンク解除しておきます。</p>
+<p><code>/etc/resolv.conf</code>を編集し、nameserverを以下のように編集します。</p>
+<pre tabindex="0"><code>nameserver 8.8.8.8
+</code></pre><p>これでWSL(Ubuntu)での名前解決に使うDNSサーバーをGoogleのDNSサーバーに変更できました。</p>
+<h2 id="ubuntu側からwindows側のフォルダで権限変更できるようにする">Ubuntu側からWindows側のフォルダで権限変更できるようにする</h2>
+<p>Ubuntu側では/mnt/内にWindows側のフォルダがあるので参照はできますが、<br>
+デフォルトではchmodでの権限変更ができません。</p>
+<p>もしWindows側のフォルダ・ファイルの権限変更をしたい場合は<code>/etc/wsl.conf</code>を作成して以下を記載します。</p>
+<pre tabindex="0"><code>[automount]
+options = &#34;metadata&#34;
+</code></pre><p>※補足<br>
+Ubuntu側からWindows側のファイルへアクセスするのは激重なので、<br>
+基本的にはUbuntuからWindows側のファイルを扱うことは勧めません。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

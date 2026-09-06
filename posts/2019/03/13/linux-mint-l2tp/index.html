@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>VPNクライアント設定(L2TP over IPsec)|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">VPNクライアント設定(L2TP over IPsec)</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-03-13 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年03月13日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/ubuntu/">ubuntu</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Linux Mint 19.1 &ldquo;Tessa&rdquo; - MATE (64-bit)</li>
+<li>ubuntu 19.10</li>
+</ul>
+<h3 id="参考">■参考</h3>
+<p><a href="https://askubuntu.com/questions/981165/l2tp-ipsec-failing-to-connect-kubuntu-17-10">ask ubuntu</a></p>
+<hr>
+<p>Linux MintでのVPNクライアント設定に少し苦戦したのでメモです。<br>
+ubuntuでもほぼ同手順で対応可能でした。</p>
+<h2 id="必要なアプリケーションのインストール">必要なアプリケーションのインストール</h2>
+<p>以下のコマンドでインストールします。<br>
+(ubuntuの場合はaptの前にsudoを付けてください)</p>
+<pre tabindex="0"><code>$ apt update
+$ apt install network-manager-l2tp-gnome strongswan libstrongswan-extra-plugins libcharon-extra-plugins
+</code></pre><h2 id="ネットワーク設定">ネットワーク設定</h2>
+<p>まず、『コントロールセンター＞ネットワーク接続』を開きます。<br>
+(ubuntuの場合は『設定＞ネットワーク』)<br>
+現在のネットワーク一覧が表示されるので、「＋」マーク(追加ボタン)をクリックします。</p>
+<p>接続の種類を聞かれるのでVPNの中にある『Layer 2 Tunneling Protocol(L2TP)』を選択して『作成』をクリックします。<br>
+L2TPの設定画面が開くので、VPNタブにて以下を設定します。</p>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>設定値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>ゲートウェイ</td>
+					<td>VPNサーバーのIPアドレスorホスト名</td>
+			</tr>
+			<tr>
+					<td>ユーザー名</td>
+					<td>VPN接続する際のユーザー名</td>
+			</tr>
+			<tr>
+					<td>パスワード</td>
+					<td>上記ユーザーのパスワード※</td>
+			</tr>
+			<tr>
+					<td>NTドメイン</td>
+					<td>空欄のまま</td>
+			</tr>
+	</tbody>
+</table>
+<h4 id="補足">※補足</h4>
+<p>パスワードは入力欄右端の？アイコンをクリックしてポリシーを選択すれば入力できます。<br>
+パスワードを接続の都度入力する場合はここでは空欄で良いです。</p>
+<p>次に『IPsec Settings』をクリックしてIPsecの設定をします。<br>
+以下を設定して『OK』をクリックします。<br>
+「Phase1 Algorithms」以降は『Advanced』をクリックしたら表示されます。</p>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>設定値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Enable IPsec tunnel to L2TP host</td>
+					<td>チェックする</td>
+			</tr>
+			<tr>
+					<td>Gateway ID</td>
+					<td>空欄のまま</td>
+			</tr>
+			<tr>
+					<td>Pre-shared key</td>
+					<td>VPNサーバーの共有キーフレーズ</td>
+			</tr>
+			<tr>
+					<td>Phase1 Algorithms</td>
+					<td>VPNサーバーの暗号方式※</td>
+			</tr>
+			<tr>
+					<td>Phase2 Algorithms</td>
+					<td>VPNサーバーの暗号方式サブ（あれば）※</td>
+			</tr>
+			<tr>
+					<td>Enforce UDP encapsulation</td>
+					<td>未チェックのまま</td>
+			</tr>
+	</tbody>
+</table>
+<h4 id="補足-1">※補足</h4>
+<p>Algorithmsに何を指定するかはVPNサーバー側に確認してください。<br>
+私の場合は以下を設定したら繋がりました。<br>
+Phase1: 3des-sha1-modp1024!<br>
+Phase2: 3des-sha1!</p>
+<p>このAlgorithms設定がうまく行ってなくて繋がらない人が多いようです。<br>
+VPN接続できない場合はこの設定をよく見直しましょう。</p>
+<p>これでネットワーク設定は完了です。<br>
+他の記事を見るとPPPの設定もしている人が多いですが、必須ではなさそうです。</p>
+<h2 id="vpn接続">VPN接続</h2>
+<p>タスクバーのネットワークアイコンをクリックすると「VPN接続」のメニューがあります。<br>
+そこから作成したVPN接続を選択し、VPN接続 or 切断します。<br>
+接続に成功したらネットワークアイコンに鍵マークがつきます。</p>
+<h2 id="トラブルシューティング">トラブルシューティング</h2>
+<p>うまく繋がらない場合は以下のコマンドでログを確認することができます。</p>
+<pre tabindex="0"><code>journalctl -f
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Apache】htaccessのRewriteでGETパラメータも残す|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Apache】htaccessのRewriteでGETパラメータも残す</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2016-05-26 19:56:46 &#43;0000 UTC" class="catalogue-time">2016年05月26日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/apache/">Apache</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>nginxが台頭してきている今日この頃。Apacheの話です。<br>
+少しハマったのでメモします。</p>
+<p>■環境<br>
+CentOS 6.6<br>
+httpd 2.2.15</p>
+<p>htaccessにてリダイレクト処理を記載する際、<br>
+以下のように書くとGETパラメータがリダイレクト時に落ちてしまいます。</p>
+<pre tabindex="0"><code>RewriteEngine on}  
+RewriteBase /  
+RewriteRule ^api.php(.*)$ api2.php$1  
+</code></pre><p>例えば、このまま「https://sample.com/api.php?name=tanaka」にアクセスすると<br>
+リダイレクト後は「https://sample.com/api2.php」となってしまいます。</p>
+<p>RewriteでGETパラメータを扱いたい場合は、『RewriteCond』を使って以下のように記載します。</p>
+<pre tabindex="0"><code>RewriteEngine on  
+RewriteBase /  
+RewriteCond %{QUERY_STRING} (.*)$  
+RewriteRule ^api.php$ api2.php?%1  
+</code></pre><p>これで「https://sample.com/api.php?name=tanaka」にアクセスすると<br>
+リダイレクト後は「https://sample.com/api2.php?name=tanaka」となります。<br>
+※RewriteRuleの右側「$1」ではなく「%1」です。間違えないように。</p>
+<p>何が起こっているかというと、RewriteCondの『QUERY_STRING』で指定した正規表現に一致する<br>
+GETパラメータが%変数に格納されているようです。<br>
+例えば以下のような記載もできます。</p>
+<pre tabindex="0"><code>RewriteEngine on  
+RewriteBase /  
+RewriteCond %{QUERY_STRING} name=(.*)$  
+RewriteRule ^api.php$ api2.php?onamae=%1  
+</code></pre><p>これで「https://sample.com/api.php?name=tanaka」にアクセスすると<br>
+リダイレクト後は「https://sample.com/api2.php?onamae=tanaka」となります。</p>
+<p>正規表現で複数パラメータを取ることも可能なので、</p>
+<pre tabindex="0"><code>RewriteCond %{QUERY_STRING} param1=([a-z]+)&amp;amp;param2=([a-z]+)&amp;amp;param3=([a-z]+)$  
+</code></pre><p>と記載すれば、param1は「%1」、param2は「%2」、param3は「%3」で取得できます。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

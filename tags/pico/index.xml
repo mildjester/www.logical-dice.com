@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Pico on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/pico/</link>
+		<description>Recent content in Pico on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 17 Jan 2019 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/pico/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>WordpressからPicoへデータ移行</title>
+				<link>https://www.logical-dice.com/posts/2019/01/17/wordpress-to-pico/</link>
+				<pubDate>Thu, 17 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/17/wordpress-to-pico/</guid>
+				<description>WordpressのデータをPicoへ移行する方法です</description>
+			</item>
+			<item>
+				<title>picoでブログ構築</title>
+				<link>https://www.logical-dice.com/posts/2019/01/16/pico-blog/</link>
+				<pubDate>Wed, 16 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/16/pico-blog/</guid>
+				<description>PHP製のCMS「pico」でブログを構築する方法です。</description>
+			</item>
+			<item>
+				<title>PHP製のCMS「pico」の紹介</title>
+				<link>https://www.logical-dice.com/posts/2019/01/15/pico-introduction/</link>
+				<pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/15/pico-introduction/</guid>
+				<description>PHP製のCMS「pico」の紹介です。</description>
+			</item>
+	</channel>
+</rss>
