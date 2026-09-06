@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Let&#39;sEncrypt】Certbotの使い方(CentOS7 &#43; nginx)|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Let&#39;sEncrypt】Certbotの使い方(CentOS7 &#43; nginx)</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-06-12 17:17:21 &#43;0000 UTC" class="catalogue-time">2017年06月12日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/centos/">CentOS</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/nginx/">Nginx</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>CentOS 7.3 <br>
+nginx 1.10.3 <br>
+certbot 0.14.1</p>
+<hr>
+<h3 id="初回ssl証明書発行">■初回SSL証明書発行</h3>
+<p>certbotをインストールする。</p>
+<pre tabindex="0"><code>yum -y install yum-utils  
+yum install certbot  
+</code></pre><pre tabindex="0"><code># もしCentOS6系やAWS　EC2にてcertbotをインストールする場合は以下手順となります。
+curl https://dl.eff.org/certbot-auto -o /usr/bin/certbot-auto  
+chmod 700 /usr/bin/certbot-auto  
+ln -s /usr/bin/certbot-auto /usr/bin/certbot  
+# certbot-autoのまま使っても良いですが、後述の手順と整合性を合わせるために
+# シンボリックリンクを作っています。
+</code></pre><p>証明書を発行する</p>
+<pre tabindex="0"><code>certbot certonly --webroot -w /usr/share/nginx/html -d your-domain.com  
+</code></pre><p>※上記コマンドは環境に合わせて読み替えてください。<br>
+/usr/share/nginx/html<br>
+　→設定するドメインのドキュメントルート<br>
+your-domain.com<br>
+　→設定するドメイン</p>
+<p><em>【補足】 <br>
+2017年11月現在、AWS　EC2では上記コマンドに<code>&ndash;debug</code>オプションが必要でした。 <br>
+調べてみるとEC2でも「&ndash;debug」は不要になったと書いてあるページがあったりするので <br>
+環境による（？）のかもしれません。</em></p>
+<p>これで証明書が以下ディレクトリに生成されます。</p>
+<pre tabindex="0"><code>ll /etc/letsencrypt/live/your-domain.com/  
+lrwxrwxrwx 1 root root  40 Jun 12 16:41 cert.pem -&gt; ../../archive/your-domain.com/cert1.pem  
+lrwxrwxrwx 1 root root  41 Jun 12 16:41 chain.pem -&gt; ../../archive/your-domain.com/chain1.pem  
+lrwxrwxrwx 1 root root  45 Jun 12 16:41 fullchain.pem -&gt; ../../archive/your-domain.com/fullchain1.pem  
+lrwxrwxrwx 1 root root  43 Jun 12 16:41 privkey.pem -&gt; ../../archive/your-domain.com/privkey1.pem  
+</code></pre><p>証明書更新の度に上記シンボリックリンクの向き先が新証明書に切り替わるので、<br>
+nginx側の設定は1度設定すれば変える必要がなくなります。</p>
+<h3 id="nginx設定">■nginx設定</h3>
+<p>nginxの設定ファイルにて、SSL証明書と秘密鍵の設定をします。<br>
+(/etc/nginx/nginx.conf)</p>
+<pre tabindex="0"><code>(省略)  
+server {  
+    listen  443 ssl http2 default_server;  
+    (省略)  
+    ssl_certificate &#34;/etc/letsencrypt/live/your-domain.com/fullchain.pem&#34;;  
+    ssl_certificate_key &#34;/etc/letsencrypt/live/your-domain.com/privkey.pem&#34;;  
+    (省略)  
+}  
+</code></pre><p>設定後、nginxを再起動します。</p>
+<pre tabindex="0"><code>systemctl restart nginx.service  
+</code></pre><h3 id="ssl証明書の自動再発行設定">■SSL証明書の自動再発行設定</h3>
+<p>SSL証明書の期限が残り1ヶ月を切ったら、証明書更新が可能となります。<br>
+更新は以下コマンドで実施します。</p>
+<pre tabindex="0"><code>certbot renew  
+</code></pre><p>自動で更新できるように、cronに上記コマンドを登録しておきます。<br>
+例として、毎週月曜日の早朝に更新作業を行なうようにします。<br>
+（残り期限1ヶ月以上残っている場合は空振りして終わる）</p>
+<pre tabindex="0"><code>10 0 * * 1 /bin/certbot renew &amp;&amp; /bin/systemctl reload nginx.service &gt; /dev/null 2&gt;&amp;1 
+</code></pre><p>※※※ 注意 ※※※<br>
+証明書の更新だけしても、nginxにて再読込をしなければ反映されません。</p>
+<blockquote>
+<p>※2020年2月追記<br>
+certbot ver1.0.0現在ではrenew後に実行するコマンドを以下のようにオプションで指定できるようになりました。<br>
+/bin/certbot renew &ndash;post-hook &ldquo;systemctl restart nginx.service&rdquo;</p>
+</blockquote>
+<p>これで設定は完了です。</p>
+<h3 id="ssl証明書の削除">■SSL証明書の削除</h3>
+<p>不要になったドメインのSSL証明書の削除は以下のコマンドで実施します。</p>
+<pre tabindex="0"><code>certbot revoke --cert-path=/etc/letsencrypt/archive/your-domain.com/cert1.pem  
+</code></pre><p>これでSSL証明書を無効化し、自動更新の対象からも外れます。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

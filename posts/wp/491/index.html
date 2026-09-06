@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【golang】mapの要素順は変動する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【golang】mapの要素順は変動する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-04-08 12:22:59 &#43;0000 UTC" class="catalogue-time">2017年04月08日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/golang/">golang</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>■環境<br>
+OS X El Capitan 10.11.6<br>
+go 1.8 darwin/amd64</p>
+<p>タイトルの件、ちょっと引っかかったのでメモです。</p>
+<p>golangで変数にmapを格納する場合、その要素の順番は<br>
+呼び出すたびに変わります。</p>
+<p>以下サンプルコードです。<br>
+mapをrangeで取り出しながらforで回し、標準出力する<br>
+という処理を3回繰り返します。</p>
+<pre tabindex="0"><code>package main  
+  
+import (  
+	&#34;fmt&#34;  
+)  
+  
+func main() {  
+	// create new map  
+	fruitColor := make(map[string]string)  
+	fruitColor[&#34;pineapple&#34;] = &#34;yellow&#34;  
+	fruitColor[&#34;apple&#34;] = &#34;red&#34;  
+	fruitColor[&#34;grape&#34;] = &#34;purple&#34;  
+	fruitColor[&#34;melon&#34;] = &#34;green&#34;  
+  
+	// printout 3 times  
+	for i := 1; i &lt;= 3; i++ {  
+		fmt.Println(fmt.Sprintf(&#34;===== %d times =====&#34;, i))  
+		for name, color := range fruitColor {  
+			fmt.Println(fmt.Sprintf(&#34;%s is %s&#34;, name, color))  
+		}  
+	}  
+}  
+</code></pre><p>これを実行すると、このように出力されます。<br>
+要素順は変動するので、実行する度に変わると思います。</p>
+<pre tabindex="0"><code>===== 1 times =====  
+apple is red  
+grape is purple  
+melon is green  
+pineapple is yellow  
+===== 2 times =====  
+grape is purple  
+melon is green  
+pineapple is yellow  
+apple is red  
+===== 3 times =====  
+melon is green  
+pineapple is yellow  
+apple is red  
+grape is purple
+</code></pre><p>上記のような順不同なアプリケーションだとしても、<br>
+ユーザが画面を表示する度に順番が変わるのは気持ち悪いので<br>
+sliceを使って表示順を保持しておいた方が良いです。</p>
+<p>sliceを使う例は以下の通りです。</p>
+<pre tabindex="0"><code>package main  
+  
+import (  
+	&#34;fmt&#34;  
+)  
+  
+func main() {  
+	// create new map  
+	fruitColor := make(map[string]string)  
+	fruitColor[&#34;pineapple&#34;] = &#34;yellow&#34;  
+	fruitColor[&#34;apple&#34;] = &#34;red&#34;  
+	fruitColor[&#34;grape&#34;] = &#34;purple&#34;  
+	fruitColor[&#34;melon&#34;] = &#34;green&#34;  
+	// set display order  
+	fruitList := []string{&#34;pineapple&#34;,&#34;apple&#34;,&#34;grape&#34;,&#34;melon&#34;}  
+  
+	// printout 3 times  
+	for i := 1; i &lt;= 3; i++ {  
+		fmt.Println(fmt.Sprintf(&#34;===== %d times =====&#34;, i))  
+		for _, name := range fruitList {  
+			fmt.Println(fmt.Sprintf(&#34;%s is %s&#34;, name, fruitColor[name]))  
+		}  
+	}  
+}  
+</code></pre><p>これを実行すると以下のようになります。</p>
+<pre tabindex="0"><code>===== 1 times =====  
+pineapple is yellow  
+apple is red  
+grape is purple  
+melon is green  
+===== 2 times =====  
+pineapple is yellow  
+apple is red  
+grape is purple  
+melon is green  
+===== 3 times =====  
+pineapple is yellow  
+apple is red  
+grape is purple  
+melon is green
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

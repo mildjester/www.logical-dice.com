@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Googleフォームを使って迷子札を作る|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Googleフォームを使って迷子札を作る</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2021-01-25 00:00:00 &#43;0000 UTC" class="catalogue-time">2021年01月25日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/googleservice/">GoogleService</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>子供たちが自由に走り回れるようになり、ショッピングセンターやアミューズメント施設で迷子になるリスクが高くなったので迷子札の作成を検討しました。<br>
+迷子札の条件は以下のように設けました。</p>
+<ul>
+<li>子供の持ち物等に付けておく</li>
+<li>子供を見つけてくれた人が親に連絡できるようにする</li>
+<li>自分の連絡先を札に直接書くのは嫌</li>
+<li>連絡先が悪意ある人に漏れた時にすぐに変更できるようにしたい</li>
+<li>捨てメアドを作るのは管理など面倒なので嫌</li>
+</ul>
+<p>そこで、Googleフォームです。<br>
+以下の流れで迷子札を作ってみます。</p>
+<p>① Googleフォームで問い合わせフォームを作る。<br>
+② 作成したGoogleフォームのURLをQRコード化する。<br>
+③ QRコードが入ったアクセサリ等を作成する。</p>
+<p>今回は迷子札想定で作成していますが、QRコードをシールにしてスマホや旅行バッグ等に貼っておけば、<br>
+紛失したとしても善良な人が拾ってくれたら連絡が来るかもしれません。</p>
+<h2 id="前提条件">前提条件</h2>
+<p>既にGoogleアカウント(Gmail)を持っていること。</p>
+<h2 id="手順詳細">手順詳細</h2>
+<h3 id="googleフォーム作成">Googleフォーム作成</h3>
+<p>まず、Googleフォームで問い合わせフォームを作ります。<br>
+<a href="https://www.google.com/intl/ja_jp/forms/about/">https://www.google.com/intl/ja_jp/forms/about/</a></p>
+<p>フォームの内容は連絡者と連絡が取れる程度で良いと思います。<br>
+<img src="https://www.logical-dice.com/images/2021/01/lost-tag-qr-001.png" alt="Googleフォーム1"/></p>
+<p>フォームの設定を変えます。<br>
+右上の歯車アイコンをクリックして、設定ポップアップを開きます。<br>
+<img src="https://www.logical-dice.com/images/2021/01/lost-tag-qr-002.png" alt="Googleフォーム2"/></p>
+<p>まず全般タブでは基本的に全てのチェックを外しておきます。<br>
+<img src="https://www.logical-dice.com/images/2021/01/lost-tag-qr-003.png" alt="Googleフォーム3"/></p>
+<p>プレゼンテーションタブの「確認メッセージ」で連絡をしてくれた人に表示するメッセージを変更できます。<br>
+<img src="https://www.logical-dice.com/images/2021/01/lost-tag-qr-004.png" alt="Googleフォーム4"/></p>
+<p>テストフォームでは無いので、テストタブは何もしません。</p>
+<p>次に連絡してもらった時の受け取り方を設定します。<br>
+回答タブを選択して『…』が縦に並んでいるアイコンをクリックします。<br>
+<img src="https://www.logical-dice.com/images/2021/01/lost-tag-qr-005.png" alt="Googleフォーム5"/></p>
+<p>そこで『新しい回答についてのメール通知を受け取る』にチェックを入れます。<br>
+これで誰かがGoogleフォームを送信してくれたら自分宛にメールが届きます。<br>
+連絡を受けた履歴をスプレッドシートに残しておきたいなら『回答先を選択』で選択しておきます。<br>
+<img src="https://www.logical-dice.com/images/2021/01/lost-tag-qr-006.png" alt="Googleフォーム6"/></p>
+<p>これでフォームは完成です。<br>
+右上の『送信』よりフォームのURLを取得します。<br>
+<img src="https://www.logical-dice.com/images/2021/01/lost-tag-qr-007.png" alt="Googleフォーム7"/></p>
+<h3 id="qrコード作成">QRコード作成</h3>
+<p>QRコード生成サービスを使ってGoogleフォームのURLをQRコード化します。<br>
+無料で使えるところだと以下のようなサービスがあります。<br>
+<a href="https://qr.quel.jp/">https://qr.quel.jp/</a></p>
+<h3 id="アクセサリー作成">アクセサリー作成</h3>
+<p>生成したQRコードは色んな使い方ができます。<br>
+シールにしてもいいし、アクセサリーにしてもいいと思います。</p>
+<p>今回はアクセサリーを作ってみました。<br>
+利用したのは以下のサービスです。<br>
+<a href="https://originalprint.jp/">https://originalprint.jp/</a></p>
+<p>アクセサリーのデザインは自分で決められます。<br>
+こんな感じで作れます。<br>
+<img src="https://www.logical-dice.com/images/2021/01/lost-tag-qr-008.png" alt="迷子札サンプル"/></p>
+<p>実際にスマホでQRコードを読み込んでGoogleフォームを開き、連絡先等を送信してみます。<br>
+自分のGmail宛にGoogleフォームが送信された旨のメールが届けば成功です。<br>
+（フォーム送信からメール着まで、だいたい1分弱のタイムラグがあります）</p>
+<p>これを子供のカバンに付けておきます。<br>
+GoogleフォームのURLが悪意ある人に漏れた場合はGoogleフォームを作り変えればOKです。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

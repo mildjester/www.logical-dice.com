@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Vite on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/vite/</link>
+		<description>Recent content in Vite on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Sat, 11 Feb 2023 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/vite/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Viteを使ってみる</title>
+				<link>https://www.logical-dice.com/posts/2023/02/11/vite-tutorial/</link>
+				<pubDate>Sat, 11 Feb 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2023/02/11/vite-tutorial/</guid>
+				<description>旧サイトをViteを使って作り直してみた時のメモです</description>
+			</item>
+	</channel>
+</rss>

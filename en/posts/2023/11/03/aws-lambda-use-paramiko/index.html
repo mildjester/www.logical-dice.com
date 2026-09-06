@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【AWS】Using Paramiko for SFTP Communication in Lambda|Logical Dice Techblog</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice Techblog" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/en/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice Techblog" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【AWS】Using Paramiko for SFTP Communication in Lambda</h1>
+		<div class="post-info">
+				<p class="publish-date">posted: <time datetime="2023-11-03 00:00:00 &#43;0000 UTC" class="catalogue-time">2023-11-03</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="environment">Environment</h2>
+<ul>
+<li>MacBook Air (M1 chip)</li>
+<li>AWS SAM version 1.99.0</li>
+<li>Python 3.9</li>
+</ul>
+<hr>
+<h2 id="steps">Steps</h2>
+<p>To retrieve files via SFTP from another server, we use the Paramiko library.<br>
+Since AWS Lambda does not include Paramiko by default, we will use a Lambda layer.</p>
+<p>Lambda layers can be built using Docker, but for simplicity, we will create one using AWS SAM.</p>
+<h3 id="-install-aws-sam">① Install AWS SAM</h3>
+<p>Run the following commands on Mac to install AWS SAM:</p>
+<pre tabindex="0"><code>$ brew tap aws/tap $ brew install aws-sam-cli
+</code></pre><p>At the time of writing, the installed version was 1.99.0:</p>
+<pre tabindex="0"><code>$ sam --version SAM CLI, version 1.99.0
+</code></pre><h3 id="-create-files-for-aws-sam">② Create Files for AWS SAM</h3>
+<p>Create the following directory structure.<br>
+You can rename the <code>paramiko-layer</code> directory if needed.</p>
+<pre tabindex="0"><code>(current dir)
+  ├── paramiko-layer
+  │    └── requirements.txt
+  └── template.yaml
+</code></pre><p>Contents of each file:</p>
+<p><strong><code>requirements.txt</code></strong><br>
+List the libraries to be installed:</p>
+<pre tabindex="0"><code>paramiko
+</code></pre><p><strong><code>template.yaml</code></strong><br>
+Set <code>ContentUri</code> to the directory containing <code>requirements.txt</code>.<br>
+Modify <code>python3.9</code> and <code>x86_64</code> to match your Lambda configuration if necessary.</p>
+<pre tabindex="0"><code>Resources:
+  ParamikoLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: &#39;paramiko-layer/&#39;
+      CompatibleRuntimes:
+        - python3.9
+      CompatibleArchitectures:
+        - x86_64
+    Metadata:
+      BuildMethod: python3.9
+</code></pre><h3 id="-build-the-layer">③ Build the Layer</h3>
+<p>Run the following command in the directory containing <code>template.yaml</code>.<br>
+<code>ParamikoLayer</code> can be renamed if needed.</p>
+<pre tabindex="0"><code>sam build ParamikoLayer
+</code></pre><p>This will create a <code>.aws-sam</code> directory in the current directory, containing the built files.<br>
+Although the layer can be deployed via the AWS CLI, we will manually upload a ZIP file instead.</p>
+<p>Compress the files in the generated <code>python</code> directory using the following command:</p>
+<pre tabindex="0"><code>cd .aws-sam/build/ParamikoLayer/
+zip -r paramiko-layer.zip python/*
+</code></pre><p>Upload the generated <code>paramiko-layer.zip</code> file via the AWS Management Console.<br>
+Open the Lambda <strong>Layers</strong> page and click <strong>Create Layer</strong>.<br>
+<img src="https://www.logical-dice.com/images/2023/aws-lambda-use-paramiko001.png" style="width:700px;"/></p>
+<p>Enter the following details and click <strong>Create</strong>:<br>
+<img src="https://www.logical-dice.com/images/2023/aws-lambda-use-paramiko002.png" style="width:700px;"/></p>
+<table>
+	<thead>
+			<tr>
+					<th>Field</th>
+					<th>Description</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Name</td>
+					<td>Any layer name of your choice.</td>
+			</tr>
+			<tr>
+					<td>Description</td>
+					<td>Optional. Provide a description if needed.</td>
+			</tr>
+			<tr>
+					<td>Upload</td>
+					<td>Select <strong>Upload a .zip file</strong>, then upload the previously generated ZIP file.</td>
+			</tr>
+			<tr>
+					<td>Compatible Architectures</td>
+					<td>Match this with the value in <code>template.yaml</code>.</td>
+			</tr>
+			<tr>
+					<td>Compatible Runtimes</td>
+					<td>Match this with the value in <code>template.yaml</code>.</td>
+			</tr>
+			<tr>
+					<td>License</td>
+					<td>Optional. Specify if your layer requires a license.</td>
+			</tr>
+	</tbody>
+</table>
+<p>Finally, add the layer to your Lambda function and start using Paramiko.<br>
+Below is a sample implementation:</p>
+<pre tabindex="0"><code>import paramiko
+
+def lambda_handler(event, context):
+    sshClient = paramiko.SSHClient()
+    policy = paramiko.client.MissingHostKeyPolicy()
+    sshClient.set_missing_host_key_policy(policy)
+    sshClient.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    sshClient.connect(&#39;Target Hostname&#39;, &#39;Target Port&#39;, &#39;Username&#39;, &#39;Password&#39;)
+
+    sftpClient = sshClient.open_sftp()
+    sftpClient.get(&#39;Remote file path and filename&#39;, &#39;Local destination path and filename&#39;)
+
+    # Add further processing as needed
+</code></pre><hr>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://qiita.com/nakamurahiro/items/706aa8eaf7fc15a9996b">Lambdaで絶対にエラーならないレイヤーの作成方法 #AWS - Qiita</a></li>
+</ul>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

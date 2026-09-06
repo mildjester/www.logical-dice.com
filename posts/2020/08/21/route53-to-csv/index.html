@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Route53のレコードを全てCSVに出力する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Route53のレコードを全てCSVに出力する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-08-21 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年08月21日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Linux Mint 20 Ulyana</li>
+<li>aws-cli/2.0.41</li>
+<li>jq 1.6</li>
+</ul>
+<hr>
+<p>Route53に大量のホストゾーンとレコードが登録されているアカウントで、Route53に登録されている内容を一覧化する必要があったので対応しました。<br>
+ワンライナーで実現しようと思ったのですが、希望した形にできなかったのでシェルスクリプトにしました。</p>
+<h2 id="必要なソフトのインストール">必要なソフトのインストール</h2>
+<h3 id="aws-cli">AWS CLI</h3>
+<p>AWS CLIが無い場合はインストールしておきます。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2.html">https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2.html</a></p>
+<p>AWS CLIの初期設定はこちら<br>
+<a href="https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-configure-quickstart.html">https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-configure-quickstart.html</a></p>
+<h3 id="jq">jq</h3>
+<p>jqはjsonを整形するツールです。<br>
+Linux Mintであれば以下コマンドでインストールできます。</p>
+<pre tabindex="0"><code>apt install jq
+</code></pre><h2 id="route53の内容を取得するスクリプト作成">Route53の内容を取得するスクリプト作成</h2>
+<p>AWS CLIでRoute53の内容をjson形式で取得し、それをjqで整形しながらCSVに出力するシェルスクリプトを作成します。<br>
+スクリプトの内容は以下の通りです。</p>
+<pre tabindex="0"><code>#!/bin/bash
+
+# CSVのヘッダ出力
+echo &#39;&#34;HostedZone&#34;,&#34;DomainName&#34;,&#34;DomainType&#34;,&#34;TTL&#34;,&#34;Value&#34;&#39;
+
+# ホストゾーン一覧を取得
+HostedZones=`aws route53 list-hosted-zones --output json --query &#39;HostedZones&#39;`
+HostedZonesLen=`echo $HostedZones | jq length`
+
+for i in $( seq 0 $(($HostedZonesLen - 1)) ); do
+    Zone=`echo $HostedZones | jq .[$i]`
+    ZoneId=`echo $Zone | jq -c -r &#39;.Id&#39;`
+    ZoneName=`echo $Zone | jq -c -r &#39;.Name&#39;`
+
+    # ホストゾーン内のレコード一覧を取得
+    Records=`aws route53 list-resource-record-sets --hosted-zone-id $ZoneId --output json --query &#39;ResourceRecordSets&#39;`
+    RecordsLen=`echo $Records | jq length`
+
+    for i in $( seq 0 $(($RecordsLen - 1)) ); do
+        record=`echo $Records | jq .[$i]`
+        name=`echo $record | jq -c -r &#39;.Name&#39;`
+        type=`echo $record | jq -c -r &#39;.Type&#39;`
+        ttl=`echo $record | jq -c -r &#39;.TTL&#39;`
+        data=`echo $record | jq -c -r &#39;.AliasTarget.DNSName // &#34;&#34;&#39;`
+
+        # AliasTargetのDNSNameが設定されていない場合はResourceRecordsのValuesを取得する
+        if [ -z &#34;$data&#34; ]; then
+            data=`echo $record | jq -c -r &#39;.ResourceRecords[].Value&#39;`
+        fi
+
+        # dataにはダブルクォートが含まれる可能性があるのでエスケープしておく
+        data=${data//\&#34;/\&#34;\&#34;}
+
+        # CSVのボディ出力
+        echo &#34;\&#34;${ZoneName}\&#34;,\&#34;${name}\&#34;,\&#34;${type}\&#34;,\&#34;${ttl}\&#34;,\&#34;${data}\&#34;&#34;
+    done
+done
+</code></pre><h3 id="簡単な説明">簡単な説明</h3>
+<p>AWS CLIでホストゾーンの情報をjson形式で取得します。</p>
+<pre tabindex="0"><code>aws route53 list-hosted-zones --output json --query &#39;HostedZones[]&#39;
+</code></pre><p>取得したホストゾーン情報を1件ずつループを回します。<br>
+以下コマンドでホストゾーンのレコードをjson形式で取得します。</p>
+<pre tabindex="0"><code>aws route53 list-resource-record-sets --hosted-zone-id $ZoneId --output json --query &#39;ResourceRecordSets&#39;
+</code></pre><p>そして要所要所でjqコマンドでjsonから必要な情報を抽出しています。</p>
+<h3 id="補足">補足</h3>
+<p>AWS CLIの<code>query</code>オプションはjqコマンドで抽出するのと同じ効果があります。<br>
+つまり、以下のコマンドはどちらも同じ結果となります。</p>
+<pre tabindex="0"><code>aws route53 list-resource-record-sets --hosted-zone-id $ZoneId --output json --query &#39;ResourceRecordSets&#39;
+aws route53 list-resource-record-sets --hosted-zone-id $ZoneId --output json | jq &#39;.ResourceRecordSets&#39;
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

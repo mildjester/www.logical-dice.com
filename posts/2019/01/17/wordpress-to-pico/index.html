@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>WordpressからPicoへデータ移行|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">WordpressからPicoへデータ移行</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-01-17 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年01月17日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/pico/">pico</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/wordpress/">Wordpress</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>まず、事前にpicoのブログ化が完了しているものとします<br>
+<a href="/posts/2019/01/16/pico-blog/">CMSのpicoをブログ化</a></p>
+<p>かなりの力技です<br>
+綺麗な方法ではないのでご了承ください</p>
+<h2 id="wordpressからのイメージ取得">Wordpressからのイメージ取得</h2>
+<p>まずWordpressから画像ファイル一式をダウンロードしてきます。<br>
+Wordpressの/wp-content/uploads/配下のファイルを<br>
+全てpico内にダウンロードしてきます。</p>
+<p>今回の例ではpico直下にimagesディレクトリを作成し、<br>
+そこにダウンロードするとします。<br>
+階層としては<code>picohttps://www.logical-dice.com/images/2019/01/hogehoge.png</code>のようになります。</p>
+<h2 id="wordpressからの記事取得">Wordpressからの記事取得</h2>
+<p>WordpressのDBから記事情報を取得します。</p>
+<p>MySQL Workbenchにて以下のSQLを実行し、<br>
+結果をjsonで出力しておきます</p>
+<pre tabindex="0"><code>SELECT p.ID, p.post_date, u.user_nicename, p.post_title, p.post_content, t.tags
+FROM wp_posts p
+LEFT JOIN wp_users u ON u.ID = p.post_author
+LEFT JOIN (
+	SELECT tr.object_id AS post_id, group_concat(t.name) AS tags
+	FROM wp_term_relationships tr
+	LEFT JOIN wp_term_taxonomy tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+	LEFT JOIN wp_terms t ON t.term_id = tt.term_id
+    WHERE tt.taxonomy = &#39;post_tag&#39;
+	GROUP BY tr.object_id
+) t ON t.post_id = p.ID
+WHERE post_status = &#39;publish&#39;;
+</code></pre><p>次に出力したjsonからpico用の記事mdファイルを生成します<br>
+以下のようなPHPスクリプトを実行すれば取得したJSONファイルから<br>
+mdファイルを生成できます</p>
+<pre tabindex="0"><code>&lt;?php
+// 出力したjsonは「tmp_insert.json」だとします
+$jsonStr = file_get_contents(&#39;./tmp_insert.json&#39;);
+$json = json_decode($jsonStr);
+
+foreach ($json as $post) {
+	// Descriptionはページの本文から先頭を切り出す
+	$description = strip_tags($post-&gt;post_content);
+	$description = str_replace(&#34;\n&#34;, &#39;&#39;, $description);
+	$description = mb_substr($description, 0, 64);
+	$description .= &#39;...&#39;;
+
+	// 画像ファイルのパスを修正
+	$body = str_replace(&#39;https://your-wp-site.com/wp-content/uploads/&#39;, &#39;https://www.logical-dice.com/images/&#39;, $post-&gt;post_content);
+	// 記事へのパスを修正
+	$body = str_replace(&#39;https://your-wp-site.com/?p=&#39;, &#39;/posts/&#39;, $body);
+	// Markdownなので行末にスペース2つが入るようにする
+    $body = str_replace([&#34;\r\n&#34;, &#34;\r&#34;, &#34;\n&#34;], &#39;  &#39;.PHP_EOL, $body);
+	
+	$content = &lt;&lt;&lt; EOF
+---
+title: $post-&gt;post_title
+summary: $description
+tags:
+    - $post-&gt;tags
+date: $post-&gt;post_date
+draft: false
+---
+$body
+EOF;
+	file_put_contents($post-&gt;ID.&#39;.md&#39;, $content);
+}
+</code></pre><p>あとは必要に応じて生成されたmdファイルを微調整するだけです。<br>
+また、<code>pico/content/tags</code>配下にWordpressにて利用していたタグを追加してください。</p>
+<h3 id="補足">※補足</h3>
+<p>環境によってはmdファイル内に記載しているとエラーとなってしまうHTMLタグがあるようです。<br>
+エラーとなったHTMLタグは削除するかMarkdown記法に置換しておきましょう。</p>
+<h2 id="wordpress時のurlからpicoのurlにリダイレクトする">Wordpress時のURLからpicoのURLにリダイレクトする</h2>
+<p>最後にWordpress時の記事URLを新URLにリダイレクトさせれば完了です。<br>
+(必須ではないですが、Google検索などから旧記事へ来てしまう人のため)</p>
+<p>Apacheの場合は以下のようになります。<br>
+設定ファイルかhtaccessに記載してください。</p>
+<pre tabindex="0"><code>&lt;IfModule mod_rewrite.c&gt;
+    RewriteEngine On
+
+    # 旧ブログからのリダイレクト
+    RewriteCond %{QUERY_STRING} p=([0-9]*)$
+    RewriteRule .* /posts/%1? [R=301,L]
+&lt;/IfModule&gt;
+</code></pre><p>Nginxの場合は設定ファイルに以下を記載します。</p>
+<pre tabindex="0"><code>if ($args ~ &#34;p=(.*)&#34;) {
+    set $articleId $1;
+    rewrite ^.*$ /posts/wp/$articleId? permanent;
+}
+</code></pre><p>これで<code>https://your-site.com/?p=1234</code>へアクセスがあると<br>
+<code>https://your-site.com/posts/1234</code>へリダイレクトしてくれます。<br>
+記事の階層を変える場合は適宜読み替えてください。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

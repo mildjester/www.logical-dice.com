@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Linux MintでThinkPadのトラックポイントを調整する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Linux MintでThinkPadのトラックポイントを調整する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-07-06 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年07月06日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Linux Mint 19.1 &ldquo;Tessa&rdquo; - MATE (64-bit)</li>
+<li>ThinkPad T480</li>
+</ul>
+<hr>
+<h3 id="参考">■参考</h3>
+<p><a href="https://qiita.com/takyam/items/c5184a14d8ca9553be1b">Ubuntu17.10でtrackpointの速度を調整する</a></p>
+<hr>
+<p>トラックポイントの速度調整は『コントロールセンター＞マウスの設定』からもできるのですが、<br>
+設定できる幅に限界があり、もう少し感度を上げたかったので他の方法で調整します。</p>
+<h3 id="最適な値の探し出し">■最適な値の探し出し</h3>
+<p>『感度』と『速度』をいじりながら最適な数値を探します。<br>
+私の場合はsensitivityは180、speedは60にすると丁度良かったです。</p>
+<pre tabindex="0"><code>$ sudo -i
+# cd /sys/devices/platform/i8042/serio1/serio2
+# vim sensitivity   // 感度
+# vim speed         // 速さ
+</code></pre><h3 id="設定値の永続化">■設定値の永続化</h3>
+<p>さきほど修正していたファイルは再起動時に戻ってしまうので、<br>
+別ファイルにルールを記載しておきます。</p>
+<pre tabindex="0"><code># vim /etc/udev/rules.d/10-trackpoint.rules
+</code></pre><p>記載内容は以下の通りです。<br>
+speedとsensitivityは最適な値を入れてください。</p>
+<pre tabindex="0"><code>KERNEL==&#34;serio2&#34;,
+SUBSYSTEM==&#34;serio&#34;,
+DRIVERS==&#34;psmouse&#34;,
+ATTR{sensitivity}:=&#34;180&#34;,
+ATTR{speed}:=&#34;60&#34;
+</code></pre><p>これで設定完了です。</p>
+<h3 id="おまけ中央クリックの貼り付けを無効化する">(おまけ)中央クリックの貼り付けを無効化する</h3>
+<p>デフォルトだとThinkPadの中央クリック(マウスでいうホイールクリック)で貼り付けがされますが、
+スクロール中にいきなり貼り付けが実行されたりして不便なので無効化します。</p>
+<blockquote>
+<p>※2020年7月追記<br>
+中央クリックでの貼付けを防ぐだけであれば設定から変更できました。<br>
+コントロールセンター &gt; マウス &gt; Enable middlemouse paste</p>
+</blockquote>
+<p>まずデバイス名を取得します。<br>
+以下コマンドを実行すると「TPPS/2 IBM TrackPoint」であることが分かります。</p>
+<pre tabindex="0"><code>$ xinput --list | grep TrackPoint
+⎜   ↳ TPPS/2 IBM TrackPoint                   	id=14	[slave  pointer  (2)]
+</code></pre><p>デバイスのマッピングを調べます。<br>
+以下コマンドを実行すると中央クリックはボタンマッピングの「2」であることが分かります。</p>
+<pre tabindex="0"><code>$ xinput get-button-map &#34;TPPS/2 IBM TrackPoint&#34;
+1 2 3 4 5 6 7 
+$ xinput --list &#34;TPPS/2 IBM TrackPoint&#34; | grep &#34;Button labels&#34;
+Button labels: &#34;Button Left&#34; &#34;Button Middle&#34; &#34;Button Right&#34; &#34;Button Wheel Up&#34; &#34;Button Wheel Down&#34; &#34;Button Horiz Wheel Left&#34; &#34;Button Horiz Wheel Right&#34;
+</code></pre><p>中央クリックを無効化します。<br>
+ボタンマッピングにて無効化にしたいボタンの数字を「0」に置き換えます。</p>
+<pre tabindex="0"><code>xinput set-button-map &#34;TPPS/2 IBM TrackPoint&#34; 1 0 3 4 5 6 7
+</code></pre><p>永続化するには上記コマンドを<code>~/.profile</code>に追記するだけです。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

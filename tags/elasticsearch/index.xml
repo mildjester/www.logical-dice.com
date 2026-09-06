@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Elasticsearch on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/elasticsearch/</link>
+		<description>Recent content in Elasticsearch on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 11 Jun 2020 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Elasticsearchの使い方メモ</title>
+				<link>https://www.logical-dice.com/posts/2020/06/11/elasticsearch-topics/</link>
+				<pubDate>Thu, 11 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/11/elasticsearch-topics/</guid>
+				<description>数年前のElasticsearchのメモが出てきたので晒します。</description>
+			</item>
+	</channel>
+</rss>

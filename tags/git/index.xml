@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Git on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/git/</link>
+		<description>Recent content in Git on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Sat, 06 Feb 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/git/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>修正したファイルだけPHP_CodeSnifferでチェックする</title>
+				<link>https://www.logical-dice.com/posts/2021/02/06/phpcs-git-diff/</link>
+				<pubDate>Sat, 06 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/06/phpcs-git-diff/</guid>
+				<description>git diffを使い修正したファイルだけphpcsでチェックする方法です</description>
+			</item>
+			<item>
+				<title>gitで一旦取り消しRevertをしたら、RevertのRevertをすべし</title>
+				<link>https://www.logical-dice.com/posts/2020/12/28/git-revert-revert/</link>
+				<pubDate>Mon, 28 Dec 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/12/28/git-revert-revert/</guid>
+				<description>gitでRevertしたあと、RevertのRevertをしないと大変な事になる。</description>
+			</item>
+			<item>
+				<title>GitHub ActionsでAWS Code Deployを回す</title>
+				<link>https://www.logical-dice.com/posts/2020/03/15/github-actions-deploy/</link>
+				<pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/15/github-actions-deploy/</guid>
+				<description>GitHub ActionsからAWS Code Deployを回してデプロイする手順です。</description>
+			</item>
+			<item>
+				<title>gitコマンドチートシート(応用編)</title>
+				<link>https://www.logical-dice.com/posts/2019/02/01/git-cmd-cheatsheet/</link>
+				<pubDate>Fri, 01 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/01/git-cmd-cheatsheet/</guid>
+				<description>gitコマンドの応用編チートシートです</description>
+			</item>
+			<item>
+				<title>gitコマンドで複数のGitHubアカウントを使い分ける</title>
+				<link>https://www.logical-dice.com/posts/wp/1715/</link>
+				<pubDate>Wed, 14 Nov 2018 20:37:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1715/</guid>
+				<description>環境Mac OS(Linuxでも動く気がします）概要GitHubではアカウントに秘密鍵が紐づいておりgit コマンドを実行した際&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CircleCIでプルリク時にUnitテストが走るようにする</title>
+				<link>https://www.logical-dice.com/posts/wp/1477/</link>
+				<pubDate>Tue, 14 Aug 2018 01:30:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1477/</guid>
+				<description>CircleCIを使って、GitHubにてプルリクエストを投げた際にUnitテストが走るようにします。ソースコードはPHPで、U&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【git】ローカルとリモートのブランチを削除するスクリプト</title>
+				<link>https://www.logical-dice.com/posts/wp/894/</link>
+				<pubDate>Tue, 12 Dec 2017 12:47:09 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/894/</guid>
+				<description>マージ済みのブランチを削除する時に、いつもローカルブランチとリモートブランチの両方を削除するのが面倒だったのでスクリプト化しまし&amp;hellip;</description>
+			</item>
+			<item>
+				<title>gitの履歴から特定のコミット以降の履歴だけを残してクリアする</title>
+				<link>https://www.logical-dice.com/posts/wp/501/</link>
+				<pubDate>Mon, 10 Apr 2017 19:39:28 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/501/</guid>
+				<description>個人で開発しているアプリケーションのgitリポジトリで履歴がグチャグチャしてしまったので、コミット履歴をちょっと弄った時のメモで&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【git】gitコマンドチートシート</title>
+				<link>https://www.logical-dice.com/posts/wp/398/</link>
+				<pubDate>Sat, 11 Feb 2017 23:06:36 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/398/</guid>
+				<description>自分が使うgitコマンドを整理しました。■環境OS X El Capitan 10.11.6git 2.10.1【設定について】&amp;hellip;</description>
+			</item>
+			<item>
+				<title>SVNサーバ(svn&#43;ssh)のリポジトリをgitサーバに移行する</title>
+				<link>https://www.logical-dice.com/posts/wp/278/</link>
+				<pubDate>Wed, 10 Aug 2016 12:04:21 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/278/</guid>
+				<description>■前提条件gitはサーバ＆クライアントのどちらも既に使える環境であること①gitサーバで空のリポジトリを作成する。作成方法は各G&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

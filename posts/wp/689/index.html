@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Mac】言語パッケージ管理用にasdfを導入する(fish環境)|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Mac】言語パッケージ管理用にasdfを導入する(fish環境)</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-08-19 17:11:43 &#43;0000 UTC" class="catalogue-time">2017年08月19日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/mac/">Mac</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>macOS Sierra 10.12.6 <br>
+fish 2.5.0</p>
+<hr>
+<h3 id="手順">■手順</h3>
+<p>Brewでもインストールできるらしいが、公式ページの手順に従った方が良さそう。<br>
+公式ページ：<a href="https://github.com/asdf-vm/asdf" rel="noopener" target="_blank"><a href="https://github.com/asdf-vm/asdf">https://github.com/asdf-vm/asdf</a></a></p>
+<p>まず、asdfをgithubからクローンし、fishのコンフィグに追加する。</p>
+<pre tabindex="0"><code>$ git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.3.0  
+$ echo &#39;source ~/.asdf/asdf.fish&#39; &gt;&gt; ~/.config/fish/config.fish  
+$ mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions  
+</code></pre><p>asdfで必要になるアプリケーションをbrewでインストールしておく。<br>
+下記はだいたい公式サイトで記載されているもの。</p>
+<pre tabindex="0"><code>$ brew install coreutils automake autoconf openssl libyaml readline libxslt libtool unixodbc  
+</code></pre><p>また、言語別で必要になるアプリケーションもある。<br>
+詳細は言語別のgithubページを参照<br>
+<a href="https://github.com/asdf-vm/asdf-plugins" target="_blank"><a href="https://github.com/asdf-vm/asdf-plugins">https://github.com/asdf-vm/asdf-plugins</a></a></p>
+<blockquote>
+<p>【メモ】<br>
+icu4cは2017年10月現在、最新バージョンを入れてしまうとPHPビルドできなくなってしまうので、旧バージョンをインストールした方が良いらしい<br>
+参考：<a href="https://github.com/phpbrew/phpbrew/issues/899" rel="noopener" target="_blank"><a href="https://github.com/phpbrew/phpbrew/issues/899">https://github.com/phpbrew/phpbrew/issues/899</a></a></p>
+</blockquote>
+<p>asdfで管理対象の言語を追加する。</p>
+<pre tabindex="0"><code>$ asdf plugin-add {任意の名前} {githubリポジトリ}  
+===== (例） asdf plugin-add go https://github.com/kennyp/asdf-golang  
+</code></pre><p>上記で設定するリポジトリは以下を参照<br>
+<a href="https://github.com/asdf-vm/asdf-plugins" target="_blank"><a href="https://github.com/asdf-vm/asdf-plugins">https://github.com/asdf-vm/asdf-plugins</a></a><br>
+もしここでエラーが出てしまった場合は必要なアプリケーションが入っていない可能性があるので、<br>
+エラー文言を参考にbrewインストールしておく。</p>
+<p>インストールできるバージョン一覧を見る。</p>
+<pre tabindex="0"><code>$ asdf list-all {さきほどの名前}  
+===== (例） asdf list-all go  
+</code></pre><p>上記で確認したバージョンの中から希望のバージョンをインストールし、 <br>
+利用できるように設定する。</p>
+<pre tabindex="0"><code>$ asdf install {さきほどの名前} {バージョン}  
+===== (例） asdf install go 1.8.4  
+$ asdf global {さきほどの名前} {バージョン}  
+===== (例） asdf global go 1.8.4  
+</code></pre><p>以上で設定完了です。</p>
+<p>その他コマンドは公式ページを参照。チートシートがいらないくらいまとまってます。<br>
+<a href="https://github.com/asdf-vm/asdf" target="_blank"><a href="https://github.com/asdf-vm/asdf">https://github.com/asdf-vm/asdf</a></a></p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

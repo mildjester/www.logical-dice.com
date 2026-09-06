@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Linux Mintにsassをインストールする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Linux Mintにsassをインストールする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-09-29 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年09月29日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="インストール方法">インストール方法</h2>
+<p>最終的に行き着いたインストール方法です。<br>
+インストールするだけならこちらを実行してください。</p>
+<pre tabindex="0"><code>$ apt install ruby-sass ruby-dev
+$ sudo gem install listen --version &#39;~&gt; 3.0&#39;
+</code></pre><h2 id="躓いた点">躓いた点</h2>
+<p>エラーメッセージで検索する人もいると思うので、<br>
+躓いた工程をメモしておきます。</p>
+<p>まず、最初にsassだけインストールしました。</p>
+<pre tabindex="0"><code>$ apt install ruby-sass
+</code></pre><p>すると、sassコマンドでwatchをする際にエラーが出ました。</p>
+<pre tabindex="0"><code>$ sass --watch ./sass:./css --style compact --no-cache
+&gt;&gt;&gt; Sass is watching for changes. Press Ctrl-C to stop.
+LoadError: cannot load such file -- listen
+Run &#34;gem install listen --version &#39;~&gt; 3.0&#39;&#34; to get it.
+  Use --trace for backtrace.
+</code></pre><p>watchをするためにはlistenが必要であるようです。<br>
+そこでlistenをインストールしようとしましたが、エラーになりました。</p>
+<pre tabindex="0"><code>$ sudo gem install listen --version &#39;~&gt; 3.0&#39;
+Building native extensions. This could take a while...
+ERROR:  Error installing listen:
+	ERROR: Failed to build gem native extension.
+
+    current directory: /var/lib/gems/2.5.0/gems/ffi-1.11.1/ext/ffi_c
+/usr/bin/ruby2.5 -r ./siteconf20190925-17707-1yh0gf6.rb extconf.rb
+mkmf.rb can&#39;t find header files for ruby at /usr/lib/ruby/include/ruby.h
+
+extconf failed, exit code 1
+
+Gem files will remain installed in /var/lib/gems/2.5.0/gems/ffi-1.11.1 for inspection.
+Results logged to /var/lib/gems/2.5.0/extensions/x86_64-linux/2.5.0/ffi-1.11.1/gem_make.out
+</code></pre><p>調べたら、どうやらruby-devが必要らしかったです。<br>
+<a href="https://qiita.com/kyrieleison/items/81c14780ad490049202c">https://qiita.com/kyrieleison/items/81c14780ad490049202c</a></p>
+<p>ruby-devをインストールしてからlistenをインストールしたら成功しました。</p>
+<pre tabindex="0"><code>$ apt install ruby-dev
+$ sudo gem install listen --version &#39;~&gt; 3.0&#39;
+</code></pre><p>これでsassコマンドが動くようになりました。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

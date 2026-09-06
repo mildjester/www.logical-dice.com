@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>AWS CLIで複数ファイルに対してS3 Selectで検索する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">AWS CLIで複数ファイルに対してS3 Selectで検索する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2024-12-12 00:00:00 &#43;0000 UTC" class="catalogue-time">2024年12月12日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>aws-cli 2.7.14</li>
+</ul>
+<hr>
+<h2 id="概要">概要</h2>
+<p>S3に保存されているCloudFrontのログを検索したかったのですが<br>
+Athenaは導入されていなかったのでS3 Selectを使って検索をしました。</p>
+<p>S3 Selectは1ファイルずつしか検索できないので、<br>
+AWS CLIをシェルに組み込んで複数ファイル検索できるようにしました。</p>
+<h2 id="手順">手順</h2>
+<p>条件は以下とします。</p>
+<ul>
+<li>S3バケット名は「target-bucket-name」</li>
+<li>「logs-dir」というディレクトリ内に「AABBCCDDEE123456.YYYY-MM-DD-HH.abcdefg・・・」形式でファイルが生成される。</li>
+<li>aws cli用のprofileは「my-aws-profile」という名前で設定してある。</li>
+</ul>
+<p>できあがったものはこちら。</p>
+<pre tabindex="0"><code># ①設定
+PROFILE=&#34;my-aws-profile&#34;
+BUCKET=&#34;target-bucket-name&#34;
+PREFIX=&#34;logs-dir/AABBCCDDEE123456.2024-12-11&#34;    # 左記例では2024年12月11日に出力された分を検索する。
+QUERY=&#34;SELECT * FROM s3object s&#34;                 # 左記例では全て出力しています。列を絞ったりWHERE句を入れたりしてください。
+
+# ②オブジェクト（ファイル）の一覧取得
+objects=`aws s3api list-objects --profile $PROFILE --bucket $BUCKET --prefix $PREFIX | jq`
+
+# ③取得したオブジェクトの一覧に対して1件ずつ処理をする
+for object in $(echo &#34;$objects&#34; | jq -c &#39;.Contents[]&#39;); do
+  key=$(echo &#34;$object&#34; | jq -r &#39;.Key&#39;)
+  echo &#34;$key&#34;
+
+  # ④検索結果出力
+  aws s3api select-object-content --profile $PROFILE --bucket $BUCKET --key $key --expression &#34;$QUERY&#34; --expression-type SQL --input-serialization &#39;{&#34;CSV&#34;: {&#34;FileHeaderInfo&#34;: &#34;NONE&#34;, &#34;FieldDelimiter&#34;: &#34;\t&#34;}, &#34;CompressionType&#34;: &#34;GZIP&#34;}&#39; --output-serialization &#39;{&#34;CSV&#34;: {&#34;FieldDelimiter&#34;: &#34;,&#34;}}&#39; output-tmp.csv
+  cat output-tmp.csv &gt;&gt; output.csv
+done
+
+rm -f output-tmp.csv
+</code></pre><h3 id="設定">①設定</h3>
+<p>必要な情報を設定してください。</p>
+<p>PREFIXは必要なファイルを絞れるように設定しないと。検索対象が無駄に増えるとお金がかかってしまいます。<br>
+料金については以下を参照。<br>
+<a href="https://aws.amazon.com/jp/s3/pricing/">https://aws.amazon.com/jp/s3/pricing/</a></p>
+<p>QUERYについては以下も参照。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/userguide/s3-select-sql-reference-select.html">https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/userguide/s3-select-sql-reference-select.html</a></p>
+<h3 id="オブジェクトファイルの一覧取得">②オブジェクト（ファイル）の一覧取得</h3>
+<p>AWS CLIを利用してS3のバケットおよびPrefixが一致するオブジェクトの一覧を取得します。<br>
+取得したjsonを解読するためjqコマンドも噛ませています。<br>
+※profile設定時にoutputをjsonにしてある。</p>
+<h3 id="取得したオブジェクトの一覧に対して1件ずつ処理をする">③取得したオブジェクトの一覧に対して1件ずつ処理をする</h3>
+<p>オブジェクト（ファイル）の配列は「Contents」というキーで返ってくるので、<br>
+それを指定してforで回します。</p>
+<h3 id="検索結果出力">④検索結果出力</h3>
+<p>S3 Selectのコマンド結果はファイルに出力するしかないので、<br>
+現在のオブジェクトの検索結果は一時ファイル(output-tmp.csv)に出力してから<br>
+最終ファイル(output.csv)に追記していくようにしています。</p>
+<p>これで検索結果が出力されます。<br>
+あとは必要な情報をさらに絞るためにクエリを修正したりしていけば欲しい情報が取れるようになります。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

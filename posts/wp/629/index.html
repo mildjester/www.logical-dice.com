@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>CentOS7のネットワーク周り初期設定|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">CentOS7のネットワーク周り初期設定</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-05-02 15:01:15 &#43;0000 UTC" class="catalogue-time">2017年05月02日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/centos/">CentOS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>CentOS 7.3</p>
+<hr>
+<h3 id="bonding設定">bonding設定</h3>
+<p>参考URL：<a href="https://bacchi.me/linux/bonding/" target="_blank"><a href="https://bacchi.me/linux/bonding/">https://bacchi.me/linux/bonding/</a></a></p>
+<p>現状確認しておきます。</p>
+<pre tabindex="0"><code>nmcli c  
+ip a  
+</code></pre><p>bonding用インターフェースを追加します。</p>
+<pre tabindex="0"><code>nmcli connection add type bond autoconnect no con-name bond0 ifname bond0 mode active-backup  
+</code></pre><p>物理インターフェースをbondに紐付けます</p>
+<pre tabindex="0"><code>nmcli connection add type bond-slave autoconnect no ifname eno1 master bond0  
+nmcli connection add type bond-slave autoconnect no ifname eno2 master bond0  
+</code></pre><p>bondにIPを設定します。</p>
+<pre tabindex="0"><code>nmcli c mod bond0 ipv4.method manual ipv4.address &#34;192.168.999.999/32&#34; ipv4.gateway &#34;192.168.999.254&#34; ipv6.method ignore  
+nmcli c mod bond0 ipv4.dns 192.168.999.254  
+</code></pre><p>物理インターフェースを無効にし、bondインターフェースを有効にします。</p>
+<pre tabindex="0"><code>nmcli c m eno1 connection.autoconnect no  
+nmcli c m eno2 connection.autoconnect no  
+  
+nmcli c m bond-slave-eno1 connection.autoconnect yes  
+nmcli c m bond-slave-eno2 connection.autoconnect yes  
+nmcli c m bond0 connection.autoconnect yes  
+  
+nmcli c up bond-slave-eno1  
+nmcli c up bond-slave-eno2  
+nmcli c up bond0  
+</code></pre><h3 id="ホスト名変更">ホスト名変更</h3>
+<pre tabindex="0"><code>hostnamectl set-hostname sample.com  
+</code></pre><h3 id="selinux無効化">SELinux無効化</h3>
+<p>SELinuxが不要な場合は無効化します。</p>
+<pre tabindex="0"><code>vim /etc/sysconfig/selinux  
+SELINUX=enforcing  
+SELINUX=disabled  
+</code></pre><h3 id="firewalld停止">firewalld停止</h3>
+<p>別のファイアーウォール内のサーバである場合、<br>
+不要なのでfirewalldは停止しておきます。</p>
+<pre tabindex="0"><code>systemctl stop firewalld  
+systemctl disable firewalld  
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

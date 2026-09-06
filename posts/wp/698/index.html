@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Wordpress】テーマで指定されたCSSがうまく読み込めない|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Wordpress】テーマで指定されたCSSがうまく読み込めない</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-08-21 01:57:10 &#43;0000 UTC" class="catalogue-time">2017年08月21日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/wordpress/">Wordpress</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>Wordpressで他人が作成したテーマを使っているとCSSがうまく読み込めない時があります。<br>
+条件としては以下の両方に当てはまっている場合だと思います。</p>
+<ul>
+<li>Wordpressの管理画面と公開画面でドメインが違う</li>
+<li>テーマ内にstyle.css以外のCSSファイルがあり、それをwp_enqueue_styleを使って読み込んでいる</li>
+</ul>
+<p>このとき、ブラウザの開発ツールでコンソールを表示すると、以下のようなエラーが発生していると思います。</p>
+<pre tabindex="0"><code>Access to Font at &#39;http://yourdomain1.com/wp-content/themes/sparkling/assets/fonts/glyphicons-halflings-regular.woff2&#39; from origin &#39;http://yourdomain2.com&#39; has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource. Origin &#39;http://yourdomain2.com&#39; is therefore not allowed access.  
+</code></pre><p>クロスドメインなどが原因のようなのですが、手早く直したかったので<br>
+以下の修正をして直しました。</p>
+<p>①wp_enqueue_styleをしている箇所をコメントアウトする。(テーマによるが、function.phpなどに記載あり)</p>
+<pre tabindex="0"><code>// wp_enqueue_style( &#39;bs&#39;, get_template_directory_uri() . &#39;/assets/css/bootstrap.min.css&#39; );  
+// wp_enqueue_style( &#39;awe&#39;, get_template_directory_uri() . &#39;/assets/css/font-awesome.min.css&#39; );  
+</code></pre><p>②htmlのheadタグ内にてCSS読み込み処理を記載する。(テーマによるが、header.phpなどに記載あり)<br>
+※以下例ではCDNを指定しています。</p>
+<pre tabindex="0"><code>&lt;link rel=&#34;stylesheet&#34; href=&#34;//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css&#34;&gt;  
+&lt;link rel=&#34;stylesheet&#34; href=&#34;//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css&#34;&gt;  
+</code></pre><p>これで正常にCSSが読み込まれ、ブラウザのコンソールからもエラーが消えました。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

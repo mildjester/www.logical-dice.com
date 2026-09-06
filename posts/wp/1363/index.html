@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Apacheのevent MPMのチューニング|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Apacheのevent MPMのチューニング</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-05-26 11:28:56 &#43;0000 UTC" class="catalogue-time">2018年05月26日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/apache/">Apache</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>preforkからeventに乗り換えるとチューニングの考え方が少し変わるので簡単にメモ。</p>
+<p>event MPMではまずApacheの子プロセス（以下プロセス）が複数生成され、<br>
+さらに各プロセスの中にWorker Thread（以下スレッド）が複数生成されるイメージ。</p>
+<p>設定値の意味は以下のようになる</p>
+<pre tabindex="0"><code>&lt;IfModule mpm_event_module&gt;  
+  ServerLimit               8 #プロセス数の最大値  
+  StartServers              3 #プロセス数の初期値  
+  MinSpareThreads         192 #空きスレッド数の最小値(下回ったら増やす)  
+  MaxSpareThreads         384 #空きスレッド数の最大値(上回ったら減らす)  
+  ThreadsPerChild          64 #プロセスあたりのスレッド数  
+  MaxRequestWorkers       512 #同時に処理できる最大数  
+  MaxConnectionsPerChild 5000 #プロセスが再起動までに処理するリクエスト数  
+&lt;/IfModule&gt;  
+</code></pre><ul>
+<li><code>MaxRequestWorkers</code>は最大スレッド数(ServerLimit×ThreadsPerChild)以下にしておくこと。<br>
+スレッド数以上のリクエストが来ると困る。</li>
+<li><code>MinSpareThreads</code>は初期スレッド数(StartServers×ThreadsPerChild)以下にしておくこと。<br>
+初期スレッド数以上の空きスレッドが必要だと、起動直後にスレッド追加しなければならなくて無駄。</li>
+<li><code>MinSpareThreads</code>と<code>MaxSpareThreads</code>は<code>ThreadsPerChild</code>の倍数になっていた方が良さそう。</li>
+</ul>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

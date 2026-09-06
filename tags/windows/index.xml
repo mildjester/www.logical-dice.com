@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Windows on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/windows/</link>
+		<description>Recent content in Windows on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Sun, 07 Mar 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/windows/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>WindowsのMySQL Workbenchで2段SSH踏み台で接続する</title>
+				<link>https://www.logical-dice.com/posts/2021/03/07/windows-localforward-mysql-workbench/</link>
+				<pubDate>Sun, 07 Mar 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/03/07/windows-localforward-mysql-workbench/</guid>
+				<description>Windows10のMySQL Workbenchで2段階のSSH接続を挟みDBへ接続する方法です。</description>
+			</item>
+			<item>
+				<title>Windows Terminalの導入</title>
+				<link>https://www.logical-dice.com/posts/2020/09/04/windows-terminal-install/</link>
+				<pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/04/windows-terminal-install/</guid>
+				<description>Windows 10でWindows Terminalを使えるようにします。</description>
+			</item>
+			<item>
+				<title>Windows10でキー配置を変更する</title>
+				<link>https://www.logical-dice.com/posts/2020/09/04/win10-keymap-change/</link>
+				<pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/04/win10-keymap-change/</guid>
+				<description>Windows 10のCapsLockの挙動やIMEオン/オフキーを変更します。</description>
+			</item>
+			<item>
+				<title>Windows10で開発PCをセッティングする。</title>
+				<link>https://www.logical-dice.com/posts/2020/09/04/win10-initial-setting/</link>
+				<pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/04/win10-initial-setting/</guid>
+				<description>Windows 10のWSL2やWindows Terminalが良い感じだったので開発環境を整えてみました。</description>
+			</item>
+			<item>
+				<title>WSL2でUbuntuを使えるようにする</title>
+				<link>https://www.logical-dice.com/posts/2020/09/04/win10-wsl2-ubuntu/</link>
+				<pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/09/04/win10-wsl2-ubuntu/</guid>
+				<description>Windows 10のWLS2でUbuntu20.04を使えるようにします。</description>
+			</item>
+			<item>
+				<title>WindowsでDocker Toolbox＆docker-composeを動かす</title>
+				<link>https://www.logical-dice.com/posts/wp/1500/</link>
+				<pubDate>Fri, 21 Sep 2018 17:55:45 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1500/</guid>
+				<description>仕事でWindows利用者にDocker環境を構築してもらう事があったのですが結構苦労したので手順を残します。■□ 注意 ■□■&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

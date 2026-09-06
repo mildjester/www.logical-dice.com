@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Zabbix on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/zabbix/</link>
+		<description>Recent content in Zabbix on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Tue, 02 May 2017 14:49:34 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/zabbix/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>MacにZabbixエージェントを入れる</title>
+				<link>https://www.logical-dice.com/posts/wp/624/</link>
+				<pubDate>Tue, 02 May 2017 14:49:34 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/624/</guid>
+				<description>■環境Mac OS 10.9.5Zabbix 3.2.1Mac OSのサーバにZabbixエージェントを入れた際の手順メモです。&amp;hellip;</description>
+			</item>
+			<item>
+				<title>zabbixでPHPの警告が出る場合の対処</title>
+				<link>https://www.logical-dice.com/posts/wp/424/</link>
+				<pubDate>Tue, 14 Feb 2017 00:48:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/424/</guid>
+				<description>■環境zabbix 3.2PHP 7.1PHP7.1でzabbixを動かすと、以下の警告が出ました。A non well for&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CentOS 7.3にzabbix 3.2をインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/349/</link>
+				<pubDate>Tue, 14 Feb 2017 00:20:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/349/</guid>
+				<description>■環境CentOS 7.3zabbix 3.2PHP 7.1MySQL 14.14Apache 2.4①zabbixをyumでイ&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

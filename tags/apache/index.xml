@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Apache on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/apache/</link>
+		<description>Recent content in Apache on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Tue, 19 Nov 2019 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/apache/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>htaccessで本番環境だけ特定のディレクトリを隠す</title>
+				<link>https://www.logical-dice.com/posts/2019/11/19/apache-directory-hidden/</link>
+				<pubDate>Tue, 19 Nov 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/11/19/apache-directory-hidden/</guid>
+				<description>本番環境だけ特定のディレクトリへのアクセスを制限するメモです</description>
+			</item>
+			<item>
+				<title>リバースプロキシ先でWordpressを動かす</title>
+				<link>https://www.logical-dice.com/posts/2019/10/15/reverseproxy-wordpress/</link>
+				<pubDate>Tue, 15 Oct 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/10/15/reverseproxy-wordpress/</guid>
+				<description>Apacheのリバースプロキシ先でWordpressを動かす設定メモです</description>
+			</item>
+			<item>
+				<title>Apacheにサーバーのメモリを食い尽くさせない</title>
+				<link>https://www.logical-dice.com/posts/2019/02/15/apache-tuning/</link>
+				<pubDate>Fri, 15 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/15/apache-tuning/</guid>
+				<description>Apacheのチューニングをした際のメモです</description>
+			</item>
+			<item>
+				<title>grepでアクセスログからTPSを出す</title>
+				<link>https://www.logical-dice.com/posts/wp/1436/</link>
+				<pubDate>Thu, 05 Jul 2018 15:28:23 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1436/</guid>
+				<description>■環境Amazon Linux AMI release 2013.03grep 2.6.3WEBサーバーのアクセスログからTPS&amp;hellip;</description>
+			</item>
+			<item>
+				<title>AWS ELB配下でApacheのRewriteRuleが上手く動かなかった話</title>
+				<link>https://www.logical-dice.com/posts/wp/1423/</link>
+				<pubDate>Sat, 30 Jun 2018 22:29:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1423/</guid>
+				<description>■環境AWS ELBAWS EC2Apache 2.2.32AWSのEC2上で動いているApacheサーバーでの話。SEO対策で&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Apacheのevent MPMのチューニング</title>
+				<link>https://www.logical-dice.com/posts/wp/1363/</link>
+				<pubDate>Sat, 26 May 2018 11:28:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1363/</guid>
+				<description>preforkからeventに乗り換えるとチューニングの考え方が少し変わるので簡単にメモ。event MPMではまずApache&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS &#43; Apache】Let’s Encryptで無料SSL証明書の取得＆自動更新をする</title>
+				<link>https://www.logical-dice.com/posts/wp/355/</link>
+				<pubDate>Wed, 18 Jan 2017 00:51:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/355/</guid>
+				<description>■環境CentOS 7.3Apache 2.4.6Let&amp;rsquo;s Encryptで無料SSL証明書を取得し、自動更新する設定をします&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Apacheのセキュリティ設定</title>
+				<link>https://www.logical-dice.com/posts/wp/302/</link>
+				<pubDate>Wed, 12 Oct 2016 13:40:02 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/302/</guid>
+				<description>Apacheはデフォルト設定のまま利用するとサーバーの情報が諸々見えてしまいます。それらを隠すには設定ファイルを編集する必要があ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Apache】htaccessのRewriteでGETパラメータも残す</title>
+				<link>https://www.logical-dice.com/posts/wp/249/</link>
+				<pubDate>Thu, 26 May 2016 19:56:46 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/249/</guid>
+				<description>nginxが台頭してきている今日この頃。Apacheの話です。少しハマったのでメモします。■環境CentOS 6.6httpd &amp;hellip;</description>
+			</item>
+			<item>
+				<title>ダイジェスト認証の設定方法</title>
+				<link>https://www.logical-dice.com/posts/wp/164/</link>
+				<pubDate>Wed, 20 Jan 2016 21:30:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/164/</guid>
+				<description>Apacheで動いているWEBサーバにて、ダイジェスト認証を入れる方法です。■環境CentOS Linux release 7&amp;hellip;.</description>
+			</item>
+			<item>
+				<title>COMODOのSSL証明書をApacheに設定する方法</title>
+				<link>https://www.logical-dice.com/posts/wp/120/</link>
+				<pubDate>Tue, 20 Oct 2015 20:25:57 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/120/</guid>
+				<description>COMODOの証明書を購入した後の設定が複雑だったので、まとめました。購入手順についてはSSL購入サイトを見れば分かると思うので&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

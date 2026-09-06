@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Atom IDEの環境構築（PHP、Go）|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Atom IDEの環境構築（PHP、Go）</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-09-29 19:11:15 &#43;0000 UTC" class="catalogue-time">2017年09月29日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/golang/">golang</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/atom/">atom</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/php/">PHP</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>macOS Sierra 10.12.6<br>
+Atom 1.21.0-beta2</p>
+<h3 id="参考にしたサイト">■参考にしたサイト</h3>
+<p>公式サイト<br>
+<a href="https://ide.atom.io/" rel="noopener" target="_blank"><a href="https://ide.atom.io/">https://ide.atom.io/</a></a> <br>
+はくたけ氏のブログ<br>
+<a href="http://tech.innovator.jp.net/entry/2017/09/14/165139" rel="noopener" target="_blank"><a href="http://tech.innovator.jp.net/entry/2017/09/14/165139">http://tech.innovator.jp.net/entry/2017/09/14/165139</a></a> <br>
+sayama0402さんのQiita<br>
+<a href="https://qiita.com/sayama0402/items/3bd8d905619c514179b7" rel="noopener" target="_blank"><a href="https://qiita.com/sayama0402/items/3bd8d905619c514179b7">https://qiita.com/sayama0402/items/3bd8d905619c514179b7</a></a></p>
+<hr>
+<p>ナウいエディタ「Atom」は、前から気になっていたのですが、</p>
+<ul>
+<li>テキストエディタにしては重い</li>
+<li>IDEにしては機能がすくない</li>
+</ul>
+<p>という理由で、少し敬遠していました。</p>
+<p>が、そのAtomからIDEが出たそうなので、試しに使ってみました。</p>
+<h3 id="手順">■手順</h3>
+<h4 id="atomの入手">①Atomの入手</h4>
+<p>以下サイトより、Atom 1.21.0（ベータ版）を入手してインストールする。<br>
+<a href="https://atom.io/beta" rel="noopener" target="_blank"><a href="https://atom.io/beta">https://atom.io/beta</a></a></p>
+<p>※いくつかの紹介ページを見ましたが、1.21.0が推奨されているようです。 <br>
+　試しに1.20.0(安定板)でも試して見ましたが、確かに動きが怪しかったです。</p>
+<h4 id="必須パッケージのインストール">②必須パッケージのインストール</h4>
+<p>Atomを起動したら、上部メニュー <br>
+<code>Packages &gt; Settings View &gt; Install Packages/Themes</code> <br>
+より、以下を検索してインストールする。</p>
+<ul>
+<li>atom-ide-ui</li>
+<li>ide-php</li>
+<li>ide-go</li>
+</ul>
+<h4 id="使って見る">③使って見る。</h4>
+<p>初めてgoのソースコードを開いた際には「ide-go」が依存するパッケージをインストールするか聞かれるので、 <br>
+インストールします。<br>
+また、「linter」と「atom-ide-diagnostics」が競合している旨のメッセージが出るので、<br>
+そのメッセージの下にある「Disable linter」をクリックして、競合を解決します。</p>
+<p>これで、実際に使い始められそうです。 <br>
+定義ジャンプや補完機能は十分使えそうなレベルで動いてました。<br>
+また、他の無料IDE（EclipseやNetBeans）に比べると、起動が早かったです。</p>
+<h4 id="その他パッケージのインストール">その他パッケージのインストール</h4>
+<p>IDEとは関係なく便利なパッケージが沢山あるので入れます。<br>
+以下、実際に入れて見たパッケージです。</p>
+<p><em>■file-icons</em><br>
+各ファイルの拡張子に合わせてアイコンを変えてくれる。<br>
+ちなみに、Atomに新拡張子を紐付けさせるには、上部メニューより「Atom Beta＞Config」をクリックし、 <br>
+config.csonを編集する必要がある。</p>
+<p>【例：以下の記載で「.inc」という拡張子をPHPファイルとして認識してくれる】</p>
+<pre tabindex="0"><code>&#34;*&#34;:  
+  core:  
+    customFileTypes:  
+      &#34;source.php&#34;: [  
+        &#34;inc&#34;  
+      ]  
+</code></pre><p>『source.php』に該当する部分はPHPファイルを開いた状態で「cmd + opt + P」を押すとポップアップで表示される。 <br>
+別拡張子のファイルでも同じ操作でできるはず。</p>
+<p><em>■pigments</em><br>
+色コードを記載したら自動で該当の色でハイライトしてくれる。</p>
+<p><em>■show-ideographic-space</em><br>
+全角スペースを見える化</p>
+<p><em>■git-plus</em><br>
+ターミナルなしでgit操作ができる！だそうです。</p>
+<p><em>■merge-conflict</em><br>
+gitのコンフリクト解消が楽になる。</p>
+<p><em>■highlight-selected</em> <br>
+選択した単語と同じ単語をソースコード上でハイライトしてくれる。 <br>
+選択=ダブルクリックらしい。同じ変数を探す時などに便利。</p>
+<p><em>■linter-php</em> <br>
+構文チェックしてくれるパッケージ。 <br>
+括弧の開閉数が不一致の時とか教えてくれる。 <br>
+紐づくパッケージを諸々インストールしてねと出てくるので、それらもインストールする。 <br>
+※AtomIDEにも標準で構文チェックパッケージ(?)が入っているらしく、それと競合すると警告が表示される。 <br>
+　IDE標準のものはエラー検知をしてくれているのかよく分からなかったので、私は無効化してしまいました。 <br>
+　（上記警告にDisableボタンが付いているので、それをクリックするだけ）</p>
+<p><em>■project-manager</em> <br>
+複数プロジェクトを管理するためのパッケージ。 <br>
+プロジェクト切り替えが容易になる。 <br>
+【管理対象のプロジェクトを増やす方法】<br>
+　対象としたいプロジェクトを開いた状態で上部メニューより「packages &gt; Project Manager &gt; Save Project」を選択<br>
+【管理対象プロジェクトの呼び出し】 <br>
+　「Ctrl + Command + P」で一覧が表示されるので、そこで選択する。 <br>
+　上部メニューより「packages &gt; Project Manager &gt; List Project」を選択しても同じ。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

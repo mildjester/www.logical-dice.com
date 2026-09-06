@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Linux Mint】日本語入力できるようにする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Linux Mint】日本語入力できるようにする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-04-13 21:28:47 &#43;0000 UTC" class="catalogue-time">2018年04月13日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>Linux Mint 18.3 cinnamon 64bit</p>
+<hr>
+<p>Linux MintをEnglishでインストールした際の作業です。<br>
+日本語でインストールしてあれば、初めから日本語入力が可能なはずです。</p>
+<h2 id="設定手順">設定手順</h2>
+<p>Fcitx + Mozcで日本語入力できるようにします。</p>
+<p>まず「SystemSettins &gt; Input Method」を開きます。<br>
+<img src="https://www.logical-dice.com/images/2018/03/japanize-001.png" alt="" /></p>
+<p>『Language support』に<code>Japanese</code>があるので、そこのInstallボタンをクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-38-28.png" alt="" /></p>
+<p>インストールが終わると『Input method』にて<code>Fcitx</code>を選択できるようになるので選択して、<br>
+一旦マシンを再起動します。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-13-57-55.png" alt="" /></p>
+<p>再起動後、Menuより<code>Fcitx　Configuration</code>を開きます。<br>
+検索バーに『Fc』あたりまで入れると出てきます。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-43-36.png" alt="" /></p>
+<p>Input Methodの追加「＋」をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-10-02.png" alt="" /></p>
+<p>input methodの一覧が出てくるので、<code>Mozc</code>を選択してOKをクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-11-56.png" alt="" /></p>
+<p>Input MethodにMozcが追加されるので、元々あった<code>Keybord - Japanese</code>は削除(×)ボタンで消してしまいます。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-13-21.png" alt="" /></p>
+<p>これで日本語入力できるようになりました。<br>
+半角/全角キーで日本語/英語を入れ替えられます。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>CentOS on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/centos/</link>
+		<description>Recent content in CentOS on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Tue, 22 May 2018 10:14:55 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/centos/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Linux環境のタイムゾーンを日本にする</title>
+				<link>https://www.logical-dice.com/posts/wp/1360/</link>
+				<pubDate>Tue, 22 May 2018 10:14:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1360/</guid>
+				<description>このコマンドを実行するだけsudo ln -fs /usr/share/zoneinfo/Asia/Tokyo /etc/loc&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】OpenVPN &amp; LDAPでVPNサーバ構築</title>
+				<link>https://www.logical-dice.com/posts/wp/942/</link>
+				<pubDate>Wed, 20 Dec 2017 16:12:33 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/942/</guid>
+				<description>環境CentOS 7.4OpenVPN 2.4.4参考サイトServerWorldさん：https://www.server-w&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】侵入検知したらSlack通知する</title>
+				<link>https://www.logical-dice.com/posts/wp/853/</link>
+				<pubDate>Tue, 12 Dec 2017 00:30:31 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/853/</guid>
+				<description>■環境CentOS 7.4AIDE 0.15.1AIDEという侵入検知ツールを導入し、検査結果をSlackに通知するようにします&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Vue.js &#43; foreverでのアプリ起動</title>
+				<link>https://www.logical-dice.com/posts/wp/674/</link>
+				<pubDate>Mon, 31 Jul 2017 01:32:53 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/674/</guid>
+				<description>■環境CentOS 7.3npm 3.10.10=====2017/12/27追記=====久しぶりに本手順を試したところ、vu&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Let&#39;sEncrypt】Certbotの使い方(CentOS7 &#43; nginx)</title>
+				<link>https://www.logical-dice.com/posts/wp/656/</link>
+				<pubDate>Mon, 12 Jun 2017 17:17:21 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/656/</guid>
+				<description>■環境CentOS 7.3nginx 1.10.3certbot 0.14.1■初回SSL証明書発行certbotをインストール&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CentOS7のネットワーク周り初期設定</title>
+				<link>https://www.logical-dice.com/posts/wp/629/</link>
+				<pubDate>Tue, 02 May 2017 15:01:15 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/629/</guid>
+				<description>■環境CentOS 7.3bonding設定参考URL：https://bacchi.me/linux/bonding/現状確認&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CentOS7にfishを入れる</title>
+				<link>https://www.logical-dice.com/posts/wp/440/</link>
+				<pubDate>Fri, 17 Feb 2017 00:00:18 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/440/</guid>
+				<description>最近人気らしいfishを試しに入れてみました。■環境CentOS 7.3fish 2.3.1epelリポジトリが入っていない人は&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CentOS 7.3にzabbix 3.2をインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/349/</link>
+				<pubDate>Tue, 14 Feb 2017 00:20:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/349/</guid>
+				<description>■環境CentOS 7.3zabbix 3.2PHP 7.1MySQL 14.14Apache 2.4①zabbixをyumでイ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS &#43; Apache】Let’s Encryptで無料SSL証明書の取得＆自動更新をする</title>
+				<link>https://www.logical-dice.com/posts/wp/355/</link>
+				<pubDate>Wed, 18 Jan 2017 00:51:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/355/</guid>
+				<description>■環境CentOS 7.3Apache 2.4.6Let&amp;rsquo;s Encryptで無料SSL証明書を取得し、自動更新する設定をします&amp;hellip;</description>
+			</item>
+			<item>
+				<title>HP Proliant Microserver Gen 8 にCentOS7を入れる</title>
+				<link>https://www.logical-dice.com/posts/wp/318/</link>
+				<pubDate>Thu, 01 Dec 2016 13:29:48 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/318/</guid>
+				<description>■作業環境・OS X El Capitan 10.11.6 ■手順CentOS7の準備まず、CentOSのISOイメー&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【DNSサーバ】BINDからNSDへの移行</title>
+				<link>https://www.logical-dice.com/posts/wp/311/</link>
+				<pubDate>Tue, 25 Oct 2016 11:21:04 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/311/</guid>
+				<description>社内利用のDNSをBIND作っていたのですが、BINDは脆弱性が頻繁に発見されるし、DNSキャッシュ機能は要らなかったのでNSD&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Linuxサーバに秘密鍵方式でsshする</title>
+				<link>https://www.logical-dice.com/posts/wp/274/</link>
+				<pubDate>Mon, 01 Aug 2016 00:27:04 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/274/</guid>
+				<description>■環境CentOS 7.2■手順①秘密鍵と公開鍵を生成ローカルPCにて以下を実施します。MacでもLinuxでも同じコマンドで生&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】cronが動かない場合のチェック</title>
+				<link>https://www.logical-dice.com/posts/wp/202/</link>
+				<pubDate>Tue, 08 Mar 2016 05:23:15 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/202/</guid>
+				<description>cronが動かない時のチェック項目 ①cronのプロセス（crond）は起動しているか↓起動している②crontabの&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】php7をyumインストールする</title>
+				<link>https://www.logical-dice.com/posts/wp/156/</link>
+				<pubDate>Mon, 07 Dec 2015 23:31:02 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/156/</guid>
+				<description>php7がリリースされたので、CentOS7のサーバにyumでインストールした手順です。■環境CentOS 7.1.1503以下&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】ComposerにGitHubのアクセストークンを設定する</title>
+				<link>https://www.logical-dice.com/posts/wp/147/</link>
+				<pubDate>Mon, 07 Dec 2015 23:11:45 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/147/</guid>
+				<description>今更ながら、ComposerにGitHubのアクセストークンを設定する方法です。■環境CentOS 7.1.1503GitHub&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】PostgreSQLの導入</title>
+				<link>https://www.logical-dice.com/posts/wp/127/</link>
+				<pubDate>Fri, 04 Dec 2015 12:59:49 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/127/</guid>
+				<description>CentOSにPostgreSQLを導入した際の作業メモです■環境CentOS r&amp;hellip;</description>
+			</item>
+			<item>
+				<title>CentOS7のsshd設定（セキュリティ）</title>
+				<link>https://www.logical-dice.com/posts/wp/106/</link>
+				<pubDate>Mon, 19 Oct 2015 21:52:24 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/106/</guid>
+				<description>サーバへのsshログインについて、以下の設定をします・sshポートの変更・ルート権限でのログインを無効化・ルート権限にsuできる&amp;hellip;</description>
+			</item>
+			<item>
+				<title>メールドメインに「localhost」と付いてしまう</title>
+				<link>https://www.logical-dice.com/posts/wp/40/</link>
+				<pubDate>Sat, 08 Aug 2015 16:52:42 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/40/</guid>
+				<description>■環境CentOS 7postfix 2.10.1postfixで構築したメールサーバからメールを送信した場合に設定は間違えてい&amp;hellip;</description>
+			</item>
+			<item>
+				<title>メールサーバ構築（②dovecot編）</title>
+				<link>https://www.logical-dice.com/posts/wp/18/</link>
+				<pubDate>Sat, 08 Aug 2015 15:35:56 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/18/</guid>
+				<description>■環境CentOS 7dovecot 2.2.10事前に①postfix編が終わっている前提とします。必要な物をインストールyu&amp;hellip;</description>
+			</item>
+			<item>
+				<title>メールサーバ構築（①postfix編）</title>
+				<link>https://www.logical-dice.com/posts/wp/9/</link>
+				<pubDate>Thu, 06 Aug 2015 23:28:32 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/9/</guid>
+				<description>■環境CentOS 7postfix 2.10.1メールアカウントはpasswdに登録されているアカウントを利用します。メール専&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

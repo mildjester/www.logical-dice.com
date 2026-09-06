@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Mac on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/mac/</link>
+		<description>Recent content in Mac on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 14 Feb 2019 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/mac/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>MacにPHP7.2をインストールする</title>
+				<link>https://www.logical-dice.com/posts/2019/02/14/mac-php-72/</link>
+				<pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/14/mac-php-72/</guid>
+				<description>MacにPHP7.2をインストールする方法です</description>
+			</item>
+			<item>
+				<title>プログラミング向けフォントのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/1218/</link>
+				<pubDate>Fri, 13 Apr 2018 21:21:39 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1218/</guid>
+				<description>プログラミングに向いている「Ricty Diminished」をインストールする手順です</description>
+			</item>
+			<item>
+				<title>【Mac】PCの起動・停止時刻を出力するシェルスクリプト</title>
+				<link>https://www.logical-dice.com/posts/wp/857/</link>
+				<pubDate>Mon, 11 Dec 2017 23:51:12 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/857/</guid>
+				<description>■環境macOS High Sierra 10.13.1bash 4.4.12職場の勤怠を付ける際に数日分まとめて入力するのです&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】圧縮解凍ソフトのインストール(Win対応)</title>
+				<link>https://www.logical-dice.com/posts/wp/799/</link>
+				<pubDate>Fri, 13 Oct 2017 19:48:22 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/799/</guid>
+				<description>■環境macOS Sierra 10.12.6Windowsで圧縮したファイルがMacで正常に開けなかったりMacで圧縮したファ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】ForiClientでVPNを繋ぐ</title>
+				<link>https://www.logical-dice.com/posts/wp/776/</link>
+				<pubDate>Fri, 13 Oct 2017 11:43:37 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/776/</guid>
+				<description>■環境macOS Sierra 10.12.6FortiClient 5.6.0.703■本体のダウンロード &amp;amp; インス&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】NetBeansのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/737/</link>
+				<pubDate>Fri, 13 Oct 2017 11:05:07 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/737/</guid>
+				<description>■環境macOS Sierra 10.12.6NetBeans 8.2コードの補完やFTP機能を標準装備していたりと無料のIDE&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】Homebrewインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/750/</link>
+				<pubDate>Thu, 12 Oct 2017 16:27:26 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/750/</guid>
+				<description>■環境macOS Sierra(10.12.5)HomebrewはmacOS用のパッケージマネージャーです。インストールするため&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】PC購入後・初期化後の設定</title>
+				<link>https://www.logical-dice.com/posts/wp/734/</link>
+				<pubDate>Thu, 12 Oct 2017 16:23:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/734/</guid>
+				<description>初期状態のMacBookから行なう設定をまとめました■設定一覧Homebrewインストールターミナル設定（iTerm2 ＋ fi&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】ターミナル設定（iTerm2 ＋ fish ＋ fisherman）</title>
+				<link>https://www.logical-dice.com/posts/wp/741/</link>
+				<pubDate>Thu, 12 Oct 2017 16:01:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/741/</guid>
+				<description>■環境iTerm2 3.2.5fish 2.7.1fisherman 3.1.1■参考サイトfish shell を使いたい人生&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】コマンドラインから写真の撮影日時などを確認する</title>
+				<link>https://www.logical-dice.com/posts/wp/703/</link>
+				<pubDate>Sun, 24 Sep 2017 15:27:02 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/703/</guid>
+				<description>■環境macOS Sierra 10.12.6exiftool 10.55Macのコマンドラインから写真の撮影日時を確認する方法&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】言語パッケージ管理用にasdfを導入する(fish環境)</title>
+				<link>https://www.logical-dice.com/posts/wp/689/</link>
+				<pubDate>Sat, 19 Aug 2017 17:11:43 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/689/</guid>
+				<description>■環境macOS Sierra 10.12.6fish 2.5.0■手順Brewでもインストールできるらしいが、公式ページの手順&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】neovim &amp; dein.vimの設定</title>
+				<link>https://www.logical-dice.com/posts/wp/665/</link>
+				<pubDate>Sat, 15 Jul 2017 00:44:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/665/</guid>
+				<description>■環境macOS Sierra 10.12.6fish 2.6.0nvim 0.2.0■参考ページNeoVim、そしてdein&amp;hellip;.</description>
+			</item>
+			<item>
+				<title>MacにDocker環境を作る</title>
+				<link>https://www.logical-dice.com/posts/wp/642/</link>
+				<pubDate>Mon, 08 May 2017 11:01:23 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/642/</guid>
+				<description>■環境macOS Sierra 10.12.4Dockerのインストール公式ページ(こちら)の「Get Docker for M&amp;hellip;</description>
+			</item>
+			<item>
+				<title>MacにZabbixエージェントを入れる</title>
+				<link>https://www.logical-dice.com/posts/wp/624/</link>
+				<pubDate>Tue, 02 May 2017 14:49:34 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/624/</guid>
+				<description>■環境Mac OS 10.9.5Zabbix 3.2.1Mac OSのサーバにZabbixエージェントを入れた際の手順メモです。&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】fish &#43; oh-my-fish &#43; pecoの導入方法</title>
+				<link>https://www.logical-dice.com/posts/wp/569/</link>
+				<pubDate>Thu, 20 Apr 2017 00:31:51 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/569/</guid>
+				<description>環境OS X ElCapitan 10.11.6fishのインストールbrewでfishをインストールする。brew insta&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Composerのインストール方法</title>
+				<link>https://www.logical-dice.com/posts/wp/515/</link>
+				<pubDate>Tue, 11 Apr 2017 16:08:08 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/515/</guid>
+				<description>■環境macOS Sierra 10.12.4CentOS 6.8作業用MacとCentOSサーバにComposerをインストー&amp;hellip;</description>
+			</item>
+			<item>
+				<title>brewインストールでphp-mcryptがインストールできない</title>
+				<link>https://www.logical-dice.com/posts/wp/295/</link>
+				<pubDate>Tue, 20 Sep 2016 00:15:18 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/295/</guid>
+				<description>■環境OS X El Capitan(10.11.6)Homebrew 0.9.9brewインストールでphp-mcryptをイ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Mac】ターミナル設定（iTerm2 &#43; zsh &#43; prezto &#43; peco）</title>
+				<link>https://www.logical-dice.com/posts/wp/259/</link>
+				<pubDate>Tue, 26 Jul 2016 00:00:40 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/259/</guid>
+				<description>Ubuntuの場合はこちら①iTerm2を準備するiTerm2についてはこちらの記事で記載していますのでこちらをご参照ください。&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

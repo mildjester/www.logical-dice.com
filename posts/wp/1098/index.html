@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Linux Mint】OSインストールと設定|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Linux Mint】OSインストールと設定</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-04-07 14:01:56 &#43;0000 UTC" class="catalogue-time">2018年04月07日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>Linux Mint 18.3 cinnamon 64bit</p>
+<hr>
+<h2 id="os入手">OS入手</h2>
+<p>公式ページからISOイメージをダウンロードします。<br>
+<a href="https://linuxmint.com/download.php" rel="noopener" target="_blank"><a href="https://linuxmint.com/download.php">https://linuxmint.com/download.php</a></a></p>
+<p>こだわりが無ければ『Cinnamon 64bit』がオススメらしいので、それにします。<br>
+<img src="https://www.logical-dice.com/images/2018/03/061b1d11b68c2c7813b530cc7f232908.png" alt="" /></p>
+<p>ダウンロード元に日本が無いので、近そうな台湾にします。<br>
+※韓国はなぜか404になってしまった（2018/03/09現在）<br>
+<img src="https://www.logical-dice.com/images/2018/03/6d82949b9ea20c91993c3c4902783e8b.png" alt="" /></p>
+<h2 id="osインストール">OSインストール</h2>
+<p>ダウンロードしたISOをDVDなどに焼いて、インストールしたいPCに入れて起動します。<br>
+するとデスクトップが表示され<code>InstallLinuxMint</code>というアイコンがあるのでダブルクリックします。</p>
+<p>後は画面指示に従ってインストールを進めるだけです。<br>
+私は以下のような設定で進めました。（特筆すべき部分のみ）</p>
+<ul>
+<li>言語：ここはあえて<code>English</code>　※2018/4/18追記 アプリケーションの文字体とかが中華文字みたいになるから日本語にした方が良さそう。</li>
+<li>インストール方法：Clean Installしたかったので<code>Erase disk and install Linux Mint</code></li>
+<li>キーボードレイアウト：レノボキーボードは<code>Japanese-Japanese</code>でOKでした</li>
+</ul>
+<p>Windowsとデュアルブートなどにする場合は、事前にWindows側でDiskに空き容量を作っておき<br>
+インストール方法で <code>Linux Mint をWindows Boot Managerとは別にインストール</code> を選択すればよいです。<br>
+インストール後、デュアルブートにならない場合はBIOS設定でセキュアブートをDisableにします。</p>
+<h2 id="update-managerの設定">Update Managerの設定</h2>
+<p>右下のタスクバーよりUpdateManagerをクリックします。（盾みたいなアイコン）<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-47-25.png" alt="" /></p>
+<p>とりあえず<code>Let me review sensitive updates</code>を選択して<code>OK</code>をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-48-39.png" alt="" /></p>
+<p>『Do you want to switch to a local mirror?』と聞かれているので<code>OK</code>をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-55-00.png" alt="" /></p>
+<p>日本のどれかを選択します。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-55-43.png" alt="" /></p>
+<p>Refreshをクリックして最新化して、Install Updatesをクリックする。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-07-14-51-02.png" alt="" /></p>
+<p>アップデートが完了すると、さらにアップデートできるパッケージが複数表示されるので<br>
+必要に応じてアップデートしておく。</p>
+<h2 id="システムフォントの変更">システムフォントの変更</h2>
+<p>デフォルトのフォントがあまり良くなかったので変更します。<br>
+※インストール時に言語をEnglishにしてしまった場合のみです。<br>
+　最初から日本語でインストールしておけば普通のフォントになりました。</p>
+<p>まず「SystemSettins &gt; Font」を開きます。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-10-21-38-01.png" alt="" /></p>
+<p>そこのFont Selectionで好きなフォントに変更できます。<br>
+個人的には<code>Takao Ex Gothic Regular</code>が好きでした。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-10-21-38-10.png" alt="" /></p>
+<h2 id="ホームディレクトリの英語化">ホームディレクトリの英語化</h2>
+<p>Linux Mintを日本語でインストールした場合、ホームディレクトリ直下のディレクトリ郡が日本語になります。<br>
+CUIを使っているとディレクトリ名が日本語だと不便なので、以下のコマンドで英語にしておきます。</p>
+<pre tabindex="0"><code>env LANG=C xdg-user-dirs-gtk-update  
+</code></pre><p>上記コマンド実行後「ディレクトリ名を変えてもいいですか？（日本語→英語）」と聞いてくるのでYesにします。<br>
+再ログオン後、今度は「ディレクトリ名を変えてもいいですか？（英語→日本語）」と聞いてくるので<br>
+それは『二度と聞かない』にチェックを入れてNoとします。</p>
+<h2 id="日本語入力の追加インストールと設定">日本語入力の追加インストールと設定</h2>
+<p>Linux Mintを日本語でインストールしておけば初めから日本語入力ができますが、<br>
+一部日本語入力用のソフトが入っていないようなので、追加インストールします。</p>
+<p><code>システム設定＞入力方法</code>を開き、『日本語』をインストールします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-05-16-23-44-45.png" alt="" /></p>
+<p>次にそのまま『言語』タブを開き、言語サポートの『言語のインストールと削除』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-05-16-23-47-51.png" alt="" /></p>
+<p>インストールウィンドウが開くので、日本語を選択して『言語パッケージのインストール』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-05-16-23-49-36.png" alt="" /></p>
+<p>次にメニューより『Fcitxの設定』を開きます。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-05-17-10-47-15.png" alt="" /></p>
+<p>入力メソッドでMozcの上に『キーボード - 日本語』がありますが、<br>
+これは邪魔なので削除してしまいます。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-05-17-10-50-55.png" alt="" /></p>
+<p>これで完了です。</p>
+<h2 id="基本ソフトインストール">基本ソフトインストール</h2>
+<h3 id="開発基本セット">開発基本セット</h3>
+<pre tabindex="0"><code>$ apt update  
+$ apt install vim git  
+</code></pre><h3 id="slack">Slack</h3>
+<p>Slackは『ソフトウェアの管理』からもインストールできますが、<br>
+そちらだと何故か日本語入力ができないので、公式サイトからDebをダウンロードしてきてインストールした方が良いです。<br>
+<a href="https://slack.com/intl/ja-jp/downloads/linux" rel="noopener" target="_blank"><a href="https://slack.com/intl/ja-jp/downloads/linux">https://slack.com/intl/ja-jp/downloads/linux</a></a></p>
+<h3 id="shutter">Shutter</h3>
+<p>MacのSkitchのように画像へ矢印やコメントを挿入できるアプリです。<br>
+Skitchほどリッチなデザインにはなりませんが、画像へコメントを挿入するには充分です。<br>
+<code>libgoo-canvas-perl</code>をインストールしておかないと編集ができません。</p>
+<pre tabindex="0"><code>$ apt install shutter libgoo-canvas-perl
+</code></pre><h2 id="chromium">Chromium</h2>
+<p>Google ChromeのOSS版です。<br>
+機能的にはChromeとほぼ変わりません。<br>
+<code>chromium-browser-l10n</code>をインストールすると日本語化されます。</p>
+<pre tabindex="0"><code>apt install chromium-browser chromium-browser-l10n  
+</code></pre><h2 id="パネルの設定変更">パネルの設定変更</h2>
+<p>（この手順はLinux Mint 19.1 MATEで実施した際に追記してます)<br>
+設定メニューの中にパネル（デスクトップの下にあるツールバー）を変更する項目が見つからなかったのですが<br>
+どうやらパネルを右クリックして「プロパティ」を選択すれば変更できるようでした</p>
+<p>パネルのサイズを変更したり、パネルの横幅を縮めて中央寄せにする（Mac風）にすることもできるようです</p>
+<h2 id="その他">その他</h2>
+<ul>
+<li><a href="/posts/wp/1222" rel="noopener" target="_blank">日本語入力できるようにする</a></li>
+<li><a href="/posts/wp/1218" rel="noopener" target="_blank">プログラミング向けフォントのインストール</a></li>
+<li><a href="/posts/wp/1153" rel="noopener" target="_blank">terminator+fish+oh-my-fishの設定</a></li>
+<li><a href="/posts/wp/1192" rel="noopener" target="_blank">PHP7.1のインストール</a></li>
+<li><a href="/posts/wp/914" rel="noopener" target="_blank">Visual Studio CodeでPHP開発環境構築</a></li>
+<li><a href="/posts/wp/1162" rel="noopener" target="_blank">dockerの導入</a></li>
+<li><a href="/posts/wp/1226" rel="noopener" target="_blank">キーマップを変更する</a></li>
+<li><a href="/posts/wp/1236" rel="noopener" target="_blank">cpuminer + wpoolでBitZenyをマイニング</a></li>
+</ul>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

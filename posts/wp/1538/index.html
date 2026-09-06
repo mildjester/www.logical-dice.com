@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>CircleCIで自動デプロイする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">CircleCIで自動デプロイする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-10-13 23:20:06 &#43;0000 UTC" class="catalogue-time">2018年10月13日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/circleci/">CircleCI</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="参考サイト">参考サイト</h2>
+<p><a href="https://esnetk6.com/2018/04/circle-ci-deployment/" rel="noopener" target="_blank">Circle CIでwebサイトを自動デプロイ</a></p>
+<hr>
+<p>GitHubのmasterブランチへマージされたらサーバーにデプロイされるようにする方法です。<br>
+ソースコードはPHPを前提としています。</p>
+<p>こちらのCircleCIを動かす基本設定は完了している前提とします。<br>
+<a href="/posts/wp/1477" target="_blank" rel="noopener">Circle CIでプルリク時にUnitテストが走るようにする</a></p>
+<h1 id="ci用ユーザ準備">CI用ユーザ準備</h1>
+<p>まず、CircleCIからデプロイするサーバーへSSH接続する為の鍵ペアを作成します。<br>
+既存の鍵ペアを使っても動きますが、念のためCI用は別にしておいた方が良いと思います。</p>
+<pre tabindex="0"><code>ssh-keygen -t rsa -b 4096 -C &#34;ci@hogehoge.com&#34; -f ~/.ssh/ci-key  
+</code></pre><p>上記コマンドを実行するとパスフレーズを２回聞かれますが、どちらも空のままエンターで良いです。</p>
+<p>鍵生成が完了したらホームディレクトリの.ssh配下にci-key(秘密鍵)とci-key.pub(公開鍵)が生成されます。<br>
+ci-key.pubは後工程で使いますので、中身を確認しておいてください。<br>
+※上記コマンドで鍵ファイル名を<code>ci-key</code>と指定していますが、これは任意の名前で良いです。</p>
+<p>次に、デプロイするサーバー上でデプロイする為のユーザーを作成し、<br>
+さきほど作成した鍵ペアでSSH接続できるようにします。<br>
+こちらも既存ユーザーを使っても動きますが、念のためCI用は別にしておいた方が良いと思います。</p>
+<pre tabindex="0"><code>adduser -g nginx ciuser  
+su - ciuser  
+mkdir .ssh  
+vim .ssh/authorized_keys  
+// ci-key.pubの内容を貼り付け  
+</code></pre><h1 id="circleci管理画面設定">CircleCI管理画面設定</h1>
+<p>次にCircleCIのWEBコンソールで設定をします。<br>
+該当プロジェクトの画面にて設定(歯車アイコン)をクリックし、設定画面を開きます。</p>
+<h3 id="ssh-keyの設定">SSH Keyの設定</h3>
+<p>左メニューより『PERMISSIONS &gt; SSH Permissions』を開き、『Add SSH Key』をクリックします。<br>
+<a href="https://www.logical-dice.com/images/2018/10/CircleCI-SSH001.png"><img class="alignnone size-large wp-image-1546" src="https://www.logical-dice.com/images/2018/10/CircleCI-SSH001.png" alt="" /></a></p>
+<p>ポップアップが開くので、以下を設定します。<br>
+Hostname : デプロイするサーバーのホスト名<br>
+Private Key : 最初に作ったci-keyの中身全て<br>
+<a href="https://www.logical-dice.com/images/2018/10/CircleCI-SSH002.png"><img class="alignnone size-full wp-image-1547" src="https://www.logical-dice.com/images/2018/10/CircleCI-SSH002.png" alt="" /></a></p>
+<p>完了したら、今登録した鍵情報のFingerprintが表示されるので確認しておきます。<br>
+（後工程のCircleCI設定ファイル編集時に使います）<br>
+<a href="https://www.logical-dice.com/images/2018/10/CircleCI-SSH003.png"><img class="alignnone size-full wp-image-1548" src="https://www.logical-dice.com/images/2018/10/CircleCI-SSH003.png" alt="" /></a></p>
+<h3 id="環境変数の設定">環境変数の設定</h3>
+<p>後工程で編集するCircleCI設定ファイルで環境変数を使うことができるので設定します。<br>
+この作業は別に必須ではないです。<br>
+設定ファイルを使いまわしたい場合は、環境により変動する部分を環境変数にしておいてもいいかもしれません。</p>
+<p>左メニューより『BUILD SETTINGS &gt; Environment Variables』を開き、『Add Variable』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/10/CircleCI-ENV001.png" alt="" /></p>
+<p>ポップアップが開くので設定したい変数名と値を登録します。<br>
+例えば<code>USER_NAME</code>という変数に<code>ciuser</code>という値を設定する場合は下図のようになります。<br>
+<img src="https://www.logical-dice.com/images/2018/10/CircleCI-ENV002.png" alt="" /></p>
+<h1 id="circleci設定ファイル編集">CircleCI設定ファイル編集</h1>
+<p>前回作った<code>.circleci/config.yml</code>に以下の行を追記していきます。<br>
+以下例では前手順の環境変数を多数利用していますが、config.ymlに値を直接書いても構いません。</p>
+<p>まず、デプロイするサーバーへ接続するための鍵情報(fingerprint)を登録します。<br>
+環境変数には以下が設定されているとします。<br>
+KEY_FINGERPRINT : さきほど確認したSSH鍵のfingerprint</p>
+<pre tabindex="0"><code>      - add_ssh_keys:  
+          fingerprints:  
+            - &#34;${KEY_FINGERPRINT}&#34;  
+          # 環境変数を使わない場合はこのようにベタがきすればよいです      
+          # - &#34;a1:b2:c3:・・・:x8:y9:z0&#34;  
+</code></pre><p>次にSSH接続がコケないように設定しておきます。<br>
+環境変数には以下が設定されているとします。<br>
+SSH_PORT : デプロイするサーバーのSSHポート<br>
+HOST_NAME : デプロイするサーバーのホスト名</p>
+<pre tabindex="0"><code>      - run:  
+          name: Start ssh-keyscan  
+          command: |  
+            ssh-keyscan -p ${SSH_PORT} ${HOST_NAME} &gt;&gt; ~/.ssh/known_hosts  
+</code></pre><p>次にデプロイします。<br>
+環境変数は上記までに出てきたものに加えて以下が設定されているとします。<br>
+USER_NAME : デプロイするユーザー名(ciuser)<br>
+APP_PATH : デプロイするパス(/var/www/htmlなど)<br>
+※${CIRCLE_BRANCH}にはCircleCIが自動で現在処理しているブランチを入れてくれます。</p>
+<pre tabindex="0"><code>      - deploy:  
+          name: Start master deploy  
+          command: |  
+            if [ &#34;${CIRCLE_BRANCH}&#34; == &#34;master&#34; ]; then  
+                rsync -av --delete --rsh=&#34;ssh -p ${SSH_PORT}&#34; --exclude=&#39;.git&#39; --exclude=&#39;.circleci&#39; ./ ${USER_NAME}@${HOST_NAME}:${APP_PATH}  
+            fi  
+</code></pre><p>できあがったconfig.ymlはこのようになります。</p>
+<pre tabindex="0"><code># PHP CircleCI 2.0 configuration file  
+#  
+# Check https://circleci.com/docs/2.0/language-php/ for more details  
+#  
+version: 2  
+jobs:  
+  build:  
+    docker:  
+      # specify the version you desire here  
+      - image: circleci/php:7.1-fpm-node-browsers  
+        
+      # Specify service dependencies here if necessary  
+      # CircleCI maintains a library of pre-built images  
+      # documented at https://circleci.com/docs/2.0/circleci-images/  
+      # - image: circleci/mysql:9.4  
+  
+    working_directory: ~/repo  
+  
+    steps:  
+      - checkout  
+  
+      # Download and cache dependencies  
+      - restore_cache:  
+          keys:  
+          - v1-dependencies-{{ checksum &#34;composer.json&#34; }}  
+          # fallback to using the latest cache if no exact match is found  
+          - v1-dependencies-  
+  
+      - run: composer install -n --prefer-dist  
+  
+      - save_cache:  
+          paths:  
+            - ./vendor  
+          key: v1-dependencies-{{ checksum &#34;composer.json&#34; }}  
+          
+      # run tests!  
+      - run: vendor/phpunit/phpunit/phpunit tests/  
+  
+      - add_ssh_keys:  
+          fingerprints:  
+            - &#34;${KEY_FINGERPRINT}&#34;  
+  
+      - run:  
+          name: Start ssh-keyscan  
+          command: |  
+            ssh-keyscan -p ${SSH_PORT} ${HOST_NAME} &gt;&gt; ~/.ssh/known_hosts  
+   
+      - deploy:  
+          name: Start master deploy  
+          command: |  
+            if [ &#34;${CIRCLE_BRANCH}&#34; == &#34;master&#34; ]; then  
+                rsync -av --delete --rsh=&#34;ssh -p ${SSH_PORT}&#34; --exclude=&#39;.git&#39; --exclude=&#39;.circleci&#39; ./ ${USER_NAME}@${HOST_NAME}:${APP_PATH}  
+            fi  
+</code></pre><p>※補足<br>
+SSHポートをデフォルト(22)のままにしているのであれば<br>
+config.yml内のsshコマンドにてSSHポートを指定する必要はありません。</p>
+<p>これで、masterにマージしたらデプロイが走るようになります。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

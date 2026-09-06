@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Python on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/python/</link>
+		<description>Recent content in Python on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Wed, 07 Aug 2024 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Windowsで管理者権限なしでpythonコマンドを使えるようにする</title>
+				<link>https://www.logical-dice.com/posts/2024/08/07/python-on-secure-windows/</link>
+				<pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2024/08/07/python-on-secure-windows/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Windows 11&lt;/li&gt;&#xA;&lt;li&gt;git bash&lt;/li&gt;&#xA;&lt;li&gt;Python 3.12.4&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;&#xA;&lt;p&gt;仕事で利用しているPCは管理者権限が貰えないのですが、Pythonを使う必要があったため&lt;br&gt;&#xA;管理者権限不要でPythonを使える環境を用意しました。&lt;/p&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;h3 id=&#34;エンベデッド-pythonのダウンロード&#34;&gt;エンベデッド Pythonのダウンロード&lt;/h3&gt;&#xA;&lt;p&gt;以下サイトにてPythonのダウンロードができるので『Windows embeddable package』をダウンロードします。&lt;br&gt;&#xA;&lt;a href=&#34;https://www.python.org/downloads/release/python-3124/&#34;&gt;https://www.python.org/downloads/release/python-3124/&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;ダウンロードしたZIPファイルを任意のフォルダに解凍し、その中にある&lt;code&gt;python312._pth&lt;/code&gt;を修正します。&lt;br&gt;&#xA;1行コメントアウトを外すだけです。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;■修正前&#xA;# import site&#xA;■修正後&#xA;import site&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;br /&gt;&#xA;&lt;p&gt;続いてpythonコマンドにパスを通します。&lt;br&gt;&#xA;管理者権限がなくても以下よりPathの設定が可能です。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;コントロールパネル&lt;/code&gt;を開く&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;ユーザーアカウント&lt;/code&gt;を開く&lt;/li&gt;&#xA;&lt;li&gt;さらに&lt;code&gt;ユーザーアカウント&lt;/code&gt;を開く&lt;/li&gt;&#xA;&lt;li&gt;左メニューにある&lt;code&gt;環境変数の変更&lt;/code&gt;を開く&lt;/li&gt;&#xA;&lt;li&gt;ユーザー環境変数内にある&lt;code&gt;Path&lt;/code&gt;を編集し、今回配置したフォルダとそこのScripts配下を追加する。&#xA;&lt;ul&gt;&#xA;&lt;li&gt;追加例: pythonをC:¥toolsフォルダの下に解凍した場合は以下2つを追加する。&#xA;&lt;ul&gt;&#xA;&lt;li&gt;C:¥tools¥python-3.12.4-embed-amd64&lt;/li&gt;&#xA;&lt;li&gt;C:¥tools¥python-3.12.4-embed-amd64¥Scripts&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;優先度を高めるために「上へ」ボタンで上部に持っていっておくこと&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;これでPCを再起動すればpythonコマンドが利用可能となっています。&lt;/p&gt;&#xA;&lt;h3 id=&#34;pipコマンドのインストール&#34;&gt;pipコマンドのインストール&lt;/h3&gt;&#xA;&lt;p&gt;次にpipコマンドを利用できるようにします。&lt;br&gt;&#xA;まず以下のファイルをpython-3.12.4-embed-amd64フォルダにダウンロードします。&lt;br&gt;&#xA;&lt;a href=&#34;https://bootstrap.pypa.io/get-pip.py&#34;&gt;https://bootstrap.pypa.io/get-pip.py&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;次に、以下コマンドを実行します。&lt;br&gt;&#xA;trusted-hostオプションを付けないとエラーとなるのでご注意ください。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ cd 配置したパス/python-3.12.4-embed-amd64&#xA;$ python get-pip.py --trusted-host=files.pythonhosted.org --trusted-host=pypi.org&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;カレントディレクトリ配下にScriptsフォルダが作られ、そこにpip.exeが生成されます。&lt;br&gt;&#xA;すでに前手順でPathには追加済みなので、Path追加は不要です。&lt;/p&gt;&#xA;&lt;p&gt;これで&lt;code&gt;python&lt;/code&gt;および&lt;code&gt;pip&lt;/code&gt;コマンドが利用できるようになりました。&lt;br&gt;&#xA;管理者権限が無いPCという事はセキュアな情報を扱うPCだと思うので、常識の範囲＆自己責任の範囲でご利用ください。&lt;/p&gt;&#xA;&lt;h3 id=&#34;おまけaws-cliのインストール&#34;&gt;おまけ：aws cliのインストール&lt;/h3&gt;&#xA;&lt;p&gt;pipが使えると、実はaws cliもインストールできます。&lt;br&gt;&#xA;以下コマンドでpip.exeと同じフォルダにawsコマンドが生成されます。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ pip install awscli&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;トラブルシューティング&#34;&gt;トラブルシューティング&lt;/h2&gt;&#xA;&lt;h3 id=&#34;-get-pippy実行エラー&#34;&gt;① get-pip.py実行エラー&lt;/h3&gt;&#xA;&lt;p&gt;get-pip.pyをそのまま実行すると以下のようなエラーが発生します。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by &amp;#39;SSLError(SSLCertVerificationError(1, &amp;#39;[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)&amp;#39;))&amp;#39;: /simple/pip/&#xA;Could not fetch URL https://pypi.org/simple/pip/: There was a problem confirming the ssl certificate: HTTPSConnectionPool(host=&amp;#39;pypi.org&amp;#39;, port=443): Max retries exceeded with url: /simple/pip/ (Caused by SSLError(SSLCertVerificationError(1, &amp;#39;[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)&amp;#39;))) - skipping&#xA;ERROR: Could not find a version that satisfies the requirement pip (from versions: none)&#xA;ERROR: No matching distribution found for pip&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;これはSSL証明書のエラーが発生しているので、上記手順の通り&lt;code&gt;trusted-host&lt;/code&gt;オプションを付けて実行しましょう。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Dictionaly型から特定の値を取り出しlist型に入れる</title>
+				<link>https://www.logical-dice.com/posts/2020/06/06/python-dict-list/</link>
+				<pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/06/python-dict-list/</guid>
+				<description>pythonらしくDictionaly型から特定の値を取り出して配列に入れる方法です。</description>
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>GASでGmailをSlackに転送する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">GASでGmailをSlackに転送する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-03-10 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年03月10日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/googleservice/">GoogleService</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://developers.google.com/apps-script/reference/gmail/gmail-app">Class GmailApp(公式ドキュメント)</a></li>
+<li><a href="https://qiita.com/kohei-kuwata/items/e526ebf31df9936299df">【GAS】Gmailを定期的に確認し新規メールをSlackに通知する</a></li>
+<li><a href="https://stress-hack.fun/gas%E3%81%A7gmail%E3%81%AE%E6%96%B0%E7%9D%80%E3%83%A1%E3%83%BC%E3%83%AB%E3%82%92%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B/">【Google Apps Script】Gmailの新着(未読)メールを取得する【コピペでOK】</a></li>
+</ul>
+<hr>
+<p>元々IFTTTやZepierを使ってGmailをSlackと連携させていたのですが、<br>
+最近Gmail側のセキュリティ変更でうまく連携できなくなってきたので<br>
+Google Apps Script(GAS)を使って連携させることにしました。</p>
+<p>GASでやることは<br>
+『5分周期でメールをチェックし、未読メールがあればSlackに転送して既読にする』<br>
+です。</p>
+<h2 id="slackのwebhooks-urlの取得">SlackのWebHooks URLの取得</h2>
+<p>GASに限らず、API経由でSlackに通知を出したい時に使うURLを取得します。<br>
+これを取得しておけば自作botを作ったりできます。</p>
+<p>こちらのページから自分のSlackチームにWebHooksを追加できます。<br>
+（要Slackログイン）<br>
+<a href="https://slack.com/apps/A0F7XDUAZ-incoming-webhooks">https://slack.com/apps/A0F7XDUAZ-incoming-webhooks</a></p>
+<p><code>https://hooks.slack.com/services/AAAAAAA/BBBBBBB/CCCCCCC</code>という形式のURLが取得できれば完了です。</p>
+<p>ちなみに、今回のGASの話とは関係ないですけど<br>
+PHPからWebHooksを使ってメッセージ送信するライブラリを作っています。<br>
+全然誰にも使われてないですけど、参考までに載せておきます。<br>
+<a href="https://github.com/mildjester/slackwebhock">https://github.com/mildjester/slackwebhock</a></p>
+<h2 id="google-apps-scriptの作成">Google Apps Scriptの作成</h2>
+<p>まず、自分のGASのページを開きます。<br>
+<a href="https://script.google.com/u/0/home?hl=ja">https://script.google.com/u/0/home?hl=ja</a></p>
+<p>そこで「新しいプロジェクト」をクリックしてください。<br>
+<img src="https://www.logical-dice.com/images/2020/03/gas-gmail-slack-001.png" /></p>
+<p>コード編集画面が開くので、「コード.gs」内を以下のように記載します。<br>
+最初の「初期設定」の部分は自分の環境に合わせて修正してください。</p>
+<pre tabindex="0"><code>// 初期設定
+const HOOK_URL = &#39;https://hooks.slack.com/services/AAAAAAA/BBBBBBB/CCCCCCC&#39;; // 取得したWebHooks URL
+const SEND_CHANNEL = &#39;general&#39;; // Gmailの内容を送信したいSlackチャンネル
+
+function main() {
+  // 検索条件：受信トレイにある未読メールで１０分以内に受信したもの
+  var after = parseInt(((new Date()).getTime() - 10 * 60 * 1000) / 1000);  //10分前の時刻をUNIX時間で取得
+  var searchTarget = &#39;in:inbox is:unread after:&#39; + after;
+
+  GmailApp
+  .search(searchTarget)
+  .forEach(function (thread) {
+    thread.getMessages().forEach(function (message) {
+      send(message);
+    });
+    thread.markRead();
+  });  
+}
+
+function send(message) {
+  var sendText = &#39;【件名】\n&#39; + message.getSubject()
+               + &#39;\n【本文】\n&#39; + message.getPlainBody();
+  
+  var jsonData = {
+    &#34;icon_emoji&#34;: &#39;:mailbox:&#39;,
+    &#34;channel&#34; : SEND_CHANNEL,
+    &#34;username&#34; : message.getFrom(),
+    &#34;text&#34; : sendText
+  };
+
+  var options = {
+    &#34;method&#34; : &#34;post&#34;,
+    &#34;contentType&#34; : &#34;application/json&#34;,
+    &#34;payload&#34; : JSON.stringify(jsonData)
+  };
+
+  UrlFetchApp.fetch(HOOK_URL, options);
+}
+</code></pre><p>上記を記載したら「Ctrl + s」か上部メニューのフロッピーマークをクリックして保存します。<br>
+保存時にプロジェクト名を聞かれるので好きな名前を付けてください。<br>
+（例：Gmail2Slack）<br>
+<img src="https://www.logical-dice.com/images/2020/03/gas-gmail-slack-002.png" /></p>
+<h2 id="google-apps-scriptの自動実行設定">Google Apps Scriptの自動実行設定</h2>
+<p>作成したスクリプトの自動実行設定をします。<br>
+上部メニューの時計マークをクリックしてください。<br>
+<img src="https://www.logical-dice.com/images/2020/03/gas-gmail-slack-003.png" /></p>
+<p>作成したスクリプトのトリガー画面が開くので、「トリガーを追加」をクリックしてください。<br>
+<img src="https://www.logical-dice.com/images/2020/03/gas-gmail-slack-004.png" /></p>
+<p>トリガー追加画面が開くので、以下のように入力して「保存」をクリックしてください。<br>
+<img src="https://www.logical-dice.com/images/2020/03/gas-gmail-slack-005.png" /></p>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>設定値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>実行する関数</td>
+					<td>main</td>
+			</tr>
+			<tr>
+					<td>実行するデプロイ</td>
+					<td>Head</td>
+			</tr>
+			<tr>
+					<td>イベントのソース</td>
+					<td>時間主導型</td>
+			</tr>
+			<tr>
+					<td>時間ベースのトリガーのタイプ</td>
+					<td>分ベースのタイマー</td>
+			</tr>
+			<tr>
+					<td>時間の間隔</td>
+					<td>5分おき</td>
+			</tr>
+	</tbody>
+</table>
+<p>連携するGoogleアカウントの選択画面が開くので、Gmailを読み込むアカウントを選択します。<br>
+「このアプリは確認されていません」というアラート画面が開くので、下部の「詳細 ＞ {作成したアプリ名}に移動」をクリックします。<br>
+次に権限の許可画面が開くので「許可」をクリックします。</p>
+<p>これで5分おきにGmailがチェックされSlackに連携されるようになりました。</p>
+<h2 id="その他補足">その他補足</h2>
+<h3 id="slackに送信される内容について">Slackに送信される内容について</h3>
+<p>Slackに送信される内容は件名と本文だけにしています。<br>
+もし他の情報も取得したい場合はスクリプト内の「sendText」の内容を変更してください。<br>
+取得できる値はこちら参考。<br>
+<a href="https://developers.google.com/apps-script/reference/gmail/gmail-app">Class GmailApp(公式ドキュメント)</a></p>
+<p>なお、メール本文全てをSlackに流すとかなり長くなります。<br>
+Slackにはあくまで「こんなメール来てますよ」程度の通知を送りたいだけであれば<br>
+本文は適当な文字数で切った方が良いです。</p>
+<p>例えば150文字で切る場合はこんな感じです。</p>
+<pre tabindex="0"><code>var sendText = &#39;【件名】\n&#39; + message.getSubject()
+             + &#39;\n【本文】\n&#39; + message.getPlainBody().substr(0, 150); //150文字で切る
+</code></pre><h3 id="slackで表示される名前とアイコンについて">Slackで表示される名前とアイコンについて</h3>
+<p>「jsonData」に設定している「username」と「icon_emoji」を変更することで<br>
+Slack通知時の名前とアイコンも変更できます。</p>
+<h3 id="タイマー設定時間について">タイマー設定時間について</h3>
+<p>今回作成したスクリプトは「5分周期で10分以内に受信した未読メールをチェックする」というものです。<br>
+5分周期で走るなら10分以内じゃなくて6分以内とかでも良いかもしれませんが、かなり余裕をもって設定しています。<br>
+もし大量にメールを受信している人の場合は処理が重くなるかもしれないので、その場合はいい感じに時間調整してください。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

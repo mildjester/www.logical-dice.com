@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>picoでブログ構築|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">picoでブログ構築</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-01-16 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年01月16日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/pico/">pico</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>picoの基本的な構築はこちらを参照してください。<br>
+<a href="/posts/2019/01/15/pico-introduction/">PHP製のCMS「pico」の紹介</a></p>
+<p>picoを使ってブログを構築する方法です。<br>
+公式ページにpicoをブログ化する手順が書いてあります。<br>
+<a href="http://picocms.org/docs/#blogging">公式の手順</a></p>
+<p>公式の方法はWEBページ内にブログ領域を作る方法のようなので<br>
+そもそもメインコンテンツがブログである場合は以下のように修正します。</p>
+<p>なお、できあがったものをテンプレートとして公開しています。<br>
+簡単にブログ解説したいだけの人はこちらをご利用ください。<br>
+<a href="https://github.com/mildjester/pico-blog">mildjester/pico-blog</a></p>
+<hr>
+<h2 id="プラグインの追加">プラグインの追加</h2>
+<p>プラグインは<code>pico/plugins</code>の中にダウンロードしておきます。</p>
+<h3 id="ページネーション">ページネーション</h3>
+<p><a href="https://github.com/rewdy/Pico-Pagination/releases">https://github.com/rewdy/Pico-Pagination/releases</a><br>
+ダウンロードした圧縮ファイルの中にpagination.phpがあるので<br>
+それを<code>/pico/plugins</code>の中に配置します。</p>
+<p>そしてconfig.ymlにプラグイン用の設定を追記しておきます。</p>
+<pre tabindex="0"><code>##
+# Plugin: Pico-Pagination
+#
+pagination_limit: 10           # 一覧ページにて１ページに表示する記事数
+pagination_next_text: 次へ&gt;&gt;  # 次へリンクのテキスト
+pagination_prev_text: &lt;&lt;戻る  # 戻るリンクのテキスト
+</code></pre><h3 id="タグ">タグ</h3>
+<p><a href="https://github.com/PontusHorn/Pico-Tags">https://github.com/PontusHorn/Pico-Tags</a><br>
+PicoTags.phpを<code>/pico/plugins</code>の中に配置します。</p>
+<h3 id="サイト内検索">サイト内検索</h3>
+<p><a href="https://github.com/mwgg/Pico-Search">https://github.com/mwgg/Pico-Search</a><br>
+40-PicoSearch.phpを<code>/pico/plugins</code>の中に配置します。<br>
+このプラグインではページのタイトルをキーにして検索する事はできるようですが。<br>
+記事本文をキーにして検索することはできないようでした。</p>
+<h3 id="サイトマップ">サイトマップ</h3>
+<p><a href="https://github.com/DaveKin/Pico_Sitemap/">https://github.com/DaveKin/Pico_Sitemap/</a><br>
+PicoXMLSitemap.phpを<code>/pico/plugins</code>の中に配置します。</p>
+<h2 id="テーマの編集">テーマの編集</h2>
+<p><code>/pico/themes</code>配下のテーマを編集します。<br>
+デフォルトの<code>/pico/themes/default</code>をそのまま編集しても良いですし<br>
+defaultをコピーして自分用のテーマを作っても良いです。</p>
+<p>別テーマを作成する場合は<code>config.yml</code>の<code>theme: default</code>の部分も作成したテーマのディレクトリ名に変更してください。</p>
+<p>なお、公式ページなどからテーマをダウンロードすることも可能です。
+ただしpico 1.x用のテーマだからか、そのままではうまく動かなかったりするので要注意です。<br>
+<a href="http://picocms.org/themes/">公式ページのテーマ一覧</a></p>
+<h3 id="indextwigの分離">index.twigの分離</h3>
+<p>デフォルトではindex.twigにHTMLの全てが記載されていますが、<br>
+テンプレートを増やした際にメンテナンス性が悪くなるので<br>
+ヘッダー部分とフッター部分を分離してしまいます。</p>
+<p>まずindex.twigと同じディレクトリに_header.twigを作成し、<br>
+index.twigの１行目から<code>&lt;div id=&quot;main&quot;&gt;</code>の上までをコピーします。<br>
+次に、同様に_footer.twigを作成して<code>&lt;div id=&quot;main&quot;&gt;</code>の閉じタグの下から<br>
+最終行までをコピーします。</p>
+<p>そしてindex.twigのヘッダーとフッターにコピーした部分は削除し、<br>
+代わりに<code>{% include '_header.twig' %}</code> と <code>{% include '_footer.twig' %}</code><br>
+に置き換えます。</p>
+<p>できあがったindex.twigはこんな感じです。</p>
+<pre tabindex="0"><code>{% include &#39;_header.twig&#39; %}
+&lt;div id=&#34;main&#34;&gt;
+    &lt;div class=&#34;container&#34;&gt;
+        {% if meta.title %}&lt;h2&gt;{{ meta.title }}&lt;/h2&gt;{% endif %}
+        &lt;p class=&#34;meta&#34;&gt;{{ meta.date_formatted }}&lt;/p&gt;
+        {{ content }}
+    &lt;/div&gt;
+&lt;/div&gt;
+{% include &#39;_footer.twig&#39; %}
+</code></pre><p>※どこまでを共通化するかは個人の趣向もあると思うので<br>
+　共通化範囲は増減あっても構いません。</p>
+<h3 id="ヘッダーにサイト内検索フォームを追加する">ヘッダーにサイト内検索フォームを追加する</h3>
+<p>ヘッダーの好きな位置に以下のソースコードを埋め込みます。<br>
+これがサイト内検索のフォームになります。</p>
+<pre tabindex="0"><code>&lt;form id=&#34;search_form&#34; action=&#34;/search&#34; method=&#34;get&#34;&gt;
+    &lt;input type=&#34;search&#34; id=&#34;search_input&#34; name=&#34;q&#34; /&gt;
+    &lt;input type=&#34;submit&#34; value=&#34;検索&#34; /&gt;
+&lt;/form&gt;
+</code></pre><h3 id="ページ別テンプレートの作成">ページ別テンプレートの作成</h3>
+<p>index.twigと同じディレクトリに以下のようなtwigファイルを作成します</p>
+<h4 id="indextwig">index.twig</h4>
+<p>全ての記事一覧を表示します。</p>
+<pre tabindex="0"><code>{% include &#39;_header.twig&#39; %}
+&lt;div id=&#34;main&#34;&gt;
+    &lt;div class=&#34;container&#34;&gt;
+        {% for page in paged_pages|sort_by(&#34;time&#34;)|reverse %}
+            {% if page.id starts with &#34;posts/&#34; and not page.hidden %}
+                &lt;div class=&#34;post&#34;&gt;
+                    &lt;h3&gt;&lt;a href=&#34;{{ page.url }}&#34;&gt;{{ page.title }}&lt;/a&gt;&lt;/h3&gt;
+                    &lt;p class=&#34;date&#34;&gt;{{ page.date_formatted }}&lt;/p&gt;
+                    &lt;p class=&#34;excerpt&#34;&gt;{{ page.description }}&lt;/p&gt;
+                &lt;/div&gt;
+            {% endif %}
+        {% endfor %}
+        {{ pagination_links }}
+    &lt;/div&gt;
+&lt;/div&gt;
+{% include &#39;_footer.twig&#39; %}
+</code></pre><h4 id="articletwig">article.twig</h4>
+<p>記事ページを表示します。</p>
+<pre tabindex="0"><code>{% include &#39;_header.twig&#39; %}
+&lt;div id=&#34;main&#34;&gt;
+    &lt;div class=&#34;container&#34;&gt;
+        {% if meta.title %}&lt;h2&gt;{{ meta.title }}&lt;/h2&gt;{% endif %}
+        &lt;p class=&#34;meta&#34;&gt;&lt;b&gt;
+            投稿日：{{ meta.date_formatted }}
+            &lt;span class=&#34;article_tags&#34;&gt;
+                タグ：
+                {% for tag in meta.tags %}
+                &lt;a href=&#34;/tags/{{ tag }}&#34; &gt;{{ tag }}&lt;/a&gt; 
+                {% endfor %}
+            &lt;/span&gt;
+        &lt;/b&gt;&lt;/p&gt;
+        {{ content }}
+    &lt;/div&gt;
+&lt;/div&gt;
+{% include &#39;_footer.twig&#39; %}
+</code></pre><h4 id="statictwig">static.twig</h4>
+<p>固定ページを表示します。<br>
+※ページタイトルと日付を非表示にしています。</p>
+<pre tabindex="0"><code>{% include &#39;_header.twig&#39; %}
+&lt;div id=&#34;main&#34;&gt;
+    &lt;div class=&#34;container&#34;&gt;
+        {{ content }}
+    &lt;/div&gt;
+&lt;/div&gt;
+{% include &#39;_footer.twig&#39; %}
+</code></pre><h4 id="tagstwig">tags.twig</h4>
+<p>タグ一覧を表示します</p>
+<pre tabindex="0"><code>{% include &#39;_header.twig&#39; %}
+&lt;div id=&#34;main&#34;&gt;
+    &lt;div class=&#34;container&#34;&gt;
+        {% if meta.title %}&lt;h2&gt;{{ meta.title }}&lt;/h2&gt;{% endif %}
+        &lt;ul&gt;
+        {% for page in pages %}
+            {% if page.id starts with &#34;tags/&#34; and not page.hidden %}
+                    &lt;li&gt;&lt;a href=&#34;{{ page.url }}&#34;&gt;{{ page.title }}&lt;/a&gt;&lt;/li&gt;
+            {% endif %}
+        {% endfor %}
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+{% include &#39;_footer.twig&#39; %}
+</code></pre><h4 id="tag-indextwig">tag-index.twig</h4>
+<p>タグを絞った記事一覧を表示します。</p>
+<pre tabindex="0"><code>{% include &#39;_header.twig&#39; %}
+&lt;div id=&#34;main&#34;&gt;
+    &lt;div class=&#34;container&#34;&gt;
+        {% if meta.title %}&lt;h2&gt;{{ meta.title }}&lt;/h2&gt;{% endif %}
+        {% for page in pages|sort_by(&#34;time&#34;)|reverse %}
+            {% if page.id starts with &#34;posts/&#34; and not page.hidden %}
+                &lt;div class=&#34;post&#34;&gt;
+                    &lt;h3&gt;&lt;a href=&#34;{{ page.url }}&#34;&gt;{{ page.title }}&lt;/a&gt;&lt;/h3&gt;
+                    &lt;p class=&#34;date&#34;&gt;{{ page.date_formatted }}&lt;/p&gt;
+                    &lt;p class=&#34;excerpt&#34;&gt;{{ page.description }}&lt;/p&gt;
+                &lt;/div&gt;
+            {% endif %}
+        {% endfor %}
+    &lt;/div&gt;
+&lt;/div&gt;
+{% include &#39;_footer.twig&#39; %}
+</code></pre><h4 id="searchtwig">search.twig</h4>
+<p>サイト内検索結果を表示します。</p>
+<pre tabindex="0"><code>{% include &#39;_header.twig&#39; %}
+&lt;div id=&#34;main&#34;&gt;
+	&lt;div class=&#34;container&#34;&gt;
+		&lt;div class=&#34;SearchResults&#34;&gt;
+			{% if meta.purpose == &#34;search_results&#34; %}
+					&lt;p class=&#34;meta&#34;&gt;「{{ search_term }}」の検索結果（{{ search_num_results }} 件）&lt;/p&gt;
+					{% for page in search_results %}
+						{% if page.id starts with &#34;posts/&#34; and not page.hidden %}
+							&lt;h3&gt;&lt;a href=&#34;{{ page.url }}&#34;&gt;{{ page.title }}&lt;/a&gt;&lt;/h3&gt;
+							&lt;p class=&#34;date&#34;&gt;{{ page.date_formatted }}&lt;/p&gt;
+							&lt;p class=&#34;excerpt&#34;&gt;{{ page.description }}&lt;/p&gt;
+						{% endif %}
+					{% endfor %}
+			{% endif %}
+		&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/div&gt;
+{% include &#39;_footer.twig&#39; %}
+</code></pre><h3 id="スタイルcssの調整">スタイル(CSS)の調整</h3>
+<p>記事ページのタグ一覧用のスタイルも追加しておきます。<br>
+テーマディレクトリの<code>css/style.css</code>に以下を追加します。</p>
+<pre tabindex="0"><code>/* 記事ページのタグ一覧 */
+span.article_tags {
+    margin-left: 40px;
+    font-size: 0.9em;
+}
+span.article_tags a {
+    border-radius: 5px;          /* CSS3草案 */  
+    -webkit-border-radius: 5px;  /* Safari,Google Chrome用 */  
+    -moz-border-radius: 5px;     /* Firefox用 */
+    background-color: #707070;
+    color: #ffffff;
+    padding: 1px 7px;
+}
+</code></pre><p>これでテーマの準備は完了です。</p>
+<h2 id="mdファイルの作成">mdファイルの作成</h2>
+<p>ここから実際のページのコンテンツとなるmdファイルを作成していきます。</p>
+<h4 id="picocontentindexmd">pico/content/index.md</h4>
+<p>全記事一覧ページです。</p>
+<pre tabindex="0"><code>---
+title: ブログ
+summary: これはブログですよ
+date: 2010-12-31
+draft: false
+---
+</code></pre><h4 id="picocontenttagsmd">pico/content/tags.md</h4>
+<p>タグ一覧ページです。</p>
+<pre tabindex="0"><code>---
+title: タグ一覧
+summary: タグの一覧ページですよ
+date: 2010-12-25
+draft: false
+---
+</code></pre><h4 id="picocontenttagssampletagmd">pico/content/tags/sampleTag.md</h4>
+<p>タグの記事一覧ページです。<br>
+本例ではタグが<code>sampleTag</code>となっている記事の一覧を取得します。</p>
+<pre tabindex="0"><code>---
+title: sampleTag
+summary: sampleTagの一覧です
+Filter: sampleTag
+---
+</code></pre><h4 id="picocontentpostssamplearticlesmd">pico/content/posts/sampleArticles.md</h4>
+<p>記事ページです。<br>
+<code>Tags</code>には上記の<code>pico/content/tags/</code>に作成したタグを指定します。</p>
+<pre tabindex="0"><code>---
+title: 記事ですよ
+summary: これは記事ページです
+tags:
+    - sampleTag
+date: 2015-08-08 15:35:56
+draft: false
+---
+記事の本文ですよー
+</code></pre><h4 id="picocontentsearchmd">pico/content/search.md</h4>
+<p>サイト内検索結果ページです。</p>
+<pre tabindex="0"><code>---
+Purpose: search_results
+---
+</code></pre><h4 id="picocontenthogehogemd">pico/content/hogehoge.md</h4>
+<p>固定ページです。<br>
+必要に応じて作成してください。<br>
+特に固定ページが不要であれば作成しなくて良いです。</p>
+<pre tabindex="0"><code>---
+title: 何かのページ
+summary: 何か固定ページだよ
+date: 2001-01-01
+draft: false
+---
+固定ページですよー
+</code></pre><p>これで基本的に作成すべきmdは揃いました。<br>
+もしGoogle等にインデックスさせたくない(検索させたくない)場合は<br>
+YAMLヘッダーに以下を追加してください。</p>
+<pre tabindex="0"><code>Robots: noindex,nofollow
+</code></pre><p>これでpicoのブログ化は完了です。</p>
+<p>Wordpressからデータ移行する場合は<a href="/posts/2019/01/wp_trans_pico">WordpressからPicoへデータ移行</a>を参照してください。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

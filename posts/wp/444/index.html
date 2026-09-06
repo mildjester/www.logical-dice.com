@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Redmine2.3.2にグループ管理プラグインを入れる|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Redmine2.3.2にグループ管理プラグインを入れる</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-02-27 15:16:05 &#43;0000 UTC" class="catalogue-time">2017年02月27日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/ruby/">ruby</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>redmineにグループ管理のプラグインを入れたが、ちゃんと動かなかったので<br>
+つまづいた所をメモする。<br>
+※補足<br>
+Ruby on Railsを全然知らないPHPerがちょちょっと修正しているので、<br>
+Railsに詳しい人から見たらおかしいかも。指摘してくれるとありがたいです。</p>
+<p>■環境<br>
+CentOS 6.5<br>
+Redmine 2.3.2<br>
+ruby 2.0.0<br>
+rails 3.2.13</p>
+<p><a href="https://github.com/fathomssen/redmine_group_manager" target="_blank"><a href="https://github.com/fathomssen/redmine_group_manager">https://github.com/fathomssen/redmine_group_manager</a></a><br>
+基本的なインストール方法はREADME.rdoc通り</p>
+<h2 id="order-by句がおかしい">①order by句がおかしい</h2>
+<p>オーダー句がおかしいとエラーになったので、app/models/gmanager.rbの９行目を修正した<br>
+【修正前】</p>
+<pre tabindex="0"><code>mem = Member.where(:project_id =&gt; pid).order(user_id: :asc)
+</code></pre><p>【修正後】</p>
+<pre tabindex="0"><code>mem = Member.where(:project_id =&gt; pid).order(&#34;user_id asc&#34;)
+</code></pre><h2 id="オーナー未指定のグループがあると動かない">②オーナー未指定のグループがあると動かない</h2>
+<p>まあ、インストール直後は全てのグループにオーナーが指定されていないのですが、<br>
+オーナーが未指定の場合はユーザテーブルのID=1のユーザがオーナーになるそうです。<br>
+（app/helpers/gmanagers_helper.rbの２８行目参照）</p>
+<p>私の環境ではID=1のユーザが既に削除されていたので、<br>
+新しくID=１で絶対的管理者的存在のユーザを作成しました。<br>
+別IDで絶対的管理者がいるなら、上記のヘルパーを修正するのでも良いと思います。<br>
+（個人のIDにしてしまうと退職した際などに困るのでオススメしません）</p>
+<h2 id="グループ編集タグがredmine管理者にしかでない">③グループ編集タグがredmine管理者にしかでない</h2>
+<p>各プロジェクトページにてグループ編集タブが表示されるはずなのですが、<br>
+プラグインを入れた時点ではredmineの管理者でなければタブが表示されていませんでした。<br>
+プロジェクトの管理者にグループ編集機能を使わせたい場合は、redmine管理者メニューの<br>
+『管理　＞　ロールと権限』からグループ編集権限を予め付与しておかなければなりません。<br>
+説明をよく読めば書いてあるのかもしれませんが、英語辛いので斜め読みしてました。すみません。</p>
+<h2 id="グループメンバー一覧の項目順がおかしい">④グループメンバー一覧の項目順がおかしい</h2>
+<p>各プロジェクトのグループ編集タブよりグループメンバー一覧を表示すると、<br>
+カスタムフィールドの項目名と値の並び順が一致していませんでした。<br>
+なので、一致するようソート処理を入れます。</p>
+<p>app/models/gmanager.rbの34行目と48行目に同じ修正を入れる。<br>
+【修正前】</p>
+<pre tabindex="0"><code>keys = CustomField.where(:type =&gt; &#39;UserCustomField&#39;)
+</code></pre><p>【修正後】</p>
+<pre tabindex="0"><code>keys = CustomField.where(:type =&gt; &#39;UserCustomField&#39;).order(:id)
+</code></pre><p>app/models/gmanager.rbの49行目も修正する。<br>
+【修正前】</p>
+<pre tabindex="0"><code>values = User.find(id).custom_values
+</code></pre><p>【修正後】</p>
+<pre tabindex="0"><code>values = User.find(id).custom_values.order(:custom_field_id)
+</code></pre><p>これで動くようになりました。</p>
+<h2 id="番外編">〜番外編〜</h2>
+<p>このプラグインはプロジェクトに所属している人をグループに追加することしかできません。<br>
+私はプロジェクトに所属していないユーザもグループ追加できるようにしたかったので、<br>
+プラグインを大幅に修正しました。</p>
+<p>プロジェクトに未所属のメンバーもグループに追加できるようにしたプラグインは<br>
+こちらです。<br>
+<a href="https://github.com/mildjester/redmine_group_manager" target="_blank"><a href="https://github.com/mildjester/redmine_group_manager">https://github.com/mildjester/redmine_group_manager</a></a></p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

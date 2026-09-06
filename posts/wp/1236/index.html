@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Linux Mint】cpuminer &#43; wpoolでBitZenyをマイニング|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Linux Mint】cpuminer &#43; wpoolでBitZenyをマイニング</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-04-20 10:25:55 &#43;0000 UTC" class="catalogue-time">2018年04月20日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>Linux Mint 18.3 cinnamon 64bit</p>
+<hr>
+<h2 id="cpuminerのインストール">cpuminerのインストール</h2>
+<p>基本的な流れはcpuminerのgithubページに記載されている通りです。<br>
+<a href="https://github.com/macchky/cpuminer" rel="noopener" target="_blank"><a href="https://github.com/macchky/cpuminer">https://github.com/macchky/cpuminer</a></a></p>
+<p>事前に必要な物をインストールします。<br>
+※libjansson4は公式ページには記載がありませんが、ないとminerd実行時にエラーとなります。</p>
+<pre tabindex="0"><code>apt install build-essential libcurl4-openssl-dev libjansson4  
+</code></pre><p>cpuminerバイナリをダウンロードして実行ファイルを取り出します。</p>
+<pre tabindex="0"><code>wget https://github.com/macchky/cpuminer/releases/download/v2.6.0/ZNYminer260.zip  
+unzip unzip ZNYminer260.zip  
+chmod +x ZNYminer260/linux/minerd  
+sudo mv ZNYminer260/linux/minerd /usr/local/bin/.  
+rm -rf unzip ZNYminer260*  
+</code></pre><h2 id="bitzeny-walletの登録">BitZeny Walletの登録</h2>
+<p>BitZenyの受け取り用にWalletを作っておきます。<br>
+以下サイトにてWalletが作成できます。<br>
+<a href="https://bitzeny.jp" rel="noopener" target="_blank"><a href="https://bitzeny.jp">https://bitzeny.jp</a></a></p>
+<p>アカウントを作成し、ログイン後の画面でWalletのアドレスが確認できます。<br>
+<img src="https://www.logical-dice.com/images/2018/04/Screenshot-from-2018-04-20-10-20-38.png" alt="" /></p>
+<h2 id="マイニングの開始">マイニングの開始</h2>
+<p>minerdを使ってマイニングを開始します。<br>
+wpoolに記載されている下記コマンドを実行すればマイニングが開始されます。<br>
+マイニング停止はCtrl+Cです。<br>
+<a href="https://wpool.work/" rel="noopener" target="_blank"><a href="https://wpool.work/">https://wpool.work/</a></a></p>
+<pre tabindex="0"><code>minerd -a yescrypt -o stratum+tcp://wpool.work:15022 -u {BitZeny Walletで取得したアドレス}  
+</code></pre><p>マイニング中は以下のように結果が流れていきます。<br>
+「yay!!!」となっているところがマイニング成功です。</p>
+<pre tabindex="0"><code>[2018-04-20 15:42:35] Stratum requested work restart  
+[2018-04-20 15:42:35] thread 1: 32638 hashes, 0.76 khash/s  
+[2018-04-20 15:42:35] thread 0: 1957 hashes, 0.77 khash/s  
+[2018-04-20 15:42:35] thread 3: 4647 hashes, 0.77 khash/s  
+[2018-04-20 15:42:35] thread 2: 33076 hashes, 0.77 khash/s  
+[2018-04-20 15:42:45] thread 1: 6887 hashes, 0.74 khash/s  
+[2018-04-20 15:42:45] accepted: 1364/1364 (100.00%), 3.05 khash/s (yay!!!)  
+[2018-04-20 15:43:11] thread 3: 27706 hashes, 0.77 khash/s  
+[2018-04-20 15:43:11] accepted: 1365/1365 (100.00%), 3.05 khash/s (yay!!!)  
+[2018-04-20 15:43:14] thread 3: 1946 hashes, 0.77 khash/s  
+[2018-04-20 15:43:14] accepted: 1366/1366 (100.00%), 3.05 khash/s (yay!!!)  
+[2018-04-20 15:43:26] thread 3: 9160 hashes, 0.77 khash/s  
+[2018-04-20 15:43:26] accepted: 1367/1367 (100.00%), 3.05 khash/s (yay!!!)  
+[2018-04-20 15:43:30] thread 2: 42358 hashes, 0.77 khash/s  
+[2018-04-20 15:43:30] accepted: 1368/1368 (100.00%), 3.05 khash/s (yay!!!)  
+[2018-04-20 15:43:33] Stratum requested work restart  
+[2018-04-20 15:43:33] thread 2: 1673 hashes, 0.77 khash/s  
+[2018-04-20 15:43:33] thread 1: 36537 hashes, 0.76 khash/s  
+[2018-04-20 15:43:33] thread 0: 44107 hashes, 0.77 khash/s  
+[2018-04-20 15:43:33] thread 3: 5300 hashes, 0.77 khash/s  
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

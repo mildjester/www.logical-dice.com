@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Checking Only Modified Files with PHP_CodeSniffer|Logical Dice Techblog</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice Techblog" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/en/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice Techblog" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Checking Only Modified Files with PHP_CodeSniffer</h1>
+		<div class="post-info">
+				<p class="publish-date">posted: <time datetime="2021-02-06 00:00:00 &#43;0000 UTC" class="catalogue-time">2021-02-06</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/git/">git</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/php/">PHP</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>When using PHP_CodeSniffer (phpcs) to check code format against PSR2,<br>
+you might encounter a large number of warnings in projects where phpcs hasn&rsquo;t been consistently used. This can make it difficult to focus on the current changes.</p>
+<p>Therefore, I decided to use <code>git diff</code> to check only the files modified in the current changes with phpcs.</p>
+<h2 id="creating-a-base-branch">Creating a Base Branch</h2>
+<p>First, prepare a base branch for your modifications.<br>
+The base branch represents the state of the code before you started making the changes you want to check with phpcs.</p>
+<p>If no one else has updated the target merge branch (master, develop, etc.), you can use that existing branch.<br>
+However, if others have updated the merge branch, using <code>git diff</code> will include their changes as well, which is not ideal.<br>
+(I don&rsquo;t think there&rsquo;s an option in <code>git diff</code> to show only your own changes.)</p>
+<p>In such cases, the easiest way is to check the commit ID of the commit just before you started your modifications using <code>git log</code>,<br>
+and then create a branch using <code>git checkout -b tempBranch 'commit_id'</code>.<br>
+You can replace <code>tempBranch</code> with any name you prefer for your base branch.</p>
+<h2 id="checking-with-phpcs">Checking with phpcs</h2>
+<p>Once the base branch is ready, you can proceed with the phpcs check.<br>
+Make sure you are on the branch you want to check and run the following command:</p>
+<pre tabindex="0"><code>git diff 『起点ブランチ』 --name-only | xargs phpcs --standard=&#34;PSR2&#34;
+</code></pre><p>This will execute phpcs only on the files you have modified.<br>
+In this example, PSR2 is used as the standard, but you should change it to match the coding standards adopted by your project.</p>
+<h3 id="note">Note</h3>
+<p>Please adjust the execution path for phpcs according to your environment.<br>
+For example, if you are using phpcs installed within your project via Composer, the path might be <code>./vendor/bin/phpcs</code>.</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【CentOS】侵入検知したらSlack通知する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【CentOS】侵入検知したらSlack通知する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-12-12 00:30:31 &#43;0000 UTC" class="catalogue-time">2017年12月12日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/centos/">CentOS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>CentOS 7.4<br>
+AIDE 0.15.1</p>
+<hr>
+<p>AIDEという侵入検知ツールを導入し、検査結果をSlackに通知するようにします。</p>
+<h3 id="aideインストール">AIDEインストール</h3>
+<pre tabindex="0"><code>yum install -y aide  
+</code></pre><h3 id="aide設定">AIDE設定</h3>
+<pre tabindex="0"><code>vim /etc/aide.conf  
+</code></pre><p>95行目辺りより監視対象ディレクトリの設定があります。 <br>
+設定値の記載方法は以下の通り。</p>
+<pre tabindex="0"><code>/{DIR_PATH}/ {CHECK_METHOD} #監視対象に含める  
+!/{DIR_PATH}/ #監視対象から除外する
+</code></pre><p>上記の『DIR_PATH』の部分に対象のディレクトリパスを記載し、 <br>
+『CHECK_METHOD』に監視方法を記載します。</p>
+<p>監視方法については本設定ファイルの９５行目以前に記載があるので、そちらを参照してください。 <br>
+とりあえずAIDE 0.15.1では「CONTENT_EX」にしておくのが無難そうです。</p>
+<p>監視対象の設定が完了したら、AIDEのデータベースを初期化します。 <br>
+※以下コマンド実行後、結構待ちます。</p>
+<pre tabindex="0"><code>aide -i  
+</code></pre><h3 id="自動監視設定">自動監視設定</h3>
+<p>AIDEでスキャンを実行し、結果をSlack通知するスクリプトを作成します。 <br>
+仮に、<code>/opt/aide_scan.sh</code>という名前で作るとします。</p>
+<pre tabindex="0"><code>vim /opt/aide_scan.sh  
+</code></pre><p>シェルスクリプトの中身は以下のようにします。</p>
+<pre tabindex="0"><code>#!/bin/bash  
+set +e  
+  
+##### Settings  
+## AIDE  
+LOGFILE=&#34;/var/log/aide/aide.log&#34;  
+AIDEDIR=&#34;/var/lib/aide&#34;  
+## Slack  
+URL=&#34;https://hooks.slack.com/services/AAAAAAAA/BBBBBBBB/CCCCCCCC&#34;  
+TO=&#34;#aide&#34;  
+EMOJI=&#34;:cop:&#34;  
+NAME=&#34;AIDE-COP&#34;  
+  
+##### Run AIDE Scan  
+/usr/sbin/aide  -u &gt; $LOGFILE  
+cp $AIDEDIR/aide.db.new.gz $AIDEDIR/aide.db.gz  
+x=$(grep &#34;Looks okay&#34; $LOGFILE | wc -l)  
+if [ $x -eq 1 ]; then  
+    MSG=&#34;OKだよ&#34;  
+else  
+    MSG=&#34;侵入検知！詳細は[${LOGFILE}]を見てね&#34;  
+fi  
+  
+##### Send To Slack  
+payload=&#34;payload={\&#34;channel\&#34;: \&#34;${TO//\&#34;/\\\&#34;}\&#34;, \&#34;username\&#34;: \&#34;${NAME//\&#34;/\\\&#34;}\&#34;, \&#34;text\&#34;: \&#34;${MSG//\&#34;/\\\&#34;}\&#34;, \&#34;icon_emoji\&#34;: \&#34;${EMOJI}\&#34;}&#34;  
+curl -m 30 --data-urlencode &#34;${payload}&#34; $URL -A &#39;zabbix-slack-alertscript / https://github.com/ericoc/zabbix-slack-alertscript&#39;  
+</code></pre><p>スクリプトの設定項目は以下の通りです。</p>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>LOGFILE</td>
+					<td>AIDEの検査結果を出力するログファイルです。</td>
+			</tr>
+			<tr>
+					<td>AIDEDIR</td>
+					<td>AIDE本体のディレクトリです。<code>aide.conf</code>の設定に合わせてください。</td>
+			</tr>
+			<tr>
+					<td>URL</td>
+					<td>Slackの『Incoming WebHooks』のURLです。詳細は<a href="https://slack.com/apps/A0F7XDUAZ-incoming-webhooks" rel="noopener" target="_blank">コチラ</a></td>
+			</tr>
+			<tr>
+					<td>TO</td>
+					<td>メッセージを送るSlackのチャンネル</td>
+			</tr>
+			<tr>
+					<td>EMOJI</td>
+					<td>Slack上で表示される絵文字</td>
+			</tr>
+			<tr>
+					<td>NAME</td>
+					<td>Slack上で表示される名前</td>
+			</tr>
+	</tbody>
+</table>
+<p>作成したスクリプトを1日1回cronで回します。 <br>
+以下はcronの設定例です。</p>
+<pre tabindex="0"><code>0 10 * * * /bin/sh /opt/aide_scan.sh &gt; /dev/null 2&gt;&amp;1  
+</code></pre><p>これで1日1回AIDEが侵入検知してくれるようになります。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

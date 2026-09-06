@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>EC2上でオレオレ証明書を作る|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">EC2上でオレオレ証明書を作る</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-06-14 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年06月14日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/linux/">Linux</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Amazon Linux AMI 2017.03</li>
+<li>OpenSSL 1.0.2k-fips  26 Jan 2017</li>
+</ul>
+<hr>
+<p>最近はLet&rsquo;s Encryptの登場でめっきり出番が少なくなったオレオレ証明書を作ります。</p>
+<p>Let&rsquo;s EncryptのSSL証明書の方が信頼度が高くブラウザ側で設定する必要がありません。<br>
+インターネットに公開していない環境でもDNSにTXTレコードを追加すればLet&rsquo;s Encryptの証明書を発行できます。</p>
+<p>それでもオレオレ証明書を使いたい人向けの手順です。</p>
+<h2 id="オレオレ証明書自己証明書とは">オレオレ証明書(自己証明書)とは</h2>
+<p>SSL証明書はどこかしらの認証局(CA)に認証して貰って発行されるのですが、<br>
+自分でCAを立てて自分で認証したSSL証明書を発行してしまうというものです。</p>
+<p>ざっくりとした流れは以下の通りです。<br>
+①オレオレ認証局を立てる<br>
+②オレオレ認証局でオレオレ証明書を発行する<br>
+③利用ブラウザにオレオレ認証局を認めさせる</p>
+<p>以降の手順では「*.hoge.com」というワイルドカードのSSL証明書を作る前提とします。<br>
+「*.hoge.com」の部分は作成したいドメインに置き換えてください。</p>
+<h2 id="作業ディレクトリ等の準備">作業ディレクトリ等の準備</h2>
+<p>EC2にSSHでログインし、以下の通り準備をします。<br>
+オレオレ認証局はhogeCAというディレクトリに作成するものとします。</p>
+<pre tabindex="0"><code>sudo -i
+cd /etc/pki
+cp -r CA hogeCA
+cp tls/openssl.cnf hogeCA/.
+cd hogeCA
+touch index.txt
+echo &#34;00&#34; &gt; serial
+</code></pre><p>また、以前は無かったと思うのですが<br>
+最近のブラウザはSAN(subjectAltName)というものを設定しておかないと正規の証明書と認めてくれないようです。<br>
+SANを設定するためのファイルを作成しておきます。</p>
+<pre tabindex="0"><code>echo &#34;subjectAltName=DNS:*.hoge.com&#34; &gt; san.ext
+</code></pre><h2 id="openssl設定変更">openssl設定変更</h2>
+<p>以下の通り、今回利用するopenssl.cnfを修正します。</p>
+<pre tabindex="0"><code>vim ./openssl.cnf
+</code></pre><h3 id="-ca_default-セクション修正">[ CA_default ]セクション修正</h3>
+<p>作業ディレクトリを変更します。</p>
+<pre tabindex="0"><code>dir             = /etc/pki/hogeCA
+</code></pre><h3 id="-req_distinguished_name-セクション修正">[ req_distinguished_name ]セクション修正</h3>
+<p>今回の手順で会社所在地などを複数回聞かれるので、デフォルト値を設定しておきます。</p>
+<pre tabindex="0"><code>countryName_default             = JP
+stateOrProvinceName_default     = Tokyo
+localityName_default            = Toshima-ku
+0.organizationName_default      = Hoge Co. Ltd.
+</code></pre><h3 id="-usr_cert-セクション修正">[ usr_cert ]セクション修正</h3>
+<p>SANを読み込ませるための設定です。</p>
+<pre tabindex="0"><code>subjectAltName=@alt_names
+</code></pre><h2 id="認証局ca構築">認証局(CA)構築</h2>
+<h3 id="caの秘密鍵作成">CAの秘密鍵作成</h3>
+<p>CA用の秘密鍵を生成します。<br>
+秘密鍵に設定するパスワードを聞かれるので入力してください。</p>
+<pre tabindex="0"><code>openssl genrsa -aes256 -out ./private/cakey.pem 2048
+</code></pre><h3 id="caのcsr証明書発行要求ファイル作成">CAのCSR(証明書発行要求ファイル)作成</h3>
+<p>CAの証明書を発行するためのCSRを作成します。<br>
+先程のcakey.pemに設定したパスワードを聞かれるので入力してください。<br>
+その後、色々質問されます。基本的にそのままEnterで大丈夫ですが、「Common Name」は後で判別が付くように自分のCA名を適当に入れてください。</p>
+<pre tabindex="0"><code>openssl req -new -config ./openssl.cnf -key ./private/cakey.pem -out ./cacert.csr
+</code></pre><h3 id="caの証明書作成">CAの証明書作成</h3>
+<p>CAの証明書を発行します。<br>
+ここでもcakey.pemのパスワードを聞かれるので入力してください。</p>
+<pre tabindex="0"><code>openssl x509 -days 825 -in ./cacert.csr -req -signkey ./private/cakey.pem -out ./cacert.pem
+</code></pre><h2 id="サーバー証明書の発行">サーバー証明書の発行</h2>
+<p>実際にサーバーのSSL証明書を発行していきます。<br>
+後で分かりやすいように、まずSSL証明書用のファイルを格納するディレクトリを切っておきます。</p>
+<pre tabindex="0"><code>mkdir hoge_com
+</code></pre><h3 id="ssl用の秘密鍵作成">SSL用の秘密鍵作成</h3>
+<p>SSL用に秘密鍵を生成します。<br>
+今回も秘密鍵に設定するパスワードを聞かれるので入力してください。<br>
+（すぐにパスワードは解除するので適当で良いです）</p>
+<pre tabindex="0"><code>openssl genrsa -aes256 -out ./hoge_com/server-with-password.key 2048
+</code></pre><p>生成した秘密鍵からパスワード無し版の秘密鍵を作成します。<br>
+さきほどのパスワードを聞かれるので入力してください。</p>
+<pre tabindex="0"><code>openssl rsa -in ./hoge_com/server-with-password.key -out ./hoge_com/server.key
+</code></pre><h3 id="ssl用のcsr作成">SSL用のCSR作成</h3>
+<p>SSL証明書を発行するためのCSRを作成します。<br>
+色々質問されます。基本的にそのままEnterで大丈夫ですが、「Common Name」は設定するドメイン(今回は*.hoge.com)を入れてください。</p>
+<pre tabindex="0"><code>openssl req -new -config ./openssl.cnf -key ./hoge_com/server.key -out ./hoge_com/server.csr
+</code></pre><h3 id="ssl用の証明書発行">SSL用の証明書発行</h3>
+<p>SSL証明書を発行します。<br>
+cakey.pemのパスワードを聞かれるので、入力してください。</p>
+<pre tabindex="0"><code>openssl ca -config ./openssl.cnf -in ./hoge_com/server.csr -out ./hoge_com/server.crt -days 825 -extfile san.ext
+</code></pre><p>上記コマンド後、y/nの質問を2回されるのでどちらもyで回答してください。</p>
+<pre tabindex="0"><code>Sign the certificate? [y/n]:y
+1 out of 1 certificate requests certified, commit? [y/n]y
+</code></pre><h2 id="webサーバー設定">WEBサーバー設定</h2>
+<p>生成したSSL証明書をWEBサーバーに設定します。<br>
+Apacheなら以下のようになります。</p>
+<pre tabindex="0"><code>SSLCertificateFile /etc/pki/hogeCA/hoge_com/server.crt
+SSLCertificateKeyFile /etc/pki/hogeCA/hoge_com/server.key
+</code></pre><h2 id="ブラウザ設定">ブラウザ設定</h2>
+<p>今回作成したSSL証明書をエラーなく表示させるため、<br>
+認証局の証明書(/etc/pki/hogeCA/cacert.pem)をブラウザにインポートしてください。</p>
+<p>Chromeであれば、以下の手順で認証局の証明書をブラウザにインポートできます。<br>
+①認証局の証明書をローカルにダウンロードしておきます。<br>
+②Chromeの『設定＞プライバシーとセキュリティ＞（もっと見る）＞証明書の管理』をクリック
+③認証局タブの「インポート」をクリックし、cacert.pemを選択してインポートする。<br>
+④信頼の設定ウィンドウが開くので、「ウェブサイトの識別でこの証明書を信頼します」にチェックを入れて「OK」をクリックする。</p>
+<p>これでオレオレ証明書のページがエラーなく開けるようになります。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

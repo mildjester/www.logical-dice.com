@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Serverless Frameworkを使ってLambda &amp; API Gatewayをデプロイする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Serverless Frameworkを使ってLambda &amp; API Gatewayをデプロイする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-05-19 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年05月19日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<p>ubuntu 20.04 LTS</p>
+<hr>
+<p>Serverless Frameworkというサーバーレス環境を簡単に構築できるツールがあります。<br>
+<a href="https://www.serverless.com/framework/docs/">https://www.serverless.com/framework/docs/</a></p>
+<p>今回はそれを使ってAWS上にLambda &amp; API Gatewayを使ったサーバーレスAPIを作ってみます。</p>
+<h2 id="事前準備awscliの準備">事前準備(awscliの準備)</h2>
+<p>Serverless Frameworkはaws cliを使ってデプロイするので、インストールしておく必要があります。<br>
+既に作業PC等でawscliを使える状態であれば本手順は飛ばして大丈夫です。</p>
+<h3 id="awscliのインストール">awscliのインストール</h3>
+<p>公式ページの手順を実施します。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2-linux.html">https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2-linux.html</a></p>
+<pre tabindex="0"><code>$ curl &#34;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&#34; -o &#34;awscliv2.zip&#34;
+$ unzip awscliv2.zip
+$ sudo ./aws/install
+</code></pre><p>これでawscliのインストールが出来ました。<br>
+念の為バージョンを確認しておきます。</p>
+<pre tabindex="0"><code>$ aws --version
+aws-cli/2.0.14 Python/3.7.3 Linux/5.4.0-31-generic botocore/2.0.0dev18
+</code></pre><h3 id="アクセスキーの準備">アクセスキーの準備</h3>
+<p>awscliで利用するアクセスキーをAWS IAMで生成します。<br>
+手順は公式ページにあります。<br>
+<a href="https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration">https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration</a></p>
+<p>ざっくりいうと、以下の作業をします。</p>
+<p>①IAMへアクセス<br>
+②アクセスキーを発行するユーザーを選択する。<br>
+③「認証情報」タブの「アクセスキーの作成」をクリックする。<br>
+④表示されるアクセスキーID/シークレットアクセスキーをメモしておく。</p>
+<p>以上です。</p>
+<h3 id="awscliの設定">awscliの設定</h3>
+<p>IAMで取得したアクセスキーとリージョン情報をawscliに設定します。</p>
+<pre tabindex="0"><code>$ aws configure
+AWS Access Key ID [None]: YOUR-ACCESS-KEY-ID
+AWS Secret Access Key [None]: YOUR-SECRET-ACCESS-KEY
+Default region name [None]: ap-northeast-1
+Default output format [None]: 
+</code></pre><p>※output formatを空のままエンターするとjsonになる。</p>
+<p>もし複数のAWSアカウントを使い分けている場合などであれば、以下のように実行することでアクセスキーを設定するプロファイルを指定することもできます。<br>
+以下の<code>profile01</code>は好きなプロファイル名を入れてください。</p>
+<pre tabindex="0"><code>$ aws configure --profile profile01
+</code></pre><p>これでプロファイルを切り替えながらawscliを使えるようになります。</p>
+<h2 id="serverless-frameworkの環境構築">Serverless Frameworkの環境構築</h2>
+<h3 id="serverless-frameworkのインストール">Serverless Frameworkのインストール</h3>
+<p>公式ページの手順に従います。<br>
+<a href="https://www.serverless.com/framework/docs/getting-started/">https://www.serverless.com/framework/docs/getting-started/</a></p>
+<p>ubuntu(Linux)では以下コマンドを実行します。</p>
+<pre tabindex="0"><code>curl -o- -L https://slss.io/install | bash
+</code></pre><h3 id="serverless-frameworkのテンプレート読込">Serverless Frameworkのテンプレート読込</h3>
+<p>作業ディレクトリにて<code>serverless</code>コマンドを実行し、いくつか質問されるので答えることでServerless Frameworkを利用するためのテンプレートを読み込めます。<br>
+下記例ではLambdaの言語はpython、サービス名は<code>sw-test</code>としています。<br>
+※slsコマンドはserverlessコマンドの短縮系です</p>
+<pre tabindex="0"><code>$ sls
+Serverless: No project detected. Do you want to create a new one? Yes
+Serverless: What do you want to make? AWS Python
+Serverless: What do you want to call this project? sw-test
+
+Project successfully created in &#39;sw-test&#39; folder.
+
+You can monitor, troubleshoot, and test your new service with a free Serverless account.
+
+Serverless: Would you like to enable this? No
+You can run the “serverless” command again if you change your mind later.
+
+
+Serverless: Would you like to setup a command line &lt;tab&gt; completion? No
+</code></pre><p>これでsw-testディレクトリが生成され、その中にServerless Frameworkのテンプレートが読み込まれています。</p>
+<h3 id="serverless-frameworkの設定">Serverless Frameworkの設定</h3>
+<p>上記で生成したテンプレートに検証/本番環境別のconfigを追加して環境別の変数を定義できるようにします。<br>
+ファイル構成はこんな感じです。</p>
+<pre tabindex="0"><code>sw-test
+ ├─conf            ・・・設定ファイルディレクトリ（追加）
+ │  ├─dev.yml     ・・・検証環境の設定ファイル（追加）
+ │  └─prd.yml     ・・・本番環境の設定ファイル（追加）
+ ├─handler.py      ・・・Lambdaで実行するスクリプト(今回はテンプレートのサンプルをそのまま使います)
+ └─serverless.yml  ・・・デプロイ内容を定義したファイル
+</code></pre><p>ファイルの中身は以下の通りです。</p>
+<p>【dev.yml】<br>
+とりあえずリージョンだけ。</p>
+<pre tabindex="0"><code>region: us-west-2
+</code></pre><p>【prd.yml】<br>
+とりあえずリージョンだけ。</p>
+<pre tabindex="0"><code>region: ap-northeast-1
+</code></pre><p>【serverless.yml】</p>
+<pre tabindex="0"><code>service: sw-test
+
+custom:
+  default_stage: dev
+  stage: ${opt:stage, self:custom.default_stage}              deploy時にstageを指定しなかったらdevを設定します。
+  config_file:
+    dev: ${file(./conf/dev.yml)}
+    prd: ${file(./conf/prd.yml)}
+  config: ${self:custom.config_file.${self:custom.stage}}     stageに合わせてdev.ymlかprd.ymlを読み込みます。
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: ${self:custom.config.region}                        dev/prd.ymlの中身を呼び出しています。設定ファイルにregion以外の指定をすれば同様の方法で呼び出せます。
+
+functions:
+  hello:
+    handler: handler.hello                                    以下で指定するeventsが発生するとhandler.pyのhelloメソッドを呼びます
+    events:
+      - http:
+          path: hello                                         リクエストを受けるパス
+          method: get
+</code></pre><p>上記のようにfunctionsのeventsでhttpを指定しておくと、Lambdaと一緒にAPI Gatewayもデプロイされます。</p>
+<p>■ハマりポイント<br>
+全体的にインデントはスペース2つですが、<code>path: hello</code>の部分だけ<code>- http:</code>のハイフンの箇所からスペース4つ分下がっています。<br>
+つまり<code>http:</code>の部分からスペース2つ分下げるのが正解のようです。<br>
+(YAMLに慣れている人にとっては当たり前なのかもしれませんが、ちょっと躓きました)</p>
+<p>上記ができていないとデプロイ時に以下のエラーがでます。</p>
+<pre tabindex="0"><code>Serverless Error ---------------------------------------
+ 
+  Missing or invalid &#34;path&#34; property in function &#34;hello&#34; for http event in serverless.yml. If you define an http event, make sure you pass a valid value for it, either as string syntax, or object syntax. Please check the indentation of your config values if you use the object syntax. Please check the docs for more options.
+</code></pre><h3 id="デプロイ実行">デプロイ実行</h3>
+<p>awscliのプロファイルを分けた場合は先にプロファイルを指定します。</p>
+<pre tabindex="0"><code>export AWS_PROFILE=&#34;profile01&#34;
+</code></pre><p>デプロイします。</p>
+<pre tabindex="0"><code>sls deploy
+</code></pre><p>特にエラーが発生しなければ、これで検証環境リージョンのLambdaとAPI Gatewayにアプリケーションが追加されています。<br>
+本番環境にリリースしたい場合は以下のようにstageを指定してdeployします。</p>
+<pre tabindex="0"><code>sls deploy --stage prd
+</code></pre><p>以上です。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

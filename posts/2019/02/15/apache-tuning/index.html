@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Apacheにサーバーのメモリを食い尽くさせない|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Apacheにサーバーのメモリを食い尽くさせない</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-02-15 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年02月15日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/apache/">Apache</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Amazon Linux AMI 2018.03</li>
+<li>Apache/2.4.34 (Amazon)</li>
+</ul>
+<hr>
+<p>Apache(prefork)がサーバーのメモリを食い尽くしていたのでチューニングしました。<br>
+その際に行なった調査や計算をメモとして残します。</p>
+<p>なお、preforkからeventに変更できる場合や、nginxに移行できるのであれば<br>
+そちらの方がいいかもしれません。<br>
+今回はあくまでpreforkをチューニングする前提での手順です。</p>
+<h2 id="サーバー物理メモリ確認">サーバー物理メモリ確認</h2>
+<p>まず、サーバーの物理メモリを調べます</p>
+<pre tabindex="0"><code># cat /proc/meminfo | head -n 1
+MemTotal:        2004484 kB
+</code></pre><p>このサーバーの搭載メモリは2GBのようです。</p>
+<h2 id="現在のメモリ使用状況確認">現在のメモリ使用状況確認</h2>
+<p>まずサーバー全体の使用メモリを確認します。<br>
+以下のワンライナーで出します。(単位はMB)</p>
+<pre tabindex="0"><code># ps aux | awk &#39;{print $6}&#39; | awk &#39;{sum=sum+($1/1024);cnt++;} END{print &#34;sum=&#34;sum}&#39;
+sum=919.656
+</code></pre><p>次にhttpdの子プロセスの使用メモリを確認します。<br>
+以下のワンライナーで出します。(単位はMB)</p>
+<pre tabindex="0"><code># ps aux | grep httpd | grep apache | awk &#39;{print $6}&#39; | awk &#39;{sum=sum+($1/1024);cnt++;} END{print &#34;sum=&#34;sum &#34; cnt=&#34;cnt &#34; ave=&#34;sum/cnt;}&#39;
+sum=804.273 cnt=20 ave=40.2137
+</code></pre><p>出力結果は以下のようにしています。</p>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>意味</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>sum</td>
+					<td>現時点のhttpd子プロセスが使っている総メモリ</td>
+			</tr>
+			<tr>
+					<td>cnt</td>
+					<td>httpd子プロセスの数</td>
+			</tr>
+			<tr>
+					<td>ave</td>
+					<td>httpd子プロセス１つが利用している平均メモリ</td>
+			</tr>
+	</tbody>
+</table>
+<h4 id="補足">※補足</h4>
+<p>サーバー全体のメモリ使用量は前述の/proc/meminfoやfreeコマンドからでも出せるのですが<br>
+それだとpsコマンドの結果と少しずれてしまうのでpsコマンドに統一しています。</p>
+<h2 id="計算">計算</h2>
+<p>ここまでで分かった事を整理します。</p>
+<ul>
+<li>サーバーの搭載メモリ = 約2GB　・・・①</li>
+<li>現時点の総使用メモリ = 約920MB　・・・②
+<ul>
+<li>うち、Apache子プロセスの使用メモリ = 約800MB　・・・③</li>
+<li>Apache子プロセス以外の使用メモリ = 約120MB　・・・④(②−③)</li>
+</ul>
+</li>
+<li>Apache子プロセス１つあたりが使うメモリ = 約40MB　・・・⑤</li>
+</ul>
+<p>ここからざっくり計算していきます。</p>
+<ul>
+<li>Apache子プロセス以外用に残すメモリ = 500MB　・・・⑥(④を元に超ざっくり＆余裕を持って)</li>
+<li>Apache子プロセスで使うメモリ = 1500MB程度　・・・⑦(①−⑥)</li>
+<li>生成できるApacheプロセス数 = 35個程度　・・・⑧(⑦÷⑤)</li>
+</ul>
+<p>Apacheの設定にてこれを設定します。</p>
+<pre tabindex="0"><code>&lt;IfModule mpm_prefork_module&gt;
+StartServers               5
+MinSpareServers            5
+MaxSpareServers           10
+ServerLimit               35 #先ほど計算した結果に変更
+MaxClients                35 #先ほど計算した結果に変更
+MaxConnectionsPerChild     0
+&lt;/IfModule&gt;
+</code></pre><p>既存のApacheの設定ファイルに上記が設定されている箇所が存在しない場合は<br>
+httpd.confに追記するか/etc/httpd/conf.d/配下に新設定ファイルを作成して記載するのでも良いです。</p>
+<p>他にも基本的にhttpd子プロセスは常時20個くらい動いていて欲しかったりして、<br>
+最終的に以下の設定にしました。</p>
+<pre tabindex="0"><code>&lt;IfModule mpm_prefork_module&gt;
+StartServers              20 #httpd起動時にプロセスを20個動かす
+MinSpareServers            5
+MaxSpareServers           20 #リクエスト待ちプロセスは最大20個とする
+ServerLimit               35
+MaxClients                35
+MaxConnectionsPerChild  5000 #ある程度処理したら子プロセスには産まれ変わってもらう
+&lt;/IfModule&gt;
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

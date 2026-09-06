@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>WindowsでDocker Toolbox＆docker-composeを動かす|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">WindowsでDocker Toolbox＆docker-composeを動かす</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-09-21 17:55:45 &#43;0000 UTC" class="catalogue-time">2018年09月21日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/windows/">Windows</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/docker/">Docker</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>仕事でWindows利用者にDocker環境を構築してもらう事があったのですが<br>
+結構苦労したので手順を残します。</p>
+<p>■□ <strong>注意</strong> ■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□<br>
+MacやLinuxでdocker-composeを普通に使える前提で手順を書きます。 <br>
+Dockerやdocker-compose自体の説明はあまり書きません <br>
+□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□</p>
+<p>もし、Windows10 64bit(Home以外)を使っている人であればこの記事の作業は不要です。<br>
+Docker ToolboxではなくDocker for Windowsをインストールしてください。<br>
+（たぶん、Docker for Windowsの方が楽に構築できると思われます）</p>
+<h2 id="docker-toolboxのインストール">Docker Toolboxのインストール</h2>
+<p>まずDocker Toolboxをダウンロードします。<br>
+以下のページにてDocker Toolboxをダウンロードしてください。<br>
+<a href="https://docs.docker.com/toolbox/overview/#ready-to-get-started" rel="noopener" target="_blank"><a href="https://docs.docker.com/toolbox/overview/#ready-to-get-started">https://docs.docker.com/toolbox/overview/#ready-to-get-started</a></a><br>
+<img src="https://www.logical-dice.com/images/2018/09/downloadtoolbox.png" alt="" /></p>
+<p>ダウンロードしてきたEXEファイルを実行するとインストーラーが走りますので、<br>
+そのまま次へ次へと進みます。<br>
+<img src="https://www.logical-dice.com/images/2018/09/install001.png" alt="" /></p>
+<p>インストールが完了すると『Docker Quickstart Terminal』というショートカットが<br>
+デスクトップに作られるので実行します。<br>
+しばらく待つとDockerが立ち上がります。(クジラのAAが表示されます)</p>
+<h2 id="docker-composeymlの作成">docker-compose.ymlの作成</h2>
+<p>docker-compose.ymlを書きます。<br>
+基本的な書き方はMacやLinuxと同じなので割愛します。</p>
+<p>気をつけなければいけないのはvolumesの書き方です。<br>
+相対パスで記載する場合は以下のように他OS同様の記載ができます。</p>
+<pre tabindex="0"><code>volumes:  
+    ./php.ini:/etc/php.ini  
+</code></pre><p>次に絶対パスで記載する場合ですが、「C:¥」の部分は「/c/」と書きます。<br>
+例えば「C:¥develop¥app」にあるディレクトリを共有する場合は以下のような記載になります。</p>
+<pre tabindex="0"><code>volumes:  
+    /c/develop/app:/var/www/html  
+</code></pre><p>後に出てくるVirtualboxの共有フォルダ設定次第ではこの通りにしない事も可能かもしれませんが、<br>
+できるだけシンプルに構築するため、このようにします。</p>
+<p>もしMySQLのコンテナを作成する場合は<br>
+データの永続化のためのホスト側ディレクトリを指定することはできません。</p>
+<p>つまり、この書き方だとNGで</p>
+<pre tabindex="0"><code>services:  
+  mysql:  
+    〜中略〜  
+    volumes:  
+      - ./mysql/data:/var/lib/mysql  
+</code></pre><p>この書き方ならOKです</p>
+<pre tabindex="0"><code>services:  
+  mysql:  
+    〜中略〜  
+    volumes:  
+      - mydb:/var/lib/mysql  
+    〜中略〜  
+  
+volumes:  
+  mydb  
+</code></pre><h2 id="virtualboxの設定">VirtualBoxの設定</h2>
+<p>Docker Toolboxでコンテナを動かす場合に一番引っかかる部分かもしれません。</p>
+<h3 id="ポートフォワーディングの設定">ポートフォワーディングの設定</h3>
+<p>docker-compose.ymlにてポートフォワーディングを<code>8080:80</code>と設定しただけでは<br>
+ローカルPCにて <code>http://localhost:8080</code>にアクセスしてもDockerコンテナに<br>
+リクエストは飛びません。</p>
+<p>なぜかというと、WindowsでDocker Toolboxを使ってコンテナを動かした場合は<br>
+<em>『Windows上でVirtualBoxにて仮想環境が作られ、その中でDockerコンテナが動く』</em><br>
+という仕組みになっているからです。</p>
+<p>つまり、docker-compose.ymlに記載したポートフォワーディングは<br>
+<code>VirtualBox =&gt; Dockerコンテナ</code> でしかないため<br>
+<code>Windows =&gt; VirtualBox</code>のポートフォワーディングは別で設定する必要があります。</p>
+<p>まず、VirtualBoxを開き、『設定』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2018/09/virtualbox001.png" alt="" /></p>
+<p>次に『ネットワーク &gt; 高度 &gt; ポートフォワーディング』と、クリックしていきます。<br>
+<img src="https://www.logical-dice.com/images/2018/09/portforwarding001.png" alt="" /></p>
+<p>ポートフォワーディングルールが表示されるので、追加ボタンをクリックしてルールを追加していきます。<br>
+ここで設定しているのは<code>Windows =&gt; VirtualBox</code>のポートフォワーディングなので、docker-compose.ymlに記載したポートフォワーディングが<code>8080:80</code>だとしたら<br>
+ここで設定するのは<code>8080:8080</code>です。<br>
+全体で見ると『Windows(8080) =&gt; VirtualBox(8080) =&gt; Docker(80)』と<br>
+ポートフォワーディングされていくイメージです。<br>
+<img src="https://www.logical-dice.com/images/2018/09/portforwarding002.png" alt="" /></p>
+<h3 id="共有フォルダの設定">共有フォルダの設定</h3>
+<p>ホストPCのどのフォルダをDockerと共有するかを設定します。<br>
+Docker for Macにある「File Sharing」の設定と同じです。<br>
+VirtualBox設定画面にて「共有フォルダー」を選択し、追加ボタンをクリックすると共有フォルダが追加できます。<br>
+<code>C:¥Users</code> はデフォルトで共有になっているので、ホームディレクトリ以外にソースコードを置いた場合に設定が必要となります。<br>
+<img src="https://www.logical-dice.com/images/2018/09/virtualbox002.png" alt="" /></p>
+<p>追加画面では以下のように設定します<br>
+■フォルダーのパス<br>
+　共有したいフォルダーのパスです。<br>
+　右側の「∨」マークをクリックすれば選択ウィンドウが開きます。<br>
+■フォルダー名<br>
+　共有フォルダに名称を付けます。<br>
+　基本的にはフォルダーのパスをスラッシュ区切りにしたものにしておけば分かりやすいです。</p>
+<p>例えば、『C:¥develop』を共有したい場合は下図のようになります。<br>
+<img src="https://www.logical-dice.com/images/2018/09/virtualbox003.png" alt="" /></p>
+<p>これでVirtualBoxを再起動し、<code>docker-compose up -d</code> をすればコンテナが立ち上がりました</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

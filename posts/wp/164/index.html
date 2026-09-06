@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>ダイジェスト認証の設定方法|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">ダイジェスト認証の設定方法</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2016-01-20 21:30:56 &#43;0000 UTC" class="catalogue-time">2016年01月20日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/apache/">Apache</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>Apacheで動いているWEBサーバにて、ダイジェスト認証を入れる方法です。<br>
+■環境<br>
+CentOS Linux release 7.2.1511 (Core)<br>
+Apache/2.4.6</p>
+<p>Apacheがダイジェスト認証に対応しているか確認します。<br>
+以下のコマンドにて結果が出力されれば対応しています。</p>
+<pre tabindex="0"><code># grep digest /etc/httpd/conf.modules.d/ -r  
+conf.modules.d/00-base.conf:LoadModule auth_digest_module modules/mod_auth_digest.so
+</code></pre><p>ダイジェスト認証用のIDとパスワードのセットを作成します。<br>
+下記の「Sample Auth」は認証名で「sampleuser」は設定するIDです。適宜書き換えてください。<br>
+また「/etc/httpd/conf/.hpass」が生成されるファイルですが、パスもファイル名も任意です。</p>
+<pre tabindex="0"><code># htdigest -c /etc/httpd/conf/.htpass ’Sample Auth&#39; sampleuser  
+Adding password for sampleuser in realm Logical Dice Auth.  
+New password:　←設定するパスワードを入力する  
+Re-type new password:　←設定するパスワードを再度入力する
+</code></pre><p>あとはApacheの設定ファイルにて設定をします。<br>
+以下の例では「/var/www/html/sample」配下のコンテンツにWEBブラウザにてアクセスした際に<br>
+ダイジェスト認証が表示されるようになります。<br>
+下記のAuthUserFileは上記で生成したファイルを指定してください。</p>
+<pre tabindex="0"><code>&lt;Location &#34;/sample/&#34;&gt;  
+   AuthType Digest  
+   AuthName “Sample Auth&#34;  
+   AuthUserFile &#34;/etc/httpd/conf/.htpass&#34;  
+   Require valid-user  
+&lt;/Location&gt;
+</code></pre><p>これでApacheの設定ファイル再読み込み（再起動）をすればダイジェスト認証がかかるようになります。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

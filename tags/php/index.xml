@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>PHP on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/php/</link>
+		<description>Recent content in PHP on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Sat, 06 Feb 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/php/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>修正したファイルだけPHP_CodeSnifferでチェックする</title>
+				<link>https://www.logical-dice.com/posts/2021/02/06/phpcs-git-diff/</link>
+				<pubDate>Sat, 06 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/06/phpcs-git-diff/</guid>
+				<description>git diffを使い修正したファイルだけphpcsでチェックする方法です</description>
+			</item>
+			<item>
+				<title>Google Analyticsから直近のページ閲覧数を取得する</title>
+				<link>https://www.logical-dice.com/posts/2020/03/05/get-google-analytics-report/</link>
+				<pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/05/get-google-analytics-report/</guid>
+				<description>Google Analyticsから直近のページ閲覧数を取得する方法です。</description>
+			</item>
+			<item>
+				<title>MacにPHP7.2をインストールする</title>
+				<link>https://www.logical-dice.com/posts/2019/02/14/mac-php-72/</link>
+				<pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/14/mac-php-72/</guid>
+				<description>MacにPHP7.2をインストールする方法です</description>
+			</item>
+			<item>
+				<title>【PHP】strtotimeの罠</title>
+				<link>https://www.logical-dice.com/posts/2019/01/31/php-strtotime-trap/</link>
+				<pubDate>Thu, 31 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/31/php-strtotime-trap/</guid>
+				<description>PHPのstrtotimeのハマりそうな挙動です</description>
+			</item>
+			<item>
+				<title>CakePHP2のローカル検証環境構築</title>
+				<link>https://www.logical-dice.com/posts/wp/1375/</link>
+				<pubDate>Sun, 10 Jun 2018 09:20:20 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1375/</guid>
+				<description>環境CakePHP 2.10.10今更ながらCakePHP2を仕事で使う可能性があったので、勉強するためローカルに環境構築しまし&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Linux Mint】PHP7.1のインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/1192/</link>
+				<pubDate>Tue, 10 Apr 2018 09:11:57 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1192/</guid>
+				<description>$ set -x LC_ALL C.UTF-8$ sudo add-apt-repository ppa:ondrej/php$&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Visual Studio CodeでPHP開発環境構築</title>
+				<link>https://www.logical-dice.com/posts/wp/914/</link>
+				<pubDate>Mon, 18 Dec 2017 14:02:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/914/</guid>
+				<description>■環境Visual Studio Code 1.19.0Linux Mint 18.3 cinnamon 64bitmacOS &amp;hellip;</description>
+			</item>
+			<item>
+				<title>Atom IDEの環境構築（PHP、Go）</title>
+				<link>https://www.logical-dice.com/posts/wp/708/</link>
+				<pubDate>Fri, 29 Sep 2017 19:11:15 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/708/</guid>
+				<description>■環境macOS Sierra 10.12.6Atom 1.21.0-beta2■参考にしたサイト公式サイトhttps://id&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Laravel】migrateで『Class &#39;CreateFoooTable&#39; not found』が発生する</title>
+				<link>https://www.logical-dice.com/posts/wp/520/</link>
+				<pubDate>Tue, 11 Apr 2017 16:25:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/520/</guid>
+				<description>■環境Laravel 5.1Laravelの「migrate:rollback」や「migrate:refresh」をしようとし&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【PHP】Laravel5でカスタムバリデーションを追加する</title>
+				<link>https://www.logical-dice.com/posts/wp/512/</link>
+				<pubDate>Tue, 11 Apr 2017 15:11:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/512/</guid>
+				<description>■環境Laravel 5.1Laravel5でカスタムバリデーションを追加した際の手順です。まず、サービスプロバイダーを作成しま&amp;hellip;</description>
+			</item>
+			<item>
+				<title>zabbixでPHPの警告が出る場合の対処</title>
+				<link>https://www.logical-dice.com/posts/wp/424/</link>
+				<pubDate>Tue, 14 Feb 2017 00:48:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/424/</guid>
+				<description>■環境zabbix 3.2PHP 7.1PHP7.1でzabbixを動かすと、以下の警告が出ました。A non well for&amp;hellip;</description>
+			</item>
+			<item>
+				<title>PHPExcelの使い方メモ</title>
+				<link>https://www.logical-dice.com/posts/wp/384/</link>
+				<pubDate>Tue, 07 Feb 2017 11:42:44 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/384/</guid>
+				<description>PHPでExcelを生成できる『PHPExcel』の使い方メモ※実際に私が使ったものをメモしているだけなので、機能を網羅している&amp;hellip;</description>
+			</item>
+			<item>
+				<title>brewインストールでphp-mcryptがインストールできない</title>
+				<link>https://www.logical-dice.com/posts/wp/295/</link>
+				<pubDate>Tue, 20 Sep 2016 00:15:18 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/295/</guid>
+				<description>■環境OS X El Capitan(10.11.6)Homebrew 0.9.9brewインストールでphp-mcryptをイ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【PHP】Eclipseでカーソルがある変数のハイライトを変更する</title>
+				<link>https://www.logical-dice.com/posts/wp/206/</link>
+				<pubDate>Tue, 08 Mar 2016 12:17:33 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/206/</guid>
+				<description>たまにカーソルがある変数の色がおかしくなる事があります。その際は以下の設定を変更すれば治ります。■環境Mac (OS X El &amp;hellip;</description>
+			</item>
+			<item>
+				<title>mysql系の関数がPHP7でエラーになる場合の対応</title>
+				<link>https://www.logical-dice.com/posts/wp/173/</link>
+				<pubDate>Wed, 20 Jan 2016 21:55:34 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/173/</guid>
+				<description>PHP5.XからPHP7にアップデートした際にmysql系の関数がエラーになっていたので、その際に行なった対応をメモしておきます&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【FuelPHP】PHP7対応版へのアップデート</title>
+				<link>https://www.logical-dice.com/posts/wp/161/</link>
+				<pubDate>Sun, 27 Dec 2015 23:50:04 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/161/</guid>
+				<description>FuelPHPのdev-1.7がPHP7に対応していなかったので、既存プロジェクトをPHP7に対応しているdev-1.8にアップ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】php7をyumインストールする</title>
+				<link>https://www.logical-dice.com/posts/wp/156/</link>
+				<pubDate>Mon, 07 Dec 2015 23:31:02 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/156/</guid>
+				<description>php7がリリースされたので、CentOS7のサーバにyumでインストールした手順です。■環境CentOS 7.1.1503以下&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【CentOS】ComposerにGitHubのアクセストークンを設定する</title>
+				<link>https://www.logical-dice.com/posts/wp/147/</link>
+				<pubDate>Mon, 07 Dec 2015 23:11:45 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/147/</guid>
+				<description>今更ながら、ComposerにGitHubのアクセストークンを設定する方法です。■環境CentOS 7.1.1503GitHub&amp;hellip;</description>
+			</item>
+			<item>
+				<title>PHPで文字化けが直らない場合の対処</title>
+				<link>https://www.logical-dice.com/posts/wp/83/</link>
+				<pubDate>Tue, 06 Oct 2015 21:38:07 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/83/</guid>
+				<description>■環境CentOS 6.6Apache2.2日本語が文字化けするのでphpのソースで以下の記載をしていました。setlocale&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Bookmarklet on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/bookmarklet/</link>
+		<description>Recent content in Bookmarklet on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 16 Jul 2020 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/bookmarklet/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>GitHubの草を炭治郎柄にする</title>
+				<link>https://www.logical-dice.com/posts/2020/07/16/bookmarklet-kimetsu/</link>
+				<pubDate>Thu, 16 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/07/16/bookmarklet-kimetsu/</guid>
+				<description>Bookmarkletを使ってGitHubの草を炭治郎の着物柄にします。</description>
+			</item>
+			<item>
+				<title>Bookmarklet(ブックマークレット)の作り方</title>
+				<link>https://www.logical-dice.com/posts/2020/07/15/howto-make-bookmarklet/</link>
+				<pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/07/15/howto-make-bookmarklet/</guid>
+				<description>uglify-jsを使ってBookmarkletを作る方法をざっくりと説明</description>
+			</item>
+			<item>
+				<title>Bookmarkletでパスワードを自動で入力させる</title>
+				<link>https://www.logical-dice.com/posts/2019/10/02/bookmarklet-mizuho/</link>
+				<pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/10/02/bookmarklet-mizuho/</guid>
+				<description>みずほダイレクトで振込時の第2暗証番号を調べるのが面倒だったので、ワンクリックで自動抽出できるようにしました</description>
+			</item>
+	</channel>
+</rss>

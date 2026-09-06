@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>GitHub ActionsでAWS Code Deployを回す|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">GitHub ActionsでAWS Code Deployを回す</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-03-15 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年03月15日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/git/">git</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>GitHub ActionsからAWSコマンドを簡単に叩けるようだったので試してみました。<br>
+今回CIでやることは『masterにプッシュされたらCodeDeployを走らせる』のみです。</p>
+<h3 id="aws-code-deployの設定">AWS Code Deployの設定</h3>
+<p>こちらの記事で手順を紹介しています。<br>
+<a href="/posts/2019/02/28/aws-code-deploy/">AWS Code DeployでEC2にデプロイする</a></p>
+<h3 id="aws-iamの設定">AWS IAMの設定</h3>
+<p>こちらの記事で手順を紹介しています。<br>
+今回CircleCIは使わないので、「IAM準備」の手順のみ参照してください。<br>
+<a href="/posts/2019/03/04/aws-code-deploy-circleci/">CircleCIからAWS Code Deployを実行する</a></p>
+<h3 id="github-secretsへのキー登録">GitHub Secretsへのキー登録</h3>
+<p>前手順で取得したIAMユーザーの『アクセスキーID』と『シークレットアクセスキー』をGitHubのSecretsに登録します。</p>
+<p>まず、GitHubの対象リポジトリの『Settings ＞ Secrets』を開き、『Add a new secret』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2020/03/github-actions-deploy-001.png" /></p>
+<p>Secretsの設定画面になるので以下2つを設定します。</p>
+<table>
+	<thead>
+			<tr>
+					<th>Name</th>
+					<th>Value</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>AWS_ACCESS_KEY_ID</td>
+					<td>IAMのアクセスキーID</td>
+			</tr>
+			<tr>
+					<td>AWS_SECRET_ACCESS_KEY</td>
+					<td>IAMのシークレットアクセスキー</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="github-actionsの設定">GitHub Actionsの設定</h3>
+<p>デプロイしたいリポジトリのGitHubページの『Actions』タブを開き、<br>
+「Set up a workflow yourself」をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2020/03/github-actions-deploy-002.png" /></p>
+<p><code>.github/workflows/main.yml</code>の編集画面が開くので、以下のように記載します。</p>
+<pre tabindex="0"><code>name: AWS Code Deploy
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Run AWS CodeDeploy
+      with:
+        args: deploy create-deployment --application-name &#34;※APP_NAME※&#34; --deployment-group-name &#34;※GROUP_NAME※&#34; --github-location repository=&#34;※REPO※&#34;,commitId=&#34;${{ github.sha }}&#34;
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ※REGION※
+</code></pre><blockquote>
+<p>※2020/11/20 修正<br>
+以前は以下を参考にmain.ymlを記載していたが、2020年11月現在使えなくなっていたので上記の通り切り替えた。<br>
+<a href="https://github.com/marketplace/actions/aws-cli-install-action">AWS Cli install action</a></p>
+</blockquote>
+<p>なお、以下の部分は各自の環境に合わせて読み替えてください。</p>
+<table>
+	<thead>
+			<tr>
+					<th>読み替える文字列</th>
+					<th>設定する値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>※APP_NAME※</td>
+					<td>CodeDeployで設定したアプリケーション名</td>
+			</tr>
+			<tr>
+					<td>※GROUP_NAME※</td>
+					<td>CodeDeployで設定したデプロイグループ名</td>
+			</tr>
+			<tr>
+					<td>※REPO※</td>
+					<td>デプロイ対象のGitHubリポジトリ(「ユーザー名/リポジトリ名」形式)</td>
+			</tr>
+			<tr>
+					<td>※REGION※</td>
+					<td>CodeDeployを走らせるAWSのリージョン(例：ap-northeast-1)</td>
+			</tr>
+	</tbody>
+</table>
+<p>記載できたらコミットします。<br>
+コミットしたら、今回のコミットに対してGitHub Actionが動くので正常終了するか確認してください。<br>
+<img src="https://www.logical-dice.com/images/2020/03/github-actions-deploy-003.png" /></p>
+<p>これで設定は完了です。<br>
+masterブランチが更新される度にAWS Code Deployが走りデプロイされるようになりました。</p>
+<p>今回はデプロイのみのCIだからか、1回1分以内で処理完了していました。<br>
+Actionsはプライベートリポジトリで月間2,000分まで無料(2020年3月現在)なので、2,000回くらいリリースできる想定。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Windows on Logical Dice Techblog</title>
+		<link>https://www.logical-dice.com/en/tags/windows/</link>
+		<description>Recent content in Windows on Logical Dice Techblog</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Sun, 07 Mar 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/en/tags/windows/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Connecting via a Two-Step SSH Tunnel with MySQL Workbench on Windows</title>
+				<link>https://www.logical-dice.com/en/posts/2021/03/07/windows-localforward-mysql-workbench/</link>
+				<pubDate>Sun, 07 Mar 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2021/03/07/windows-localforward-mysql-workbench/</guid>
+				<description>How to connect to a database from Windows 10&amp;rsquo;s MySQL Workbench via a two-step SSH connection.</description>
+			</item>
+	</channel>
+</rss>

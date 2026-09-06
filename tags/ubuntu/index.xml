@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Ubuntu on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/ubuntu/</link>
+		<description>Recent content in Ubuntu on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Wed, 17 Feb 2021 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Howdyを使ってubuntuで顔認証する</title>
+				<link>https://www.logical-dice.com/posts/2021/02/17/ubuntu-howdy/</link>
+				<pubDate>Wed, 17 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/17/ubuntu-howdy/</guid>
+				<description>ubuntu 20.10で顔認証をするための設定です</description>
+			</item>
+			<item>
+				<title>ubuntuで多機能マウスを設定する</title>
+				<link>https://www.logical-dice.com/posts/2021/02/14/ubuntu-mouse-keymap/</link>
+				<pubDate>Sun, 14 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/14/ubuntu-mouse-keymap/</guid>
+				<description>ubuntu 20.10で多機能マウスのボタンマッピングをした際のメモです</description>
+			</item>
+			<item>
+				<title>ubuntu 20.10の初期設定</title>
+				<link>https://www.logical-dice.com/posts/2021/02/11/ubuntu-20-10-initialize/</link>
+				<pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2021/02/11/ubuntu-20-10-initialize/</guid>
+				<description>Thinkpad T480にubuntu 20.10をインストールした際のメモです</description>
+			</item>
+			<item>
+				<title>ThinkpadにHDMIケーブルを接続したままUbuntu 20.04を起動する</title>
+				<link>https://www.logical-dice.com/posts/2020/06/01/ubuntu-20-04-hdmi/</link>
+				<pubDate>Mon, 01 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/01/ubuntu-20-04-hdmi/</guid>
+				<description>ThinkpadにUbuntu 20.04を入れるとHDMIケーブルを挿したまま起動できなくなったので対応しました。</description>
+			</item>
+			<item>
+				<title>Ubuntu 20.04にアップデートした話</title>
+				<link>https://www.logical-dice.com/posts/2020/05/17/update-ubuntu-20-04/</link>
+				<pubDate>Sun, 17 May 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/05/17/update-ubuntu-20-04/</guid>
+				<description>作業PCをUbuntu 19.10から20.04 LTSにアップデートした時の話です。</description>
+			</item>
+			<item>
+				<title>Linux用ターミナル『Tilix』</title>
+				<link>https://www.logical-dice.com/posts/2019/11/08/ubuntu-tilix/</link>
+				<pubDate>Fri, 08 Nov 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/11/08/ubuntu-tilix/</guid>
+				<description>ubuntuに『Tilix』を入れてみたので紹介します</description>
+			</item>
+			<item>
+				<title>ubuntu 19.10の初期設定</title>
+				<link>https://www.logical-dice.com/posts/2019/11/06/ubuntu-initialize/</link>
+				<pubDate>Wed, 06 Nov 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/11/06/ubuntu-initialize/</guid>
+				<description>Thinkpad T480にubuntu 19.10をインストールした際のメモです</description>
+			</item>
+			<item>
+				<title>VPNクライアント設定(L2TP over IPsec)</title>
+				<link>https://www.logical-dice.com/posts/2019/03/13/linux-mint-l2tp/</link>
+				<pubDate>Wed, 13 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/13/linux-mint-l2tp/</guid>
+				<description>Linux MintやubuntuにL2TP over IPsecのVPNクライアント設定をします。</description>
+			</item>
+			<item>
+				<title>terminator &#43; fish &#43; fishermanの導入</title>
+				<link>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-fish/</link>
+				<pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/10/linux-mint-terminator-fish/</guid>
+				<description>Linux Mintやubuntuにterminatorとfish&amp;amp;fisherman環境を構築する手順メモです</description>
+			</item>
+			<item>
+				<title>Docker環境の構築手順</title>
+				<link>https://www.logical-dice.com/posts/2019/01/25/linux-mint-docker/</link>
+				<pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/25/linux-mint-docker/</guid>
+				<description>Linux MintやubuntuにてDockerをインストールする方法です</description>
+			</item>
+			<item>
+				<title>プログラミング向けフォントのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/1218/</link>
+				<pubDate>Fri, 13 Apr 2018 21:21:39 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1218/</guid>
+				<description>プログラミングに向いている「Ricty Diminished」をインストールする手順です</description>
+			</item>
+			<item>
+				<title>【Ubuntu】シャットダウンが遅い</title>
+				<link>https://www.logical-dice.com/posts/wp/242/</link>
+				<pubDate>Sun, 22 May 2016 00:35:22 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/242/</guid>
+				<description>■環境Ubuntu 16.04Ubuntuを16.04にしたら、シャットダウンに時間がかかるようになったので対応します。参考： &amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】デュアルブート環境で時計が狂うのを防ぐ</title>
+				<link>https://www.logical-dice.com/posts/wp/239/</link>
+				<pubDate>Sun, 22 May 2016 00:30:55 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/239/</guid>
+				<description>■環境Ubuntu 16.04Windows10Ubuntuを16.04にしたら、デュアルブートのWindowsとUbuntuを&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】zsh&amp;preztoのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/225/</link>
+				<pubDate>Fri, 06 May 2016 10:29:33 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/225/</guid>
+				<description>Ubuntuのターミナル（端末）でzsh＆preztoを使う設定です。Macの場合はこちら■環境Ubunt16.04①zshとg&amp;hellip;</description>
+			</item>
+			<item>
+				<title>Ubuntu16.04のインストール後にしたこと</title>
+				<link>https://www.logical-dice.com/posts/wp/216/</link>
+				<pubDate>Wed, 04 May 2016 23:54:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/216/</guid>
+				<description>ubuntuの16.04が出ていたので、インストールしてみました。その際に実施した内容です。（随時更新していくと思います）■ホー&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】InkscapeでPDFを開くとズレてしまう場合</title>
+				<link>https://www.logical-dice.com/posts/wp/196/</link>
+				<pubDate>Thu, 04 Feb 2016 12:37:03 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/196/</guid>
+				<description>知っている人にとっては当たり前の話かもしれませんがInkscapeでPDFを編集しようと開くと、一部文字がズレてしまう事象に困っ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】UXtermの設定</title>
+				<link>https://www.logical-dice.com/posts/wp/136/</link>
+				<pubDate>Wed, 02 Dec 2015 21:41:14 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/136/</guid>
+				<description>ubuntuのターミナルは「UXterm」と普通の「端末」がありますが、UXtermの方がカスタマイズできたりするので、UXte&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】atomのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/139/</link>
+				<pubDate>Wed, 02 Dec 2015 21:37:16 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/139/</guid>
+				<description>Ubuntu環境にテキストエディタのatomをインストールする手順です。■環境ubuntu 15.04以下サイトよりインストーラ&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】exfat形式の外部メモリのマウントができない</title>
+				<link>https://www.logical-dice.com/posts/wp/130/</link>
+				<pubDate>Sun, 15 Nov 2015 22:05:23 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/130/</guid>
+				<description>■環境ubuntu 15.04Ubuntuはデフォルトでは「exfat」のフォーマットに対応していないので、外部メモリをマウント&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】JDKとNetBeans IDEのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/69/</link>
+				<pubDate>Wed, 16 Sep 2015 23:18:43 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/69/</guid>
+				<description>開発環境としてUbuntuにJDKとNetBeansをインストールします。■環境Ubuntu 15.04openjdk 8Net&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】FlashPlayerのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/57/</link>
+				<pubDate>Thu, 27 Aug 2015 21:56:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/57/</guid>
+				<description>UbuntuのブラウザでFlashPlayerをインストールする手順です。■Firefoxの場合AdobeよりFlashPlay&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】ホームディレクトリを日本語から英語にする</title>
+				<link>https://www.logical-dice.com/posts/wp/48/</link>
+				<pubDate>Thu, 27 Aug 2015 21:36:09 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/48/</guid>
+				<description>日本語版Ubuntuをインストールすると、ホームディレクトリ内のディレクトリ名が日本語になっています。コマンドラインで操作する時&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

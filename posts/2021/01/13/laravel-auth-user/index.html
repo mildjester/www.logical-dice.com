@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>LaravelのQueue内でAuth::user()が取れたり取れなかったりする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">LaravelのQueue内でAuth::user()が取れたり取れなかったりする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2021-01-13 00:00:00 &#43;0000 UTC" class="catalogue-time">2021年01月13日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/laravel/">Laravel</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Laravel 5.8</li>
+</ul>
+<hr>
+<p>Laravelで『データが更新されたらアラートメールで更新者情報を送る』というイベントリスナーを作ったのですが、<br>
+その中で<code>Auth::user()</code>の値が環境により「更新者情報」だったり「null」だったりしました。</p>
+<p>このイベントリスナーで登録した処理はキュー(Queue)に登録されて非同期に処理されるようにしていたので、<br>
+非同期処理では当然ながら<code>Auth::user()</code>でユーザー情報は取れません。<br>
+なので、nullになるのは妥当な動きでした。</p>
+<p>では、なぜ環境によりユーザー情報が取れてしまったのかというと<br>
+それは<code>.env</code>の<code>QUEUE_DRIVER</code>の値が原因でした。</p>
+<p><code>QUEUE_DRIVER=database</code>等にしているとキューの処理は非同期に処理されるのですが、<br>
+<code>QUEUE_DRIVER=sync</code>ではキューの処理も同期的に処理されるようになります。</p>
+<p>キューが同期的に実行されるとユーザーの情報が<code>Auth::user()</code>で取得できる状態でキューの処理が走るので、<br>
+ローカル環境などで<code>QUEUE_DRIVER=sync</code>にしているとキュー内で<code>Auth::user()</code>が動いてしまいます。</p>
+<p>これも、ちゃんと<code>.env</code>が本番相当になっている環境でテストをすれば見つけられるので、<br>
+ローカル検証だけでリリースをするのではなく、ちゃんと本番相当の環境でもテストしましょう。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

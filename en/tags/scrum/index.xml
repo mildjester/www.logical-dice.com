@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Scrum on Logical Dice Techblog</title>
+		<link>https://www.logical-dice.com/en/tags/scrum/</link>
+		<description>Recent content in Scrum on Logical Dice Techblog</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 25 Jul 2024 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/en/tags/scrum/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Scrum&#39;s story point about “not estimating by the hour” is</title>
+				<link>https://www.logical-dice.com/en/posts/2024/07/25/story-point-knowledge/</link>
+				<pubDate>Thu, 25 Jul 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/en/posts/2024/07/25/story-point-knowledge/</guid>
+				<description>&lt;h2 id=&#34;background&#34;&gt;Background&lt;/h2&gt;&#xA;&lt;p&gt;I usually work as a scrum master in scrum development.&lt;/p&gt;&#xA;&lt;p&gt;I have the developers estimate in story points.&lt;br&gt;&#xA;Story points are not estimated in “man-hours”, but instead in “difficulty” or “effort”.&lt;/p&gt;&#xA;&lt;p&gt;However, members were having trouble with this expression because it was so fluffy.&lt;br&gt;&#xA;Different members have different interpretations, and although we don&amp;rsquo;t estimate in man-hours to begin with, we sometimes determine which tickets can be implemented in a sprint based on story points,&lt;br&gt;&#xA;In the end, everyone was thinking in terms of relative man-hours for each ticket, and it was very agonizing.&lt;/p&gt;</description>
+			</item>
+	</channel>
+</rss>

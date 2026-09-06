@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【git】gitコマンドチートシート|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【git】gitコマンドチートシート</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-02-11 23:06:36 &#43;0000 UTC" class="catalogue-time">2017年02月11日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/git/">git</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>自分が使うgitコマンドを整理しました。</p>
+<p>■環境<br>
+OS X El Capitan 10.11.6<br>
+git 2.10.1</p>
+<p><strong>【設定について】</strong><br>
+グローバルコンフィグの設定<br>
+（全リポジトリの共通設定）</p>
+<pre tabindex="0"><code>$ git config --global user.name &amp;quot;jester&amp;quot;  
+$ git config --global user.email &amp;quot;jester@sample.co.jp&amp;quot;
+</code></pre><p>リポジトリ別コンフィグの設定</p>
+<pre tabindex="0"><code>(対象リポジトリのディレクトリにて)  
+$ git config user.name &amp;quot;master&amp;quot;  
+$ git config user.email &amp;quot;master@sample.co.jp&amp;quot;
+</code></pre><p><strong>【リポジトリの作成・リモート設定について】</strong><br>
+リモートのリポジトリをクローンする</p>
+<pre tabindex="0"><code>$ git clone {リモートリポジトリの指定} {生成するディレクトリ}
+</code></pre><p>※生成するディレクトリを省略すると、リモートリポジトリと同じ名前でディレクトリが生成される</p>
+<p>ローカルで新規にリポジトリを作成する</p>
+<pre tabindex="0"><code>$ mkdir SampleProject  
+$ cd SampleProject  
+$ git init
+</code></pre><p>ローカルで作成したリポジトリを後からリモートに紐付ける</p>
+<pre tabindex="0"><code>(対象のリポジトリディレクトリにて)  
+$ git remote add {名前、originなど} {リモートリポジトリの指定}
+</code></pre><p>リモートリポジトリの変更する</p>
+<pre tabindex="0"><code>(対象のリポジトリディレクトリにて)  
+$ git remote set-url {名前、originなど} {リモートリポジトリの指定}
+</code></pre><p>リモートとの紐付けを解除する</p>
+<pre tabindex="0"><code>(対象のリポジトリディレクトリにて)  
+$ git remote rm {名前、originなど}
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>AWS lambdaからDBアクセスも外部アクセスもできるようにする。|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">AWS lambdaからDBアクセスも外部アクセスもできるようにする。</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-07-12 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年07月12日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>AWS lambdaからAWS RDSへアクセスさせるためにはRDSへアクセスできるVPCのサブネットにlambdaを追加します。<br>
+しかし、VPC内のlambdaは何もしないと外部アクセスができなくなります。</p>
+<p>lambdaがRDSと同時に外部システムのAPIなどを利用する際に困りますので、<br>
+VPC内のlambdaから外部アクセスができるように設定します。</p>
+<h2 id="vpc設定">VPC設定</h2>
+<p>VPC内のlambdaから外部アクセスをさせる設定方法は、実はAWS公式で説明されています。<br>
+基本的にはこの手順を実行すれば良いだけです。<br>
+<a href="https://aws.amazon.com/jp/premiumsupport/knowledge-center/internet-access-lambda-function/">https://aws.amazon.com/jp/premiumsupport/knowledge-center/internet-access-lambda-function/</a></p>
+<p>手順詳細は公式ページを見ればよいので、ここではざっくりと流れを書いておきます。<br>
+①〜②はすでにあれば既存の使い回しでも良いです。</p>
+<p>①（なければ）RDSにアクセスできるVPCを作る。<br>
+②（なければ）インターネットゲートウェイを作成して①のVPCにアタッチする。<br>
+③RDSにアクセスできるVPCにサブネットを2つ作る。(public用とprivate用)<br>
+④NATゲートウェイを新規作成し、②で作成したpublic用サブネットを紐づける。<br>
+⑤ルートテーブルを新規作成し、public用サブネットを紐付ける。<br>
+　作成したら以下のルートを追加する。</p>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>設定値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>宛先</td>
+					<td>0.0.0.0/0</td>
+			</tr>
+			<tr>
+					<td>ターゲット</td>
+					<td>③のインターネットゲートウェイ</td>
+			</tr>
+			<tr>
+					<td>⑥ルートテーブルをもう１つ新規作成し、private用サブネットを紐付ける。</td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>　作成したら以下のルートを追加する。</td>
+					<td></td>
+			</tr>
+	</tbody>
+</table>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>設定値</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>宛先</td>
+					<td>0.0.0.0/0</td>
+			</tr>
+			<tr>
+					<td>ターゲット</td>
+					<td>④のNATゲートウェイ</td>
+			</tr>
+	</tbody>
+</table>
+<p>VPC設定はここまでです。<br>
+ここで作成したprivate用サブネットの方にlambdaを追加すればRDSと外部の両方にアクセスできるようになります。</p>
+<h2 id="lambda設定serverless-framework">lambda設定(Serverless Framework)</h2>
+<p>今回はServerless Frameworkを使ってlambdaを構築します。<br>
+Serverless Frameworkの基本的な構築については<a href="/posts/2020/05/19/serverless-framework-lambda/">前回の記事</a>を参照してください。</p>
+<p>前回の記事で作成した<code>serverless.yml</code>のproviderにvpc設定を追加します。</p>
+<pre tabindex="0"><code>provider:
+  〜省略〜
+  vpc: 
+    subnetIds:
+      - 今回作成したprivateサブネットのID(subnet-0123456abcde)
+</code></pre><p>【おまけ】<br>
+上記VPC設定では触れていませんが、もしlambdaにセキュリティグループを設定させるなら以下のようにします。</p>
+<pre tabindex="0"><code>provider:
+  〜省略〜
+  vpc: 
+    subnetIds:
+      - 今回作成したprivateサブネットのID(subnet-0123456abcde)
+    securityGroupIds:
+      - 設定するセキュリティグループID(sg-012345abcde)
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

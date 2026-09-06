@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>スクラムのストーリーポイントの「時間で見積もらない」とは|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">スクラムのストーリーポイントの「時間で見積もらない」とは</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2024-07-25 00:00:00 &#43;0000 UTC" class="catalogue-time">2024年07月25日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/scrum/">Scrum</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="背景">背景</h2>
+<p>普段スクラム開発でスクラムマスターとして業務しています。</p>
+<p>開発者の方々にはストーリーポイントで見積もりをしてもらっています。<br>
+ストーリーポイントは「工数」で見積もってはならず、代わりに「難易度」や「労力」で見積もります。</p>
+<p>ただ、この表現がフワッとしていてメンバーが困っていました。<br>
+メンバーにより解釈に違いがあるし、そもそも工数で見積もらないけどストーリーポイントを元にスプリントで実施できるチケットを判断したりしているし、<br>
+結局皆どうしても各チケットの相対的な工数を考えてしまっており、すごい悶々としていました。</p>
+<p>そんな時にスクラムコーチの方々のスクラム研修を受ける機会があり、いい機会なので見積もりの考え方について色々ぶつけてみました。<br>
+結果として自分の中ではすごいシックリくる解釈ができたので残しておきます。</p>
+<h2 id="見積もりの考え方">見積もりの考え方</h2>
+<p>結果から言ってしまうと「各チケットの相対的な工数」を考えるのは間違いでは無さそうです。<br>
+ただし、前提条件があるので、そこを履き違えてしまうと正しい見積もりができません。</p>
+<h3 id="前提条件自分がやった場合ではない">前提条件①：自分がやった場合。ではない</h3>
+<img src="https://www.logical-dice.com/images/2024/story-point-knowledge-001.png" style="width:300px;"/>  
+<p>見積もりをしていてポイントの根拠を聞いた時によく聞くセリフで以下のようなものがあります。</p>
+<ul>
+<li>この対応はCSSでの調整が必要ですが、自分はスタイル調整が苦手なので高めに付けました。</li>
+<li>この機能は自分は関わった事がないので、影響箇所の調査から入るので高めに付けました。</li>
+</ul>
+<p>上記の考え方はダメです。<br>
+客観的にみて「どんな作業があるか」「それぞれの作業は一般的にどの程度重いか」を考えてポイントを入れる必要があります。<br>
+チーム内で「もし普段この業務を担当している並レベルの人がやった場合」などの基準を設けましょう。<br>
+また、もしタスクに対して必要な作業が分からなければ、ポイントを入れる前に有識者から作業内容をざっくり聞いておきましょう。</p>
+<p>それを行なった上でも「作業の重さ」というのはズレが生じるので、そこだけ最後に擦り合わせできれば良いと思います。<br>
+他の人とズレてたなと思った場合は擦り合わせた結果を次の見積もりから活かせば良いです。</p>
+<h3 id="前提条件工数は具体的な数値じゃなくてどっちの方が時間かかりそうかで考える">前提条件②：工数は具体的な数値じゃなくて、どっちの方が時間かかりそうかで考える</h3>
+<img src="https://www.logical-dice.com/images/2024/story-point-knowledge-002.png" style="width:300px;"/>  
+<p>相対的に工数でポイントをつけるとは言ったものの、この作業にどのくらいの時間がかかりそうかを考える時に、具体的に「3日かかりそうだから3P相当」みたいな考え方はやってはいけません。</p>
+<p>なぜかというと人は成長していくものなので今は3日かかる作業も1年後は1日でできるようになっているかもしれません。<br>
+もし具体的な数値で見積もっていると全く同じ作業をでも現在と1年後でポイントが3倍も変わってしまい、同じ作業なのにポイントが違うという矛盾が生じてしまいます。</p>
+<p>具体的な数値ではなく相対的な感覚でいけば1年後もポイントが大きくズレることはないと思います。</p>
+<h3 id="前提条件よく分からなければポイントを入れない">前提条件③：よく分からなければポイントを入れない</h3>
+<img src="https://www.logical-dice.com/images/2024/story-point-knowledge-003.png" style="width:300px;"/>  
+<p>これは前提条件というか、見積もる際の注意点かもしれません。</p>
+<p>前提条件①でも少し触れましたが、見積もりタスクに対して「この機能は自分は関わった事がない」という事は普通にありえると思います。<br>
+ポイント見積もり前にどんな作業があるのかなどは話し合いますが、それでも全然想像を付かなけば見積もりに参加しない勇気も必要です。<br>
+WEBのプランニングポーカーツールでも「？」があると思いますが、それです。</p>
+<p>作業量が分からないのに無理にポイントをいれてもノイズにしかならないので、空気読んで他の人と合いそうなポイントを入れるって言うのは止めましょう。<br>
+ただし、該当機能は今後見積もりをしなくていいやと諦めるのではなく、どんなポイントが付いたのかを見ながら次からは参加できるようにする努力はしましょう。</p>
+<h2 id="あとがき">あとがき</h2>
+<p>いろいろと前提条件をつけましたが、これを一言で伝えるのは難しいと思いました。<br>
+その結果出てきた表現が「難易度」とか「労力」なのかなと思います。</p>
+<p>また、見積もりはあくまで作業の目安をつけているだけで顧客に価値は提供していません。<br>
+より良い見積もりをするために工数をかけすぎて、結果として顧客に提供できる価値にかける工数が減ってしまっては本末転倒です。<br>
+チームによって最適な運用というのは違うと思うので、各チームで現実的な見積もり方法というのを見つけていきましょう。<br>
+その辺りを推進していくのもスクラムマスターの仕事かと思います。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

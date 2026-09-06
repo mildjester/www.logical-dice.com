@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>brewインストールでphp-mcryptがインストールできない|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">brewインストールでphp-mcryptがインストールできない</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2016-09-20 00:15:18 &#43;0000 UTC" class="catalogue-time">2016年09月20日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/mac/">Mac</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/php/">PHP</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>■環境<br>
+OS X El Capitan(10.11.6)<br>
+Homebrew 0.9.9</p>
+<p>brewインストールでphp-mcryptをインストールした際にエラーが出たので<br>
+エラー内容と、その対応をメモしておきます。</p>
+<p>まず、エラー内容について</p>
+<pre tabindex="0"><code># brew install homebrew/php/php70-mcrypt  
+〜中略〜  
+/usr/local/opt/php70/bin/phpize: line 61: /usr/local/Library/Homebrew/shims/super/sed: No such file or directory  
+/usr/local/opt/php70/bin/phpize: line 62: /usr/local/Library/Homebrew/shims/super/sed: No such file or directory  
+/usr/local/opt/php70/bin/phpize: line 63: /usr/local/Library/Homebrew/shims/super/sed: No such file or directory  
+Configuring for:  
+PHP Api Version:  
+Zend Module Api No:  
+Zend Extension Api No:  
+/usr/local/opt/php70/bin/phpize: line 155: /usr/local/Library/Homebrew/shims/super/sed: No such file or directory  
+autoheader: error: AC_CONFIG_HEADERS not found in configure.in  
+〜中略〜
+</code></pre><p>つまり、phpizeで利用している『/usr/local/Library/Homebrew/shims/super/sed』が無いそうです。<br>
+色々調べた結果、私の環境ではそもそもHomebrewのパスが<br>
+『/usr/local/Library/Homebrew』<br>
+ではなく<br>
+『/usr/local/Homebrew/Library/Homebrew』<br>
+となっていました。（なんだこの階層）</p>
+<p>対応としては、phpize内にて$SEDという変数に上記パスを指定していたので、<br>
+自分の環境に合わせてパスを書き換えました。</p>
+<pre tabindex="0"><code>SED=&#34;/usr/local/Homebrew/Library/Homebrew/shims/super/sed&#34;
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

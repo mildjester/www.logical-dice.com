@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>【Mac】NetBeansのインストール|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">【Mac】NetBeansのインストール</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-10-13 11:05:07 &#43;0000 UTC" class="catalogue-time">2017年10月13日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/netbeans/">NetBeans</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/mac/">Mac</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">■環境</h2>
+<p>macOS Sierra 10.12.6<br>
+NetBeans 8.2</p>
+<hr>
+<p>コードの補完やFTP機能を標準装備していたりと<br>
+無料のIDEの中では個人的には使いやすいと思っています。<br>
+あと、ねこびーんが可愛い。</p>
+<h2 id="jdk--netbeans本体のダウンロード--インストール">■JDK &amp; NetBeans本体のダウンロード &amp; インストール</h2>
+<p>JDKとNetBeansがセットになっているパッケージがあるので、それをダウンロードします。<br>
+<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk-netbeans-jsp-142931.html" target="_blank" rel="noopener"><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk-netbeans-jsp-142931.html">http://www.oracle.com/technetwork/java/javase/downloads/jdk-netbeans-jsp-142931.html</a></a><br>
+<img src="https://www.logical-dice.com/images/2017/10/netbeans001-1.png" alt="" /></p>
+<blockquote>
+<p>【補足】<br>
+既にJDKをインストールしている場合は、以下のサイトからNetBeans本体のみをダウンロードすれば良いです。<br>
+<a href="https://netbeans.org/downloads/" target="_blank" rel="noopener"><a href="https://netbeans.org/downloads/">https://netbeans.org/downloads/</a></a><br>
+こちらのサイトからダウンロードする場合は、利用する言語に合わせたパッケージをインストールできます。</p>
+</blockquote>
+<p>ダウンロードしてきたdmgファイルをダブルクリックしてマウントし、<br>
+出てきたpkgファイルをダブルクリックすると、インストーラーが走ります。</p>
+<p>そのままインストーラーに従い進めるとインストール完了です。<br>
+LaunchpadにNetBeansが追加されてます。</p>
+<h2 id="netbeansの設定">■NetBeansの設定</h2>
+<h3 id="基本設定">【基本設定】</h3>
+<p>上部メニューより「NetBeans ＞ Preferences」をクリックすると設定画面が開きます。<br>
+基本的に触るとしたら以下のタブくらいだと思います。<br>
+それ以外のタブをいじる人は、もはや説明も不要なレベルの人だと思うので説明も割愛します。</p>
+<h4 id="一般タブ">一般タブ</h4>
+<p>NetBeansから開くブラウザの指定をしたり、プロキシの設定をしたりできます。<br>
+よく分からなければデフォルトのままでよいです。</p>
+<h4 id="エディタタブ">エディタタブ</h4>
+<p>ソースコードのフォーマットを指定したり、NetBeansが表示する警告を設定したりできます。<br>
+インデントをタブにするかスペースにするか。どのくらいインデントを深くすると警告を出すか。など<br>
+個人の好みやチームのコーディング規約に合わせて変更してください。<br>
+分からない項目はデフォルトのままで良いと思います。</p>
+<h4 id="フォントと色タブ">フォントと色タブ</h4>
+<p>タブ名のままですが、NetBeansで使うフォントと色を設定できます。<br>
+見づらい色などがあれば変更すれば良いです。</p>
+<h4 id="キーマップタブ">キーマップタブ</h4>
+<p>ショートカットキーの設定です。基本的にはデフォルトのままでいいと思います。<br>
+どんなショートカットがあるのかを確認するために、一度眺めてみるのもいいと思います。</p>
+<h4 id="外観タブ">外観タブ</h4>
+<p>IDEの見栄え全般の設定です。<br>
+「ルック・アンド・フィール」でテーマの変更ができるので、好みのテーマがありそうであれば変更してください。<br>
+※ルック・アンド・フィールの反映にはIDEの再起動が必要です。</p>
+<h2 id="プラグイン導入">【プラグイン導入】</h2>
+<p>利用したい言語に合わせてプラグインをインストールします。<br>
+NetBeansの上部メニューより「ツール ＞ プラグイン」をクリックし、プラグイン管理画面を開きます。</p>
+<p>「使用可能なプラグイン」というタブより新規プラグインのインストールができます。</p>
+<h4 id="暗いテーマが好きな場合">暗いテーマが好きな場合</h4>
+<p>「Dark Look And Feel Themes」というプラグインがあります。<br>
+これをインストールすれば、基本設定にあった「ルック・アンド・フィール」の選択肢が増えるので、<br>
+設定画面から変更してください。<br>
+個人的には「Dark Nimbus」が好きです。</p>
+<h4 id="phpを使う場合">PHPを使う場合</h4>
+<p>PHPの開発をするなら「PHP」というプラグインは必須です。<br>
+あとはフレームワークやテストツールの補助プラグインもあるので、それらを必要に応じてインストールすれば良いです。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

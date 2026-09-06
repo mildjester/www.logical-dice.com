@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>MacにZabbixエージェントを入れる|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">MacにZabbixエージェントを入れる</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-05-02 14:49:34 &#43;0000 UTC" class="catalogue-time">2017年05月02日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/mac/">Mac</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/zabbix/">zabbix</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h3 id="環境">■環境</h3>
+<p>Mac OS 10.9.5<br>
+Zabbix 3.2.1</p>
+<hr>
+<p>Mac OSのサーバにZabbixエージェントを入れた際の手順メモです。</p>
+<p>WEBでzabbixのソースをダウンロードします。<br>
+<a href="https://sourceforge.net/projects/zabbix/files/ZABBIX%20Latest%20Stable/3.2.1/" target="_blank"><a href="https://sourceforge.net/projects/zabbix/files/ZABBIX%20Latest%20Stable/3.2.1/">https://sourceforge.net/projects/zabbix/files/ZABBIX%20Latest%20Stable/3.2.1/</a></a></p>
+<p>Macサーバに送ります。</p>
+<pre tabindex="0"><code>$ scp zabbix-3.2.1.tar.gz user@192.168.999.999:~/Downloads/.  
+</code></pre><p>※Macサーバ上で直接ダウンロードできるなら、その方が早いです。</p>
+<p>macサーバにて解凍〜インストールを行ないます。</p>
+<pre tabindex="0"><code>tar xzf zabbix-3.2.1.tar.gz  
+cd zabbix-3.2.1  
+./configure --enable-agent  
+make install  
+sudo cp conf/zabbix_agentd.conf /usr/local/etc/.  
+sudo cp src/zabbix_agent/zabbix_agentd /usr/local/sbin/  
+</code></pre><p>Zabbixエージェントの設定を変更します。</p>
+<pre tabindex="0"><code>sudo vim /usr/local/etc/zabbix_agentd.conf  
+# 127.0.0.1の部分をZabbixサーバのIPアドレスに変更  
+# Hostnameはagentサーバのホスト（サーバ側に設定したものと同じ）に変更  
+</code></pre><p>Zabbixエージェントを実行します。</p>
+<pre tabindex="0"><code>/usr/local/sbin/zabbix_agentd  
+</code></pre><h3 id="補足">【補足】</h3>
+<p>インストール時にzabbixユーザが作成されるはずですが、<br>
+ユーザ作成に失敗している場合は別途ユーザ作成しておかないとエージェントの実行ができません。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

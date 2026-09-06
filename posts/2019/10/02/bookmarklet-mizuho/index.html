@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Bookmarkletでパスワードを自動で入力させる|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Bookmarkletでパスワードを自動で入力させる</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-10-02 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年10月02日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/bookmarklet/">bookmarklet</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/javascript/">javascript</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>みずほダイレクトで振込時の第2暗証番号6桁から数字4桁を抽出するのが面倒だったので、<br>
+Bookmarkletを使って入力すべき数字4桁を表示できるようにしました。</p>
+<p>Bookmarkletの説明や作り方についてはこちらを参照。<br>
+<a href="/posts/2020/07/15/howto-make-bookmarklet/">Bookmarklet(ブックマークレット)の作り方</a></p>
+<h3 id="みずほダイレクトに仕込んでみる">みずほダイレクトに仕込んでみる</h3>
+<p>みずほダイレクトの振込時に第2暗証番号を入力する画面まで来たら<br>
+以下のjavascriptを実行すると第2暗証番号が表示されます。</p>
+<pre tabindex="0"><code>var secondPass = &#39;123456&#39;; // ここに第2暗証番号の6桁を入れてください
+var orderNum = 0;
+var pickPw = &#39;入力するパスワード: &#39;;
+
+// 聞かれる第2パスワード4桁を順に処理する
+for (var i = 1; i&lt;=4; i++) {
+    // 第2パスワードの何番目の数字を聞かれているかチェック
+    orderNum = Number(document.getElementById(&#39;txtScndPwdDgt&#39; + i).innerHTML);
+    // 第2パスワードから対象の数字を抜き出してテキストに追加する
+    pickPw += secondPass.substr(orderNum -1, 1)
+}
+// 入力すべき4桁の数字を表示する
+alert(pickPw);
+</code></pre><p>これをBookmarklet用に圧縮し、頭に<code>javascript:</code>を付けます。<br>
+（圧縮方法は<a href="/posts/2020/07/15/howto-make-bookmarklet/">コチラ</a>を参照）</p>
+<pre tabindex="0"><code>javascript:for(var t,e=&#34;入力するパスワード: &#34;,r=1;r&lt;=4;r++)t=Number(document.getElementById(&#34;txtScndPwdDgt&#34;+r).innerHTML),e+=&#34;123456&#34;.substr(t-1,1);alert(e);
+</code></pre><p>あとはブラウザのブックマークに新しくページを追加し、URLに上記のjavascriptを入力しておくだけです。</p>
+<p>みずほダイレクト以外のサイトでもブラウザの開発者ツールでHTML要素を調べれば<br>
+似たような処理を作れると思います。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Windows10で開発PCをセッティングする。|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Windows10で開発PCをセッティングする。</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-09-04 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年09月04日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/windows/">Windows</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>Windows 10のWSL2やWindows Terminalが良い感じだったので<br>
+開発環境を整えてみました。</p>
+<p>大きな作業は以下を参照</p>
+<ul>
+<li><a href="/posts/2020/09/04/win10-keymap-change/">Windowsのキー配置変更</a></li>
+<li><a href="/posts/2020/09/04/win10-wsl2-ubuntu/">WSL2でUbuntuを使う</a></li>
+<li><a href="/posts/2020/09/04/windows-terminal-install/">Windows Terminalの導入</a></li>
+</ul>
+<h3 id="ウィンドウが勝手に最大化しないようにする">ウィンドウが勝手に最大化しないようにする</h3>
+<p>Win10はデフォルトだとウィンドウを画面の端に持っていくと勝手に最大化されてしまいます。<br>
+邪魔になることが多い機能なので無効にしてしまいます。</p>
+<p>『設定 &gt; システム &gt; マルチタスク』を開き、「ウィンドウのスナップ」をオフにすれば完了です。</p>
+<h3 id="dockerのインストール">Dockerのインストール</h3>
+<p>以下よりDocker Desktop for Windowsをダウンロードします。<br>
+<a href="https://hub.docker.com/editions/community/docker-ce-desktop-windows">https://hub.docker.com/editions/community/docker-ce-desktop-windows</a></p>
+<p>ダウンロードしてきたインストーラーを実行してインストールします。<br>
+インストール時に「Enable WSL 2 Windows Features」のチェックボックスがあるので、忘れずにチェックするようにしてください。</p>
+<p>これでUbuntu側でもdockerコマンドが使えるようになっています。<br>
+もしWSL2より先にDockerをインストールしてしまった場合は「Settings &gt; Resources &gt; WSL INTEGRATION」からWLS上のDockerを有効化できます。</p>
+<h3 id="visual-studio-codeのインストール">Visual Studio Codeのインストール</h3>
+<p>以下よりダウンロードしてインストールします。<br>
+<a href="https://azure.microsoft.com/ja-jp/products/visual-studio-code/">https://azure.microsoft.com/ja-jp/products/visual-studio-code/</a></p>
+<p>Ubuntu側でgitコマンドを使ってソースコードを管理している場合はWindowsからUbuntuに接続する必要があります。<br>
+そのためには『Remote - WSL』という拡張子のインストールをインストールします。<br>
+（おそらくVisual Studio Codeの初回起動時に推奨される）</p>
+<h3 id="mysql-workbenchのインストール">MySQL Workbenchのインストール</h3>
+<p>MySQL Workbenchをインストールするには「Visual C++ 2019」が必要です。<br>
+インストールされていない場合は以下よりダウンロードしてインストールしておきます。<br>
+<a href="https://support.microsoft.com/ja-jp/help/2977003/the-latest-supported-visual-c-downloads">https://support.microsoft.com/ja-jp/help/2977003/the-latest-supported-visual-c-downloads</a></p>
+<p>以下よりMySQL Workbenchをダウンロードしてインストールします。<br>
+<a href="https://dev.mysql.com/downloads/workbench/">https://dev.mysql.com/downloads/workbench/</a></p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

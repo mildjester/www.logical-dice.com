@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>AWS on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/aws/</link>
+		<description>Recent content in AWS on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Thu, 12 Dec 2024 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/aws/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>AWS CLIで複数ファイルに対してS3 Selectで検索する</title>
+				<link>https://www.logical-dice.com/posts/2024/12/12/aws-cli-s3select/</link>
+				<pubDate>Thu, 12 Dec 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2024/12/12/aws-cli-s3select/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;aws-cli 2.7.14&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;概要&#34;&gt;概要&lt;/h2&gt;&#xA;&lt;p&gt;S3に保存されているCloudFrontのログを検索したかったのですが&lt;br&gt;&#xA;Athenaは導入されていなかったのでS3 Selectを使って検索をしました。&lt;/p&gt;&#xA;&lt;p&gt;S3 Selectは1ファイルずつしか検索できないので、&lt;br&gt;&#xA;AWS CLIをシェルに組み込んで複数ファイル検索できるようにしました。&lt;/p&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;p&gt;条件は以下とします。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;S3バケット名は「target-bucket-name」&lt;/li&gt;&#xA;&lt;li&gt;「logs-dir」というディレクトリ内に「AABBCCDDEE123456.YYYY-MM-DD-HH.abcdefg・・・」形式でファイルが生成される。&lt;/li&gt;&#xA;&lt;li&gt;aws cli用のprofileは「my-aws-profile」という名前で設定してある。&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;できあがったものはこちら。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;# ①設定&#xA;PROFILE=&amp;#34;my-aws-profile&amp;#34;&#xA;BUCKET=&amp;#34;target-bucket-name&amp;#34;&#xA;PREFIX=&amp;#34;logs-dir/AABBCCDDEE123456.2024-12-11&amp;#34;    # 左記例では2024年12月11日に出力された分を検索する。&#xA;QUERY=&amp;#34;SELECT * FROM s3object s&amp;#34;                 # 左記例では全て出力しています。列を絞ったりWHERE句を入れたりしてください。&#xA;&#xA;# ②オブジェクト（ファイル）の一覧取得&#xA;objects=`aws s3api list-objects --profile $PROFILE --bucket $BUCKET --prefix $PREFIX | jq`&#xA;&#xA;# ③取得したオブジェクトの一覧に対して1件ずつ処理をする&#xA;for object in $(echo &amp;#34;$objects&amp;#34; | jq -c &amp;#39;.Contents[]&amp;#39;); do&#xA;  key=$(echo &amp;#34;$object&amp;#34; | jq -r &amp;#39;.Key&amp;#39;)&#xA;  echo &amp;#34;$key&amp;#34;&#xA;&#xA;  # ④検索結果出力&#xA;  aws s3api select-object-content --profile $PROFILE --bucket $BUCKET --key $key --expression &amp;#34;$QUERY&amp;#34; --expression-type SQL --input-serialization &amp;#39;{&amp;#34;CSV&amp;#34;: {&amp;#34;FileHeaderInfo&amp;#34;: &amp;#34;NONE&amp;#34;, &amp;#34;FieldDelimiter&amp;#34;: &amp;#34;\t&amp;#34;}, &amp;#34;CompressionType&amp;#34;: &amp;#34;GZIP&amp;#34;}&amp;#39; --output-serialization &amp;#39;{&amp;#34;CSV&amp;#34;: {&amp;#34;FieldDelimiter&amp;#34;: &amp;#34;,&amp;#34;}}&amp;#39; output-tmp.csv&#xA;  cat output-tmp.csv &amp;gt;&amp;gt; output.csv&#xA;done&#xA;&#xA;rm -f output-tmp.csv&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;設定&#34;&gt;①設定&lt;/h3&gt;&#xA;&lt;p&gt;必要な情報を設定してください。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>AmazonLinux2023のカーネルをダウングレードする</title>
+				<link>https://www.logical-dice.com/posts/2024/08/24/al2023-kernel-downgrade/</link>
+				<pubDate>Sat, 24 Aug 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2024/08/24/al2023-kernel-downgrade/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Amazon Linux 2023.5.20240819&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;概要&#34;&gt;概要&lt;/h2&gt;&#xA;&lt;p&gt;AmazonLinux2023のカーネルをアップグレードしたところ、動作しなくなるツールが出てきてしまったためダウングレードしました。&lt;br&gt;&#xA;その操作手順の記録です。&lt;/p&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;p&gt;まず、現在のカーネルの状態を確認します。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$uname -r&#xA;6.1.102-111.182.amzn2023.x86_64&#xA;&#xA;$ sudo dnf list kernel&#xA;kernel.x86_64   6.1.92-99.174 amzn2023     @amazonlinux&#xA;kernel.x86_64   6.1.96-102.177.amzn2023    @amazonlinux&#xA;kernel.x86_64   6.1.102-111.182.amzn2023   @amazonlinux&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;現状は6.1.102になっていますが、6.1.96にダウングレードしていきます。&lt;/p&gt;&#xA;&lt;h3 id=&#34;おそらく最短の方法&#34;&gt;おそらく最短の方法&lt;/h3&gt;&#xA;&lt;p&gt;まず、ダウングレードして再起動します。&lt;br&gt;&#xA;「パッケージ名-バージョン」と指定をすることで特定のバージョンに戻れるようです。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo dnf downgrade kernel-6.1.96-102.177.amzn2023&#xA;$ sudo reboot&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;再起動後、カーネルを確認するとダウングレードできているはずです。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ uname -r&#xA;6.1.96-102.177.amzn2023.x86_64&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;適用されているバージョンは戻しましたが、最新バージョンのパッケージは残っているので削除しておきます。&lt;br&gt;&#xA;こちらも「パッケージ名-バージョン」で特定バージョンのremoveができます。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo dnf remove kernel-6.1.102-111.182.amzn2023&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;これでダウングレード完了です。&lt;/p&gt;&#xA;&lt;h3 id=&#34;参考実際にやった手順&#34;&gt;参考：実際にやった手順&lt;/h3&gt;&#xA;&lt;p&gt;思考錯誤しながらやっていたので結構遠回しをしました。&lt;br&gt;&#xA;まず、ダウングレードして再起動します。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo dnf downgrade kernel&#xA;$ sudo reboot&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;再起動後、カーネルを確認してみます。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ uname -r&#xA;6.1.92-99.174.amzn2023.x86_64&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;戻りすぎてしまいました。&lt;br&gt;&#xA;どうやらバージョン指定をしないと戻れるだけ戻ってしまうようです。&lt;/p&gt;&#xA;&lt;p&gt;なので、狙いのバージョンにアップデートします。&lt;br&gt;&#xA;該当バージョンを一度削除しないとバージョンアップできないので、現バージョンより新しいものは一旦削除します。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo dnf remove kernel-6.1.96-102.177.amzn2023&#xA;$ sudo dnf remove kernel-6.1.102-111.182.amzn2023&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;アップデートして再起動します。&lt;br&gt;&#xA;この際、また新しくなり過ぎないようにreleaseverでOSのバージョンを指定します。&lt;br&gt;&#xA;※後で思ったが、kernelのバージョンを指定すれば良いだけだったしれない。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】MFA(多要素)認証を突破してCodeCommitからgit cloneする</title>
+				<link>https://www.logical-dice.com/posts/2024/06/06/aws-codecommit-mfa/</link>
+				<pubDate>Thu, 06 Jun 2024 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2024/06/06/aws-codecommit-mfa/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;MacBook Pro (Sonoma14.5 M1チップ)&lt;/li&gt;&#xA;&lt;li&gt;aws-cli/2.15.14&lt;/li&gt;&#xA;&lt;li&gt;aws-mfa 0.0.12&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;p&gt;AWSへのアクセスにMFAが必須である環境においてCodeCommitよりリポジトリをcloneする手順です。&lt;br&gt;&#xA;調べても「CodeCommitでMFA不要にする手順」ばかり出てきて手間取ったので、メモを残します。&lt;/p&gt;&#xA;&lt;h3 id=&#34;aws-cliのインストール&#34;&gt;AWS CLIのインストール&lt;/h3&gt;&#xA;&lt;p&gt;もしAWS CLIが未インストールである場合は以下ページ参考にインストールします。&lt;br&gt;&#xA;&lt;a href=&#34;https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html&#34;&gt;https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h3 id=&#34;aws-mfaのインストール&#34;&gt;aws-mfaのインストール&lt;/h3&gt;&#xA;&lt;p&gt;コマンドラインでAWS操作する際にMFA認証を楽にするツールがあります。&lt;br&gt;&#xA;&lt;a href=&#34;https://github.com/broamski/aws-mfa&#34;&gt;https://github.com/broamski/aws-mfa&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;こちらをpipでインストールします。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ pip install aws-mfa&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;aws認証情報の確認&#34;&gt;AWS認証情報の確認&lt;/h3&gt;&#xA;&lt;p&gt;AWSのマネジメントコンソールにログイン後、ヘッダー右端にあるアカウント名をクリックすると「セキュリテイ認証情報」というメニューが表示されるので選択します。&lt;br&gt;&#xA;そこでアカウントの詳細が表示されるので「ユーザーのARN」を控えておきます。&lt;/p&gt;&#xA;&lt;p&gt;また、もし自分のAWS アクセスキーを発行していない場合はここで発行します。&lt;br&gt;&#xA;少し下へスクロールすると「アクセスキーを作成」というボタンがあるのでそこからアクセスキーが発行できます。&lt;/p&gt;&#xA;&lt;h3 id=&#34;aws-cli向けアクセスキー設定&#34;&gt;AWS CLI向けアクセスキー設定&lt;/h3&gt;&#xA;&lt;p&gt;AWS CLIにprofileを指定してアクセスキーを紐づけます。&lt;/p&gt;&#xA;&lt;p&gt;『hoge』というプロファイル名で登録したい場合&lt;br&gt;&#xA;『hoge』だけではなく『hoge-long-term』というプロファイルも登録します。&lt;/p&gt;&#xA;&lt;p&gt;まず『hoge-long-term』の登録をします。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ aws configure --profile hoge-long-term&#xA;AWS Access Key ID [None]: XXXXXXXXXXXXXXXXXXXX      (発行したアクセスキー)&#xA;AWS Secret Access Key [None]: XXXXXXXXXXXXXXXXXXXX  (発行したアクセスキーに紐づくシークレット)&#xA;Default region name [None]: ap-northeast-1          (利用するリージョン 任意)&#xA;Default output format [None]: json                  (利用するフォーマット 任意)&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;次に『hoge』の登録をします。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ aws configure --profile hoge&#xA;AWS Access Key ID [None]:                   (空のまま)&#xA;AWS Secret Access Key [None]:               (空のまま)&#xA;Default region name [None]: ap-northeast-1  (利用するリージョン 任意)&#xA;Default output format [None]: json          (利用するフォーマット 任意)&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;mfa認証登録&#34;&gt;MFA認証登録&lt;/h3&gt;&#xA;&lt;p&gt;以下のコマンドでMFA認証を通します。&lt;br&gt;&#xA;コマンド実行後にMFA code(数字6桁)を聞かれるので入力します。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】lambdaでparamikoを使ってSFTP通信する</title>
+				<link>https://www.logical-dice.com/posts/2023/11/03/aws-lambda-use-paramiko/</link>
+				<pubDate>Fri, 03 Nov 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2023/11/03/aws-lambda-use-paramiko/</guid>
+				<description>&lt;h2 id=&#34;環境&#34;&gt;環境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;MacBook Air M1チップ&lt;/li&gt;&#xA;&lt;li&gt;AWS SAM version 1.99.0&lt;/li&gt;&#xA;&lt;li&gt;python 3.9&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;手順&#34;&gt;手順&lt;/h2&gt;&#xA;&lt;p&gt;他サーバーよりSFTPでファイルを取得する処理を作るためにparamikoを利用します。&lt;br&gt;&#xA;AWS lambdaでparamikoを利用するためにレイヤーを利用します。&lt;/p&gt;&#xA;&lt;p&gt;lambdaのレイヤーはDockerなどを使って構築する方法もありますが&lt;br&gt;&#xA;簡易に作成したかったのでAWS SAMを利用してレイヤーの作成をしました。&lt;/p&gt;&#xA;&lt;h3 id=&#34;aws-samをインストールする&#34;&gt;①AWS SAMをインストールする&lt;/h3&gt;&#xA;&lt;p&gt;Macにて以下コマンドを実行してAWS SAMをインストールします。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ brew tap aws/tap&#xA;$ brew install aws-sam-cli&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この記事を書いている時点でインストールできたのはバージョン1.99.0でした。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sam --version&#xA;SAM CLI, version 1.99.0&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;aws-sam用のファイルを作成する&#34;&gt;②AWS SAM用のファイルを作成する。&lt;/h3&gt;&#xA;&lt;p&gt;以下構成でファイルを作成します。&lt;br&gt;&#xA;&lt;code&gt;paramiko-layer&lt;/code&gt;ディレクトリは変えても良いです。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(current dir)&#xA;    ├── paramiko-layer&#xA;    │   └── requirements.txt&#xA;    └── template.yaml&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;各ファイルの中身は以下です。&lt;/p&gt;&#xA;&lt;p&gt;【requirements.txt】&lt;br&gt;&#xA;インストールするライブラリを記載します&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;paramiko&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;【template.yaml】&lt;br&gt;&#xA;ここで記載する&lt;code&gt;ContentUri&lt;/code&gt;はrequirements.txtを配置しているディレクトリにします。&lt;br&gt;&#xA;また&lt;code&gt;python3.9&lt;/code&gt;、&lt;code&gt;x86_64&lt;/code&gt;の部分は作成するlambdaに合わせて読み替えてください。&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Resources:&#xA;  ParamikoLayer:&#xA;    Type: AWS::Serverless::LayerVersion&#xA;    Properties:&#xA;      ContentUri: &amp;#39;paramiko-layer/&amp;#39;&#xA;      CompatibleRuntimes:&#xA;        - python3.9&#xA;      CompatibleArchitectures:&#xA;        - x86_64&#xA;    Metadata:&#xA;      BuildMethod: python3.9&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;レイヤーをビルドする&#34;&gt;③レイヤーをビルドする&lt;/h3&gt;&#xA;&lt;p&gt;template.yamlがあるディレクトリにて以下コマンドを実行します。&lt;br&gt;&#xA;&lt;code&gt;ParamikoLayer&lt;/code&gt;は変えても良いです。&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>【AWS】LightsailでインドのVPNサーバーを構築する</title>
+				<link>https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india/</link>
+				<pubDate>Tue, 04 Jul 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2023/07/04/aws-lightsail-vpn-india/</guid>
+				<description>AWS Lightsailを使ってインドのIPアドレスを使うためのVPNサーバーを構築しました。</description>
+			</item>
+			<item>
+				<title>【AWS】S3のリダイレクトが効かない</title>
+				<link>https://www.logical-dice.com/posts/2023/01/29/aws-s3-cloudfront-not-redirect/</link>
+				<pubDate>Sun, 29 Jan 2023 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2023/01/29/aws-s3-cloudfront-not-redirect/</guid>
+				<description>AWS S3のWebホスティングにてリダイレクト設定をしてもCloud Front経由でリクエストを受けるとリダイレクトされない</description>
+			</item>
+			<item>
+				<title>【AWS】Auto ScalingのインスタンスがInServiceにならない</title>
+				<link>https://www.logical-dice.com/posts/2022/05/03/ec2-not-inservice/</link>
+				<pubDate>Tue, 03 May 2022 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2022/05/03/ec2-not-inservice/</guid>
+				<description>Auto Scalingで立ち上がったEC2インスタンスのライフサイクルがInServiceにならなかった時の調査メモです。</description>
+			</item>
+			<item>
+				<title>EC2とECSのレコードを全てCSVに出力する</title>
+				<link>https://www.logical-dice.com/posts/2020/08/26/ec2-ecs-to-csv/</link>
+				<pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/08/26/ec2-ecs-to-csv/</guid>
+				<description>AWS のEC2とECSの情報をCSVに出力する方法です</description>
+			</item>
+			<item>
+				<title>Route53のレコードを全てCSVに出力する</title>
+				<link>https://www.logical-dice.com/posts/2020/08/21/route53-to-csv/</link>
+				<pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/08/21/route53-to-csv/</guid>
+				<description>AWS Route53に登録されているホストゾーンとレコードをCSVに出力する方法です</description>
+			</item>
+			<item>
+				<title>AWS lambdaからDBアクセスも外部アクセスもできるようにする。</title>
+				<link>https://www.logical-dice.com/posts/2020/07/12/vpc-lambda/</link>
+				<pubDate>Sun, 12 Jul 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/07/12/vpc-lambda/</guid>
+				<description>AWS lambdaをVPCに入れると普通には外部アクセスできなくなるので、その設定をした際のメモです。</description>
+			</item>
+			<item>
+				<title>EC2上でオレオレ証明書を作る</title>
+				<link>https://www.logical-dice.com/posts/2020/06/14/oreore-certification/</link>
+				<pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/14/oreore-certification/</guid>
+				<description>最近はめっきり使われなくなったオレオレ証明書を作成する手順です。</description>
+			</item>
+			<item>
+				<title>AWS S3を使ったリダイレクトの方法</title>
+				<link>https://www.logical-dice.com/posts/2020/06/10/aws-s3-redirect/</link>
+				<pubDate>Wed, 10 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/10/aws-s3-redirect/</guid>
+				<description>AWSのS3を使ってリダイレクトを設定します。</description>
+			</item>
+			<item>
+				<title>Serverless Frameworkを使ってLambda &amp; API Gatewayをデプロイする</title>
+				<link>https://www.logical-dice.com/posts/2020/05/19/serverless-framework-lambda/</link>
+				<pubDate>Tue, 19 May 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/05/19/serverless-framework-lambda/</guid>
+				<description>試しにServerless Frameworkを使ってLambda &amp;amp; API Gatewayをデプロイしてみた時の手順メモです。</description>
+			</item>
+			<item>
+				<title>GitHub ActionsでAWS Code Deployを回す</title>
+				<link>https://www.logical-dice.com/posts/2020/03/15/github-actions-deploy/</link>
+				<pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/03/15/github-actions-deploy/</guid>
+				<description>GitHub ActionsからAWS Code Deployを回してデプロイする手順です。</description>
+			</item>
+			<item>
+				<title>lightsail上に自前でWordpressを構築する(CentOS編)</title>
+				<link>https://www.logical-dice.com/posts/2020/02/18/lightsail-wordpress/</link>
+				<pubDate>Tue, 18 Feb 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/02/18/lightsail-wordpress/</guid>
+				<description>lightsailのCentOS7上でWordpressを構築する手順です</description>
+			</item>
+			<item>
+				<title>lightsail上に自前でWordpressを構築する(Amazon Linux編)</title>
+				<link>https://www.logical-dice.com/posts/2019/12/15/lightsail-wordpress/</link>
+				<pubDate>Sun, 15 Dec 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/12/15/lightsail-wordpress/</guid>
+				<description>bitnamiを利用せずにlightsail上にWordpressを構築する手順です</description>
+			</item>
+			<item>
+				<title>LightsailにOpenVPNサーバーを立てる</title>
+				<link>https://www.logical-dice.com/posts/2019/07/25/lightsail-vpn/</link>
+				<pubDate>Thu, 25 Jul 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/07/25/lightsail-vpn/</guid>
+				<description>AWSのLightsailにOpenVPNサーバーを立てる手順です。</description>
+			</item>
+			<item>
+				<title>CircleCIからAWS Code Deployを実行する</title>
+				<link>https://www.logical-dice.com/posts/2019/03/04/aws-code-deploy-circleci/</link>
+				<pubDate>Mon, 04 Mar 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/03/04/aws-code-deploy-circleci/</guid>
+				<description>S3を使わずCircleCIからAWS Code Deployを実行する方法です</description>
+			</item>
+			<item>
+				<title>AWS Code DeployでEC2にデプロイする</title>
+				<link>https://www.logical-dice.com/posts/2019/02/28/aws-code-deploy/</link>
+				<pubDate>Thu, 28 Feb 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/02/28/aws-code-deploy/</guid>
+				<description>AWS Code Deployを使ってEC2上にデプロイをした際のメモです。</description>
+			</item>
+			<item>
+				<title>【Let&#39;sEncrypt】Amazon Linux2でCertbotを使う</title>
+				<link>https://www.logical-dice.com/posts/2019/01/21/certboy-amazon-linux-2/</link>
+				<pubDate>Mon, 21 Jan 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/01/21/certboy-amazon-linux-2/</guid>
+				<description>Amazon Linux2でCertbotを使う方法です。</description>
+			</item>
+			<item>
+				<title>Wordpressの画像をS3&#43;CloudFrontで配信する</title>
+				<link>https://www.logical-dice.com/posts/wp/1772/</link>
+				<pubDate>Tue, 11 Dec 2018 19:30:54 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1772/</guid>
+				<description>環境WordPress 4.8.3AWS設定手順IAM設定まず、WordpressとAWSの連携に使うIAMユーザーを準備します&amp;hellip;</description>
+			</item>
+			<item>
+				<title>AWS ELB配下でWordpressを動かす際のSSL対応</title>
+				<link>https://www.logical-dice.com/posts/wp/1439/</link>
+				<pubDate>Fri, 20 Jul 2018 17:56:57 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1439/</guid>
+				<description>■環境AWS ELBAWS EC2Apache 2.2.32Wordpress 4.1.1EC-CUBEではありませんが、内容的&amp;hellip;</description>
+			</item>
+			<item>
+				<title>AWS ELB配下でApacheのRewriteRuleが上手く動かなかった話</title>
+				<link>https://www.logical-dice.com/posts/wp/1423/</link>
+				<pubDate>Sat, 30 Jun 2018 22:29:41 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/1423/</guid>
+				<description>■環境AWS ELBAWS EC2Apache 2.2.32AWSのEC2上で動いているApacheサーバーでの話。SEO対策で&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【AWS】新規EC2立ち上げ後の作業メモ</title>
+				<link>https://www.logical-dice.com/posts/wp/820/</link>
+				<pubDate>Sun, 12 Nov 2017 01:06:50 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/820/</guid>
+				<description>環境AWS EC2Amazon Linuxセキュリティグループ設定SSH接続元やHTTP通信元の設定をする。デフォルトではEC2&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

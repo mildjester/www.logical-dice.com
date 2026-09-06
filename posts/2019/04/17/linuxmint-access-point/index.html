@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Linux Mintを無線LANのアクセスポイントにする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Linux Mintを無線LANのアクセスポイントにする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-04-17 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年04月17日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/linuxmint/">LinuxMint</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Linux Mint 19.1 &ldquo;Tessa&rdquo; - MATE (64-bit)</li>
+</ul>
+<hr>
+<p>VPN経由でないと表示できないページをPC, Android, iOSで同時に見たかったのですが<br>
+自分の契約しているVPNが1度に1デバイスしか接続できなかったので</p>
+<p>PC(Linux Mint)でVPN接続し、その接続を無線LANで共有するようにしました。<br>
+Macでいうところの「ネットワークの共有」です。</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://qiita.com/onokatio/items/3117d158c76adc65fa9a">Linuxで簡単に無線Lanアクセスポイントを作る</a></p>
+<p>だいたい参考ページ通りですが、うまく動かない箇所があったので少しだけコマンドを修正しています。</p>
+<h2 id="環境構築">環境構築</h2>
+<p>必要なソフトウェアのインストールします。</p>
+<pre tabindex="0"><code>apt install util-linux procps hostapd iproute2 iw
+</code></pre><p>アクセスポイントを作成するスクリプトの取得します。</p>
+<pre tabindex="0"><code>wget https://raw.githubusercontent.com/oblique/create_ap/master/create_ap
+</code></pre><p>実行権限を付与してパスが通っている場所に移動させます。</p>
+<pre tabindex="0"><code>sudo chmod +x create_ap
+sudo mv create_ap /usr/local/bin/.
+</code></pre><h2 id="ネットワークの共有">ネットワークの共有</h2>
+<p>事前にネットワークインターフェース(NIC)を調べます。</p>
+<pre tabindex="0"><code>ip a
+</code></pre><p>すごいざっくりいうと<br>
+eで始まるNICは有線LANで、wで始まるNICは無線LANです。<br>
+また、VPNの場合はVPNの種類(pppなど)が付いていると思います。<br>
+loやbrで始まるのは内部的に使っているものなので基本的に無視して良いです。</p>
+<p>分からなければ『コントロールセンター＞ネットワーク接続』にて利用したいNICの詳細を開き、<br>
+デバイスの「XX:XX:XX:XX:XX:XX」が一致するNICを選べば良いです。</p>
+<p>このNICの中から『外界⇔PC』通信用のNICと『PC⇔スマホ』通信用のNICを決めます。</p>
+<p>注意点としては上記2つのNICは物理的に別のハードウェアでなければならないという事です。<br>
+例えば、PCに無線LANのNICが1つしか無い場合は『PC⇔スマホ』のNICにそれを使うので、<br>
+『外界⇔PC』のNICは有線LANを使ったりしなければなりません。</p>
+<p>利用するNICが決まったら以下の用にコマンドを打ちます。</p>
+<pre tabindex="0"><code>sudo create_ap {スマホとのNIC} {外界とのNIC} {SSID} {SSIDの接続パスワード}
+</code></pre><p>たとえば、スマホとのNICが無線LAN<code>wlp3s0</code>で、外界とのNICがVPN<code>ppp0</code>の場合は以下のコマンドでアクセスポイントを開始できます。<br>
+なお、以下コマンドではSSIDは<code>MyAP</code>でパスワードは<code>MyPassword</code>となります。</p>
+<pre tabindex="0"><code>sudo create_ap wlp3s0 ppp0 MyAP MyPassword
+</code></pre><p>上記コマンド実行後、ターミナルにはアクセスポイントとしての稼働ログが流れます。<br>
+アクセスポイントを閉じたい場合は<code>Ctrl + c</code>を押します。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

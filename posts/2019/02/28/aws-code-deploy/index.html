@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>AWS Code DeployでEC2にデプロイする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">AWS Code DeployでEC2にデプロイする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2019-02-28 00:00:00 &#43;0000 UTC" class="catalogue-time">2019年02月28日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/aws/">AWS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>運用していたEC2へのソースコードを反映するのにCodeDeployを導入してみたので、その作業メモです。<br>
+とてもシンプルな状態で試したので、環境は以下の通りです。</p>
+<ul>
+<li>EC2インスタンスは１台のみ</li>
+<li>ELBの利用なし</li>
+<li>ソースコードはGitHubより取得する</li>
+<li>デプロイはソースコードをサーバー上に置くのみ</li>
+<li>デプロイの実行はAWSのコンソールから手動で実行する。</li>
+</ul>
+<p>※CircleCI連携については<a href="/posts/2019/03/04/aws-code-deploy-circleci/">コチラ</a></p>
+<h2 id="iam準備">IAM準備</h2>
+<p>EC2用とCodeDeploy用のロールを準備します。</p>
+<p>まずEC2用のロールを作成します。<br>
+IAMロール作成画面にてAWSサービス ＞ EC2を選び、次のステップへ進みます。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-IAM-006.png"/></p>
+<p>ポリシーは<code>AmazonEC2RoleforAWSCodeDeploy</code>を指定して、次のステップへ進みます。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-IAM-007.png"/></p>
+<p>タグは未指定でも良いので、必要なければ次のステップに進みます。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-IAM-008.png"/></p>
+<p>適当なロール名を決めて設定し、『ロールの作成』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-IAM-009.png"/></p>
+<p>次にCodeDeploy用のロールを作成します。<br>
+IAMロール作成画面にてAWSサービス ＞ CodeDeployを選びます。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-IAM-002.png"/></p>
+<p>画面が下へスクロールしてユースケースの選択が表示されます。<br>
+今回は純粋なEC2上のボリュームにデプロイするだけなので、<code>CodeDeploy</code>を指定して次のステップへ進みます。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-IAM-003.png"/></p>
+<p>ポリシーは<code>AWSCodeDeployRole</code>が表示されるので、そのまま次のステップへ進みます。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-IAM-004.png"/></p>
+<p>適当なロール名を決めて設定し、『ロールの作成』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-IAM-005.png"/></p>
+<h2 id="ec2準備">EC2準備</h2>
+<p>まず、EC2インスタンスに管理コンソールからロール付与します。<br>
+管理コンソールにて対象インスタンスを開いて以下をクリックします。<br>
+アクション ＞ インスタンスの設定 ＞ IAMロールの割り当て/置換<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-EC2-001.png"/></p>
+<p>そこで先ほど作成したEC2用のロールを設定します。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-EC2-002.png"/></p>
+<p>次にコンソールにて対象インスタンスにログインし、CodeDeployのエージェントをインストールします。<br>
+ダウンロードするインストーラーはrubyが無いと動かないので、インストールされていない場合はインストールしておきます。</p>
+<pre tabindex="0"><code>$ sudo yum install ruby # rubyがインストールされてない場合
+$ sudo yum install aws-cli # aws-cliがインストールされていない場合
+$ aws s3 cp s3://aws-codedeploy-ap-northeast-1/latest/install . --region ap-northeast-1
+$ chmod +x ./install
+$ sudo ./install auto
+</code></pre><p>インストールが完了したら念の為動作している事を確認する。</p>
+<pre tabindex="0"><code>$ sudo service codedeploy-agent status
+The AWS CodeDeploy agent is running as PID 12345
+</code></pre><p>もし上記のロール割り当てより先にCodeDeployエージェントを起動してしまった場合は、<br>
+ロール割り当て後にCodeDeployエージェントを再起動すれば大丈夫です。</p>
+<pre tabindex="0"><code>$ sudo service codedeploy-agent restart
+</code></pre><h2 id="リポジトリ準備">リポジトリ準備</h2>
+<p>デプロイ対象のgitリポジトリのTOP階層に<code>appspec.yml</code>というファイルを作成し、以下のように記載します。</p>
+<pre tabindex="0"><code>version: 0.0
+os: linux
+files:
+  - source: ./
+    destination: /usr/share/nginx/html
+</code></pre><p>これでリポジトリ内の<code>source</code>で指定した階層(上例ではリポジトリ全て)を<code>destination</code>にデプロイするようになります。<br>
+<code>source</code>と<code>destination</code>の組み合わせは複数記載することもでき、デプロイ前後に処理を追加する事も可能です。<br>
+詳しくは<a href="https://docs.aws.amazon.com/ja_jp/codedeploy/latest/userguide/reference-appspec-file-example.html#appspec-file-example-server">AWS公式ページ</a>を参照してください。</p>
+<p>これをGitHubにプッシュしておきます。</p>
+<h2 id="codedeployの設定">CodeDeployの設定</h2>
+<p>まず、アプリケーションの作成をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-001.png"/></p>
+<p>アプリケーション名を決めて入力し、コンピューティングプラットフォームは『EC2/オンプレミス』を選択して<br>
+『アプリケーションの作成』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-002.png"/></p>
+<p>次にアプリケーションに登録するデプロイグループを設定します。<br>
+（デプロイグループ：デプロイする際に対象となるEC2インスタンス群などをグルーピングしておく。）</p>
+<p>グルーピングと言いながら、今回はEC2インスタンス１つだけを登録します。</p>
+<p>まず『デプロイグループの作成』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-003.png"/></p>
+<p>作成するデプロイグループ名を決めて入力します。<br>
+また、サービスロールは先ほど作成したCodeDeploy用のロールを指定します。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-004.png"/></p>
+<p>下にスクロールすると『環境設定』という設定項目があるので、作成済みのEC2インスタンスの名前を指定します。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-005.png"/></p>
+<p>デプロイ設定は『CodeDeployDefault.AllAtOnce』にしておき、『デプロイグループの作成』をクリックします。<br>
+（今回はデプロイ対象のインスタンスは１台だけなので、どれを選んでもあまり意味はありません）
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-006.png"/></p>
+<p>これでデプロイグループの作成が完了です。</p>
+<h2 id="codedeployの実行">CodeDeployの実行</h2>
+<p>実際にサーバーにソースコードを反映するにはデプロイを作成します。<br>
+デプロイの作成はデプロイグループの画面より実施できます。<br>
+（以下はデプロイグループ作成完了時の画面）<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-008.png"/></p>
+<p>デプロイ作成画面に入ったら、まずデプロイグループに先ほど作成したデプロイグループを指定します。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-009.png"/></p>
+<p>次にリビジョンタイプでGitHubを選びます。<br>
+するとGitHub情報を入力する欄が出てくるので、GitHubトークン名にgithubアカウント名を入力して<br>
+『GitHubに接続』をクリックします。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-010.png"/></p>
+<p>GitHub側で承認画面が表示される場合は承認します。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-011.png"/></p>
+<p>続いてリポジトリ名とサーバーに反映したい時点のコミットIDを入力します。<br>
+リポジトリ名は『アカウント名/リポジトリ名』形式で、コミットIDは省略していないフルのIDです。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-012.png"/></p>
+<p>次に追加のデプロイ動作設定にて『コンテンツの上書き』を選択し、<br>
+『デプロイの作成』をクリックすればデプロイが走ります。<br>
+※コンテンツの上書きを指定しないと既存コンテンツがある場合にコケます。<br>
+<img src="https://www.logical-dice.com/images/2019/02/AWS-CodeDeploy-CD-013.png"/></p>
+<p>デプロイが途中でコケてしまう場合はEC2上で以下のエージェントのログを確認してください。</p>
+<pre tabindex="0"><code>/var/log/aws/codedeploy-agent/codedeploy-agent.log
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Howdyを使ってubuntuで顔認証する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Howdyを使ってubuntuで顔認証する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2021-02-17 00:00:00 &#43;0000 UTC" class="catalogue-time">2021年02月17日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/ubuntu/">ubuntu</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>Ubuntu 20.10</li>
+<li>Thinkpad T480</li>
+</ul>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://github.com/boltgolt/howdy">https://github.com/boltgolt/howdy</a></li>
+<li><a href="https://wiki.archlinux.jp/index.php/Howdy">https://wiki.archlinux.jp/index.php/Howdy</a></li>
+</ul>
+<hr>
+<p>Windowsを使っている時に顔認証（Windows Hello）でログインできるのがとても便利だったのでUbuntuでも実現してみます。<br>
+Ubuntuでは<code>Howdy</code>というアプリケーションで実現できそうなので設定してみました。</p>
+<h2 id="赤外線カメラ情報の取得">赤外線カメラ情報の取得</h2>
+<p>顔認証には赤外線カメラを使います。<br>
+カメラ情報を取得するために<code>v4l-utils</code>を利用します。</p>
+<h3 id="v4l-utilsインストール">v4l-utilsインストール</h3>
+<pre tabindex="0"><code>sudo apt-get install v4l-utils
+</code></pre><h3 id="カメラ情報確認">カメラ情報確認</h3>
+<p>以下コマンドでカメラ情報を確認します。<br>
+赤外線カメラ(IR Camera)の項目を確認します。</p>
+<pre tabindex="0"><code>v4l2-ctl --list-devices --all
+
+# 以下出力結果で見る場所
+Integrated IR Camera: Integrate (usb-0000:00:14.0-5):
+    /dev/video0　　　　←赤外線カメラのパスはvideo0※
+    /dev/video1
+
+Format Video Capture:
+    Width/Height      : 340/340　　　←キャプチャサイズは340×340
+</code></pre><p>※Thinkpat T480だとvideo1も列挙されてましたが、後々の設定でvideo1を指定すると動きませんでした。</p>
+<h2 id="howdy導入">Howdy導入</h2>
+<h3 id="howdyのインストール">Howdyのインストール</h3>
+<p>まず必要なソフトをインストールします。</p>
+<pre tabindex="0"><code>sudo add-apt-repository ppa:boltgolt/howdy
+sudo apt update
+sudo apt install howdy
+</code></pre><p>途中で以下のようにセキュア具合を聞かれます。<br>
+自分の好みや状況に合わせて選択してください。<br>
+(f:早さ重視、b:バランス型、s:セキュリティ重視)</p>
+<pre tabindex="0"><code>After detection, Howdy knows how certain it is that the match is correct.
+How certain Howdy needs to be before authenticating you can be customized.
+
+F: Fast.
+Allows more fuzzy matches, but speeds up the scanning process greatly.
+
+B: Balanced.
+Still relatively quick detection, but might not log you in when further away.
+
+S: Secure.
+The safest option, but will take much longer to authenticate you.
+
+You can always change this setting in the config.
+What profile would you like to use? [f/b/s]: 　　　　　　　　　　　←ここでfかbかsを入力
+</code></pre><h3 id="設定ファイル更新">設定ファイル更新</h3>
+<p>以下コマンドでHowdyの設定ファイルを編集します。<br>
+vimユーザーには慣れないUIですが、下部に記載されているショートカットを参照しながら対応します。<br>
+(<code>^</code>:Ctrl押しながら　<code>M-</code>:Alt押しながら)</p>
+<pre tabindex="0"><code>sudo howdy config
+</code></pre><p>以下の箇所の設定をします。<br>
+※機種によってはデフォルトのままでも自動で設定されるようですが、Thinkpad T480では自動で設定されませんでした。</p>
+<pre tabindex="0"><code>device_path = /dev/video0        ← v4l2-ctlで確認したパス
+
+frame_width = 340                ← v4l2-ctlで確認したキャプチャサイズ
+frame_height = 340
+
+dark_threshold = 100             ← 暗さ調整（後述）
+</code></pre><p>これで設定は完了です。<br>
+以下コマンドを実行すると顔を検知できるかテストできます。</p>
+<pre tabindex="0"><code>sudo howdy test
+</code></pre><p>テスト画面で『DARK FRAME』と表示される場合は暗さ調整が必要です。<br>
+設定ファイルの<code>dark_threshold</code>の値を大きくしてください。</p>
+<h3 id="顔の登録">顔の登録</h3>
+<p>以下コマンドで顔の登録をします。<br>
+コマンドを入力すると登録名の入力を求められるので必要に応じて入力してください。<br>
+（そのままEnterでも可）<br>
+その後、顔登録が始まるのでカメラを見つめて待機します。</p>
+<pre tabindex="0"><code>sudo howdy add
+</code></pre><p>これで<code>Added a new model to {ユーザー名}</code>と表示されれば登録完了です。</p>
+<h2 id="pam設定">pam設定</h2>
+<p><code>/etc/pam.d/</code>配下のファイルにHowdyの設定を追加します。<br>
+よく使いそうなのだとloginとsudoあたりかと思います。</p>
+<p><code>/etc/pam.d</code>配下のファイルには以下行を追加します。</p>
+<pre tabindex="0"><code>auth sufficient pam_python.so /lib/security/howdy/pam.py
+</code></pre><p>これでHowdyの設定は完了です。<br>
+顔認証でログインやsudoができるようになっていることを確認してください。</p>
+<p>使ってみた所感、確かに顔認証でログインできるのですが<br>
+ログイン後にChromeを起動したりするタイミングで結局パスワードを聞かれます。<br>
+本当にセキュアな部分は顔認証だけではダメなようでした。</p>
+<hr>
+<h2 id="トラブルシューティング">トラブルシューティング</h2>
+<h3 id="camera-path-is-not-configured-エラー">Camera path is not configured エラー</h3>
+<p><code>sudo howdy add</code>を実行すると以下エラーが出ました。</p>
+<pre tabindex="0"><code>Camera path is not configured correctly, please edit the &#39;device_path&#39; config value.
+Exception ignored in: &lt;function VideoCapture.__del__ at 0x7fe09a3a05e0&gt;
+Traceback (most recent call last):
+  File &#34;/usr/lib/security/howdy/recorders/video_capture.py&#34;, line 55, in __del__
+    self.internal.release()
+AttributeError: &#39;VideoCapture&#39; object has no attribute &#39;internal&#39;
+</code></pre><p>デバイスを自動で見つけることができなかったようです。<br>
+<code>sudo howdy config</code>でdevice_pathを指定してください。</p>
+<h3 id="no-face-detected-エラー">No face detected エラー</h3>
+<p><code>sudo howdy add</code>を実行すると以下エラーが出ました。</p>
+<pre tabindex="0"><code>Please look straight into the camera
+No face detected, aborting
+</code></pre><p>カメラを真っ直ぐ見ていても発生するのですが、これはキャプチャサイズが自動検知できていないのが原因でした。<br>
+<code>sudo howdy config</code>でframe_width/frame_heightを指定してください。</p>
+<h3 id="all-frames-were-too-dark-エラー">All frames were too dark エラー</h3>
+<p><code>sudo howdy add</code>を実行すると以下エラーが出ました。</p>
+<pre tabindex="0"><code>Please look straight into the camera
+All frames were too dark, please check dark_threshold in config
+Average darkness: [77.42311], Threshold: 50.0
+</code></pre><p>部屋を明るくしたり顔にライトを当てても駄目でした。<br>
+<code>sudo howdy config</code>でdark_thresholdを100にしたら治りました。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

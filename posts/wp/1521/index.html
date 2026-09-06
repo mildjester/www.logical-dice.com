@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>akamaiのレスポンスヘッダーをChromeで確認する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">akamaiのレスポンスヘッダーをChromeで確認する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2018-09-26 12:02:33 &#43;0000 UTC" class="catalogue-time">2018年09月26日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/chrome/">Chrome</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="背景">背景</h2>
+<p>今お手伝いをしている会社さんではakamaiを使ってページをキャッシュさせてます<br>
+akamaiについてはコチラ<br>
+<a href="https://www.akamai.com/jp/ja/" rel="noopener" target="_blank"><a href="https://www.akamai.com/jp/ja/">https://www.akamai.com/jp/ja/</a></a></p>
+<p>WEBページの開発をしていると、今自分が表示しているページが<br>
+akamaiのキャッシュなのかどうなのか知りたい時があります</p>
+<p>Google Chromeの開発者ツールを使えば一般的なレスポンスヘッダーは見れますが<br>
+akamaiのレスポンスヘッダーは特殊なので見えません</p>
+<p>curlコマンドにオプションをつけて叩く方法もありますが<br>
+ログイン必須の画面をチェックするにはCookieの設定もしたりしなければいけません<br>
+<a href="https://qiita.com/rasaka/items/fc96cd3b8f73a02477cb" rel="noopener" target="_blank"><a href="https://qiita.com/rasaka/items/fc96cd3b8f73a02477cb">https://qiita.com/rasaka/items/fc96cd3b8f73a02477cb</a></a></p>
+<h2 id="解決策">解決策</h2>
+<p>そんなとき、Chromeの拡張機能『CDN Headers &amp; Cookies』を使えば<br>
+簡単にakamaiのレスポンスヘッダーを見る事ができます<br>
+<a href="https://chrome.google.com/webstore/detail/cdn-headers-cookies/obldlamadkihjlkdjblncejeblbogmnb" rel="noopener" target="_blank"><a href="https://chrome.google.com/webstore/detail/cdn-headers-cookies/obldlamadkihjlkdjblncejeblbogmnb">https://chrome.google.com/webstore/detail/cdn-headers-cookies/obldlamadkihjlkdjblncejeblbogmnb</a></a></p>
+<p>使い方は簡単です。</p>
+<h3 id="ストアからchromeに追加する">①ストアからChromeに追加する</h3>
+<img src="https://www.logical-dice.com/images/2018/09/CdnHeader001.png" alt="" />  
+<h3 id="チェックしたい対象ページを開く">②チェックしたい対象ページを開く</h3>
+<h3 id="chromeツールバーにいる黄色いやつをクリックする">③Chromeツールバーにいる黄色いやつをクリックする</h3>
+<img src="https://www.logical-dice.com/images/2018/09/CdnHeader002.png" alt="" />  
+<h3 id="response-headersタグを開きステータスを確認する">④Response Headersタグを開きステータスを確認する</h3>
+<img src="https://www.logical-dice.com/images/2018/09/40405a7c2e0534803ad059d834f81aa7.png" alt="" />  
+<p>ステータスの意味などはakamaiのコミュニティにて説明してくれていました<br>
+<a href="https://community.akamai.com/customers/s/article/Akamairxdxn3?language=en_US" rel="noopener" target="_blank"><a href="https://community.akamai.com/customers/s/article/Akamairxdxn3?language=en_US">https://community.akamai.com/customers/s/article/Akamairxdxn3?language=en_US</a></a></p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

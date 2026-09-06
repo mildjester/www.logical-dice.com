@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Trying Out Vite|Logical Dice Techblog</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice Techblog" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/en/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice Techblog" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Trying Out Vite</h1>
+		<div class="post-info">
+				<p class="publish-date">posted: <time datetime="2023-02-11 00:00:00 &#43;0000 UTC" class="catalogue-time">2023-02-11</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/en/tags/vite/">Vite</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>Vite is a tool for compiling JavaScript and CSS, similar to Webpack.<br>
+It was created by Evan You, the developer of Vue.js, and seems easy to get started with, just like Vue.js.<br>
+<a href="https://vitejs.dev/">https://vitejs.dev/</a></p>
+<p>I had an old site that could no longer compile, so I decided to switch to Vite.<br>
+The site itself is simple—it consists of only a single page, and the main requirement is compiling JavaScript and Sass.</p>
+<h1 id="creating-a-vite-project">Creating a Vite Project</h1>
+<p>First, create a new Vite project using the following command:</p>
+<pre tabindex="0"><code>$ npm create vite@latest
+</code></pre><p>It will ask for confirmation, so enter <strong>&ldquo;y&rdquo;</strong>.</p>
+<pre tabindex="0"><code>Ok to proceed? (y) y
+</code></pre><p>Next, enter the project name.<br>
+For this example, I&rsquo;ll use <strong>&ldquo;hogehoge-prj&rdquo;</strong>.</p>
+<pre tabindex="0"><code>✔ Project name: … hogehoge-prj
+</code></pre><p>Then, choose the framework.<br>
+Since my site doesn&rsquo;t use a framework, I&rsquo;ll select <strong>&ldquo;Vanilla&rdquo;</strong>.<br>
+(Use the up/down arrow keys to select.)</p>
+<pre tabindex="0"><code>? Select a framework: › - Use arrow-keys. Return to submit.
+❯   Vanilla
+    Vue
+    React
+    Preact
+    Lit
+    Svelte
+    Others
+</code></pre><p>Next, choose between JavaScript and TypeScript.<br>
+I&rsquo;ll go with <strong>JavaScript</strong>.<br>
+(Use the up/down arrow keys to select.)</p>
+<pre tabindex="0"><code>? Select a variant: › - Use arrow-keys. Return to submit.
+❯   JavaScript
+    TypeScript
+</code></pre><p>This completes the project setup, and you&rsquo;ll see the following message:</p>
+<pre tabindex="0"><code>Scaffolding project in /Users/goro/workspace/hogehoge-prj...
+
+Done. Now run:
+
+  cd hogehoge-prj
+  npm install
+  npm run dev
+</code></pre><p>If you run these commands, the default page will launch:</p>
+<pre tabindex="0"><code>VITE v4.1.1  ready in 170 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h to show help
+</code></pre><p>You&rsquo;ll see a simple page that increments a counter when clicked.<br>
+<img src="https://www.logical-dice.com/posts/2023/02/11/vite-tutorial001.png"/></p>
+<p>The following files are generated:</p>
+<pre tabindex="0"><code>counter.js
+index.html
+javascript.svg
+main.js
+node_modules/
+package-lock.json
+package.json
+public/
+style.css
+</code></pre><h1 id="installing-sass">Installing Sass</h1>
+<p>Vite does not support Sass by default, so install it separately:</p>
+<pre tabindex="0"><code>$ npm add -D sass
+</code></pre><h1 id="integrating-an-existing-site-with-vite">Integrating an Existing Site with Vite</h1>
+<p>Now, I&rsquo;ll migrate an existing site into the Vite project.</p>
+<h2 id="editing-indexhtml">Editing index.html</h2>
+<p>First, modify <code>index.html</code> to include the page template (HTML structure).<br>
+Instead of manually linking compiled JavaScript and CSS, just include <code>main.js</code> at the bottom of the <code>&lt;body&gt;</code>.</p>
+<p>Any CSS files placed in the <code>public</code> directory (explained later) should be explicitly linked.</p>
+<p>Here is the default <code>index.html</code>:</p>
+<pre tabindex="0"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&#34;UTF-8&#34; /&gt;
+    &lt;link rel=&#34;icon&#34; type=&#34;image/svg+xml&#34; href=&#34;/vite.svg&#34; /&gt;
+    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34; /&gt;
+    &lt;title&gt;Vite App&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&#34;app&#34;&gt;&lt;/div&gt;
+    &lt;script type=&#34;module&#34; src=&#34;/main.js&#34;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h3 id="editing-mainjs">Editing main.js</h3>
+<p>In <code>main.js</code>, import the necessary JavaScript files, Sass files, and images.</p>
+<p>By default, the <code>&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;</code> element in index.html is populated with content via JavaScript.However, for static content, it&rsquo;s better to write it directly in index.html.</p>
+<p>For existing sites, <code>main.js</code> only needs to contain import statements for the necessary files.</p>
+<p>Here is the default main.js:</p>
+<pre tabindex="0"><code>import &#39;./style.css&#39;
+import javascriptLogo from &#39;./javascript.svg&#39;
+import { setupCounter } from &#39;./counter.js&#39;
+
+document.querySelector(&#39;#app&#39;).innerHTML = `
+  &lt;div&gt;
+    &lt;a href=&#34;https://vitejs.dev&#34; target=&#34;_blank&#34;&gt;
+      &lt;img src=&#34;/vite.svg&#34; class=&#34;logo&#34; alt=&#34;Vite logo&#34; /&gt;
+    &lt;/a&gt;
+    &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript&#34; target=&#34;_blank&#34;&gt;
+      &lt;img src=&#34;${javascriptLogo}&#34; class=&#34;logo vanilla&#34; alt=&#34;JavaScript logo&#34; /&gt;
+    &lt;/a&gt;
+    &lt;h1&gt;Hello Vite!&lt;/h1&gt;
+    &lt;div class=&#34;card&#34;&gt;
+      &lt;button id=&#34;counter&#34; type=&#34;button&#34;&gt;&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;p class=&#34;read-the-docs&#34;&gt;
+      Click on the Vite logo to learn more
+    &lt;/p&gt;
+  &lt;/div&gt;
+`
+
+setupCounter(document.querySelector(&#39;#counter&#39;))
+</code></pre><p>Any imported files will have cache busting applied, meaning their filenames will include a random string to prevent caching.For example, the line src=&quot;${javascriptLogo}&quot; ensures that the correct (cache-busted) image file is loaded.</p>
+<h3 id="placing-static-files">Placing Static Files</h3>
+<p>The <code>public</code> directory holds files that should be placed in the document root as they are.
+This includes JavaScript or CSS files that don&rsquo;t need compiling, as well as images that shouldn&rsquo;t have cache busting applied.</p>
+<h3 id="deleting-unnecessary-files">Deleting Unnecessary Files</h3>
+<p>Since they are not needed, delete the following files:</p>
+<ul>
+<li>counter.js</li>
+<li>javascript.svg</li>
+<li>public/vite.svg</li>
+</ul>
+<hr>
+<p>This completes the setup for using Vite!</p>
+<p>You can run the local development server with:<code>npm run dev</code><br>
+And compile the project for production with:<code>npm run build</code><br>
+The compiled files will be output to the dist directory.</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

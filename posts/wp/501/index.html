@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>gitの履歴から特定のコミット以降の履歴だけを残してクリアする|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">gitの履歴から特定のコミット以降の履歴だけを残してクリアする</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2017-04-10 19:39:28 &#43;0000 UTC" class="catalogue-time">2017年04月10日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/git/">git</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>個人で開発しているアプリケーションのgitリポジトリで履歴がグチャグチャしてしまったので、<br>
+コミット履歴をちょっと弄った時のメモです。</p>
+<h1 id="特に他人と共同で修正しているリポジトリであれば尚更です">====================================<br>
+<font color="red">※注意※<br>
+gitの履歴は過去に何があったかを調べる際の手がかりになるので、<br>
+削除する理由がないのであれば残しておきましょう。<br>
+特に、他人と共同で修正しているリポジトリであれば尚更です。</font></h1>
+<p>履歴を残し始める直前のバージョンの状態を作る</p>
+<pre tabindex="0"><code># git clone &lt;git URL&gt; tmpRepo1  
+# cd tmpRepo1  
+# git checkout {残し始めたいコミットの直前のコミット番号}  
+# rm -rf .git  
+# cd ../
+</code></pre><p>作業用のリポジトリを作る</p>
+<pre tabindex="0"><code># git clone &lt;git URL&gt; tmpRepo2  
+# cd tmpRepo2  
+# git checkout --orphan tmpBr
+</code></pre><p>初期状態をコミットする</p>
+<pre tabindex="0"><code># rm -rf &lt;.git以外の全て&gt;  
+# cp -r ../tmpRepo1/* .  
+# git add .  
+# git commit -m &#34;Initialization&#34;
+</code></pre><p>残したいコミット履歴に対して、次の処理を過去から順に繰り返し実施する</p>
+<pre tabindex="0"><code># git cherry-pick {残したいコミット}
+</code></pre><p>なお、残したいコミット履歴がマージ履歴の場合は以下の手順となる</p>
+<pre tabindex="0"><code># git cherry-pick -m 1 {残したいマージコミット}  
+# git commit --allow-empty
+</code></pre><p>コメントの編集画面が出るが、そのまま:wqして抜ける</p>
+<p>意図した履歴が生成されたか確認</p>
+<pre tabindex="0"><code># git log
+</code></pre><p>masterにプッシュする</p>
+<pre tabindex="0"><code># git checkout -B master  
+# git push --force
+</code></pre><p>一時的に作ったブランチを削除</p>
+<pre tabindex="0"><code># git branch -d tmpBr
+</code></pre>
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

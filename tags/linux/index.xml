@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Linux on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/linux/</link>
+		<description>Recent content in Linux on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Wed, 05 Aug 2020 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>改行コードを一括で置換する</title>
+				<link>https://www.logical-dice.com/posts/2020/08/05/replace-with-find-sed/</link>
+				<pubDate>Wed, 05 Aug 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/08/05/replace-with-find-sed/</guid>
+				<description>findコマンドとsedコマンドで改行コードをCRLFからLFに置換します。</description>
+			</item>
+			<item>
+				<title>EC2上でオレオレ証明書を作る</title>
+				<link>https://www.logical-dice.com/posts/2020/06/14/oreore-certification/</link>
+				<pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2020/06/14/oreore-certification/</guid>
+				<description>最近はめっきり使われなくなったオレオレ証明書を作成する手順です。</description>
+			</item>
+			<item>
+				<title>Linuxで別ユーザとしてコマンドを実行する</title>
+				<link>https://www.logical-dice.com/posts/2019/10/10/linux-sudo/</link>
+				<pubDate>Thu, 10 Oct 2019 00:00:00 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/2019/10/10/linux-sudo/</guid>
+				<description>sudoコマンドの使い方メモです</description>
+			</item>
+	</channel>
+</rss>

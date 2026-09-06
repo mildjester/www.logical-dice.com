@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>lodashのdebounceとthrottleの違い|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">lodashのdebounceとthrottleの違い</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2021-06-06 00:00:00 &#43;0000 UTC" class="catalogue-time">2021年06月06日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/javascript/">javascript</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://lodash.com/docs/">lodash document</a></li>
+</ul>
+<hr>
+<p>WEBページ上のボタンが連打された際にアクセス流量制限をするために、lodashのdebounceやthrottleを使うことがあります。<br>
+debounceもthrottleもどちらもリクエスト間の流量制限ができるのですが、具体的に何が変わるのか調べました。</p>
+<h2 id="先にまとめ">先にまとめ</h2>
+<p>debounceとthrottleの違いは以下の通りです。<br>
+オプションは指定せずデフォルトで呼び出す場合を想定しています。</p>
+<h3 id="debounce">debounce</h3>
+<p>処理呼び出し後、指定時間経過後に発火します。<br>
+指定時間内に処理が連続して呼び出された場合は最後に呼び出されてから指定時間後に発火します。<br>
+debounceメソッドの処理はsetTimeoutで実行されるので、<code>await</code>を指定しても待ちません。</p>
+<h3 id="throttle">throttle</h3>
+<p>処理呼び出し後、すぐに処理が走ります。<br>
+指定時間内に処理が連続して呼び出された場合は、指定時間間隔で発火します。<br>
+throttleメソッドの処理は最初に実行される1回は<code>await</code>で待ちますが、指定時間後に最初に即走る処理は待ちますが、throttleで遅延させている処理は待ちません。</p>
+<h3 id="おすすめ">おすすめ</h3>
+<p>debounce(throttle)はオプションを指定することで挙動をカスタマイズできるので、必要なら自分の期待する挙動となるようにオプションを指定するのがオススメ。</p>
+<h2 id="調べた内容">調べた内容</h2>
+<h3 id="debounceについて">debounceについて</h3>
+<p>debounceについてはこちらに記載があります。<br>
+<a href="https://lodash.com/docs/4.17.15#debounce">https://lodash.com/docs/4.17.15#debounce</a></p>
+<pre tabindex="0"><code>_.debounce(func, [wait=0], [options={}])
+</code></pre><p>各項目については以下の通り。</p>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>func</td>
+					<td>流量制限対象の処理(function)です。</td>
+			</tr>
+			<tr>
+					<td>wait</td>
+					<td>処理が呼び出されてから実行するまでの待機時間です。待機中に再度呼び出されたら、そこからさらに待機時間待ちます。</td>
+			</tr>
+			<tr>
+					<td>option</td>
+					<td>任意オプションをオブジェクトで指定します。</td>
+			</tr>
+			<tr>
+					<td>option.leading</td>
+					<td>待機前に処理を実行するかどうか。デフォルト：false。</td>
+			</tr>
+			<tr>
+					<td>option.maxWait</td>
+					<td>処理が連続して呼び出されたとしても、maxWaitで指定した時間が経過したら処理を走らせます。デフォルト：0（指定なし）。</td>
+			</tr>
+			<tr>
+					<td>option.trailing</td>
+					<td>待機後に処理を実行するかどうか。デフォルト：true。</td>
+			</tr>
+	</tbody>
+</table>
+<p>つまり、optionをデフォルトのまま呼び出すのであれば、debounceは呼び出されてから指定時間待機してから発火します。<br>
+maxWaitの指定が無いので待機時間中に呼び出され続けたら、ずっと処理は発火しません。</p>
+<h3 id="throttleについて">throttleについて</h3>
+<p>throttleについてはこちらに記載があります。<br>
+<a href="https://lodash.com/docs/4.17.15#throttle">https://lodash.com/docs/4.17.15#throttle</a></p>
+<pre tabindex="0"><code>_.throttle(func, [wait=0], [options={}])
+</code></pre><p>各項目については以下の通り。</p>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>func</td>
+					<td>流量制限対象の処理(function)です。</td>
+			</tr>
+			<tr>
+					<td>wait</td>
+					<td>処理が呼び出される間隔の時間です。</td>
+			</tr>
+			<tr>
+					<td>option</td>
+					<td>任意オプションをオブジェクトで指定します。</td>
+			</tr>
+			<tr>
+					<td>option.leading</td>
+					<td>待機前に処理を実行するかどうか。デフォルト：true。</td>
+			</tr>
+			<tr>
+					<td>option.trailing</td>
+					<td>待機後に処理を実行するかどうか。デフォルト：true。</td>
+			</tr>
+	</tbody>
+</table>
+<p>optionはdebounceとほぼ同じですが、leadingのデフォルトがtrueでmaxWaitの指定がありません。</p>
+<p>throttleのソースを見ると分かりますが、throttleはdebounceのオプションを指定して呼び出しているだけです。<br>
+<a href="https://github.com/lodash/lodash/blob/4.17.15/lodash.js#L10897-L10913">https://github.com/lodash/lodash/blob/4.17.15/lodash.js#L10897-L10913</a></p>
+<p>デフォルトで<code>leading</code>がtrueになり、waitで指定された時間が<code>option.maxWait</code>にも指定されています。<br>
+つまり、throttleはデフォルト値が違うdebounceです。</p>
+<h2 id="図解">図解</h2>
+<p>ボタンクリックのイベントハンドラにdebounce/throttleをデフォルトオプションで設定したとします。</p>
+<h3 id="1回クリック">1回クリック</h3>
+<p>1回だけクリックされた時の挙動は以下の通りです。<br>
+<img src="https://www.logical-dice.com/images/2021/06/lodash-debounce-vs-throttle-001.png"/></p>
+<p>debounceの場合はwait後、throttleの場合はwait前に処理が走ります。<br>
+debounceだとクリックしてから反応するまで、1秒未満かもしれませんが少しタイムラグが感じられるかもしれません。</p>
+<h3 id="連打クリック">連打クリック</h3>
+<p>一瞬でクリック連打された場合は以下の通りです。<br>
+<img src="https://www.logical-dice.com/images/2021/06/lodash-debounce-vs-throttle-002.png"/></p>
+<p>debounceについては1回クリックした際と同じ挙動になりますが、throttleについてはwait後にも処理が走ります。<br>
+throttleだと2回処理が走ってしまうのは微妙ですね。</p>
+<h3 id="クリックし続ける">クリックし続ける</h3>
+<p>wait中に一定間隔でクリックし続けた場合は以下の通りです。<br>
+<img src="https://www.logical-dice.com/images/2021/06/lodash-debounce-vs-throttle-003.png"/></p>
+<p>debounceはクリックし続けている間は処理は走らず、最後のクリックからwaitで指定した時間だけ待って処理が走ります。<br>
+throttleはクリックし続けている間もwaitで指定した時間間隔で処理が走ります。<br>
+あまり何度も走らせたくない処理であればdebounceで、一定間隔空けば何度走っても良いのであればthrottleが向いてそうです。</p>
+<h2 id="思ったこと">思ったこと</h2>
+<p>debounceもthrottleも期待する挙動とはズレている事もあるので、<br>
+期待する挙動となるようにdebounceのオプションを設定すると良いのかなと思いました。</p>
+<p>例えばクリックした時に遅延なく処理が走って欲しくて、かつ一瞬で連打した際も一定間隔でクリックし続けた場合も1回だけ処理が走って欲しい場合、<br>
+optionのleadingがtrueでtrailingがfalseになれば良さそうです。</p>
+<pre tabindex="0"><code>_.debounce(callback, wait, {leading: true, trailing: false})
+</code></pre><p>もし一定間隔でクリックし続けた場合は定期的に処理が走って欲しいのであれば、debounceではなくthrottleを使えば良いです。</p>
+<pre tabindex="0"><code>_.throttle(callback, wait, {leading: true, trailing: false})
+// debounce(callback, wait, {leading: true, maxWait: wait, trailing: false}) と同じ
+</code></pre><p>などなど、optionの指定次第で可能性は広がると思いました。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

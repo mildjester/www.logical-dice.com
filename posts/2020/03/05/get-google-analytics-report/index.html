@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Google Analyticsから直近のページ閲覧数を取得する|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">Google Analyticsから直近のページ閲覧数を取得する</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-03-05 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年03月05日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/php/">PHP</a></div> <div class="tags_item"><a href="https://www.logical-dice.com/tags/googleservice/">GoogleService</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h2 id="環境">環境</h2>
+<ul>
+<li>PHP  7.3</li>
+<li>google/apiclient  2.4</li>
+</ul>
+<h2 id="参考">参考</h2>
+<p><a href="https://developers.google.com/analytics/devguides/reporting/core/v3/quickstart/service-php?hl=ja">https://developers.google.com/analytics/devguides/reporting/core/v3/quickstart/service-php?hl=ja</a></p>
+<hr>
+<p>商品ページにて「24時間以内に○○人が見ています」という販促メッセージを出す時に、乱数を使っているサービスもあるようですが、
+それはさすがに嫌なのでGoogle Analyticsから閲覧実績を取得して表示してみます。<br>
+なお、Google Analyticsからは「昨日から今日まで」のように日付指定しかできないので、「10分以内に」のように厳密な時間を指定して閲覧者数を表示することはできません。</p>
+<h2 id="gcpのサービスアカウント作成">GCPのサービスアカウント作成</h2>
+<p>まず、以下ページにてサービスアカウントを作成します。<br>
+※もしGoogle CloudPlatform(GCP)のプロジェクトを作成していない場合は「プロジェクトを作成」をクリックしてGCPプロジェクトを作成してから実行します。<br>
+<a href="https://console.developers.google.com/iam-admin/serviceaccounts?hl=ja">https://console.developers.google.com/iam-admin/serviceaccounts?hl=ja</a></p>
+<p>「プロジェクトの選択」よりサービスアカウントを作成するプロジェクトを選択し、<br>
+「＋サービスアカウントを作成」をクリックします。</p>
+<p>サービスアカウントの作成画面が開くので以下の通り入力して「作成」をクリックしてください。</p>
+<table>
+	<thead>
+			<tr>
+					<th>項目</th>
+					<th>入力内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>サービスアカウント名</td>
+					<td>独自の自分で判断できる名前</td>
+			</tr>
+			<tr>
+					<td>サービスアカウントID</td>
+					<td>独自のID(サービスアカウント名を入力したら勝手に入ります)</td>
+			</tr>
+			<tr>
+					<td>サービスアカウントの説明</td>
+					<td>自分が分かる説明</td>
+			</tr>
+	</tbody>
+</table>
+<p>次にサービスアカウントの権限設定画面が開きますが、そのまま「続行」をクリックします。</p>
+<p>その次の画面で「ユーザーにこのサービス アカウントへのアクセス権を付与」は特に何もしません。<br>
+「キーの作成」の中の「キーを作成」をクリックし、キーのタイプはJSONを選択して「作成」をクリックします。<br>
+JSONファイルがダウンロードされますので取っておいてください。</p>
+<p>サービスアカウントの作成画面はそのまま「完了」をクリックして終わります。<br>
+サービスアカウント一覧に戻り、作成したサービスアカウントのメールアドレスが表示されるので記録しておきます。</p>
+<h2 id="google-analytics-apiの有効化">Google Analytics APIの有効化</h2>
+<p>以下ページにアクセスし、Google Analytics APIを有効化してください。<br>
+<a href="https://console.developers.google.com/apis/api/analytics.googleapis.com/overview">https://console.developers.google.com/apis/api/analytics.googleapis.com/overview</a></p>
+<h2 id="google-analyticsの設定">Google Analyticsの設定</h2>
+<p>さきほど作成したサービスアカウントをGoogle Analyticsに追加します。<br>
+アカウントユーザーまたはプロパティユーザーにサービスアカウントのメールアドレスを追加します。<br>
+権限は「表示と分析」のみ(デフォルト)で大丈夫です。</p>
+<h2 id="スクリプトの作成">スクリプトの作成</h2>
+<p>PHPとcomposerの環境は構築済みの前提とします。</p>
+<p>まず、Google Analytics APIのパッケージを取得します。</p>
+<pre tabindex="0"><code>composer require google/apiclient
+</code></pre><p>次に以下のPHPスクリプトを作成します。</p>
+<pre tabindex="0"><code>&lt;?php
+require_once __DIR__ . &#39;/vendor/autoload.php&#39;;
+
+$analytics = initializeAnalytics();
+$profile = getFirstProfileId($analytics);
+$results = getResults($analytics, $profile);
+printResults($results);
+
+/**
+ * Google Clientを初期化する
+ */
+function initializeAnalytics()
+{
+  $KEY_FILE_LOCATION = {{GCPのサービスアカウント作成時に取得したjsonファイルへのパス}};
+  // 例：$KEY_FILE_LOCATION = __DIR__ . &#39;/config/hogehoge.json&#39;;
+
+  $client = new Google_Client();
+  $client-&gt;setApplicationName(&#34;Hello Analytics Reporting&#34;);    // 任意の名前に変更してよいです
+  $client-&gt;setAuthConfig($KEY_FILE_LOCATION);
+  $client-&gt;setScopes([&#39;https://www.googleapis.com/auth/analytics.readonly&#39;]);
+  $analytics = new Google_Service_Analytics($client);
+
+  return $analytics;
+}
+
+/**
+ * プロファイルを取得する
+ */
+function getFirstProfileId($analytics) {
+  $accounts = $analytics-&gt;management_accounts-&gt;listManagementAccounts();
+
+  if (count($accounts-&gt;getItems()) &gt; 0) {
+    $items = $accounts-&gt;getItems();
+    $firstAccountId = $items[0]-&gt;getId();
+
+    $properties = $analytics-&gt;management_webproperties
+        -&gt;listManagementWebproperties($firstAccountId);
+
+    if (count($properties-&gt;getItems()) &gt; 0) {
+      $items = $properties-&gt;getItems();
+      $firstPropertyId = $items[0]-&gt;getId();
+
+      $profiles = $analytics-&gt;management_profiles
+          -&gt;listManagementProfiles($firstAccountId, $firstPropertyId);
+
+      if (count($profiles-&gt;getItems()) &gt; 0) {
+        $items = $profiles-&gt;getItems();
+
+        return $items[0]-&gt;getId();
+
+      } else {
+        throw new Exception(&#39;No views (profiles) found for this user.&#39;);
+      }
+    } else {
+      throw new Exception(&#39;No properties found for this user.&#39;);
+    }
+  } else {
+    throw new Exception(&#39;No accounts found for this user.&#39;);
+  }
+}
+
+/**
+ *  取得条件を設定して取得する
+ */
+function getResults($analytics, $profileId) {
+  $from = &#39;1daysAgo&#39;;                          // 昨日から
+  $to    = &#39;today&#39;;                            // 今日までのデータを取得します
+  $metrics = &#34;ga:pageviews&#34;;                   // 閲覧者数を取得します
+  $option = [
+    &#34;dimensions&#34; =&gt; &#39;ga:pagepath&#39;,             // ページパス別に閲覧数を取得します
+    &#34;sort&#34; =&gt; &#34;-ga:pageviews&#34;,                 // 閲覧数でソートします。マイナスを付けているので降順になります
+    // &#34;filters&#34; =&gt; &#34;ga:pagepath%3D@/article&#34;,    // コメントアウトを外すと、ページパスに「/article」を含むものに絞ります
+  ];
+
+  return $analytics-&gt;data_ga-&gt;get(
+        &#39;ga:&#39; . $profileId,
+        $from,
+        $to,
+        $metrics,
+        $option
+  );
+ }
+
+/**
+ * 取得結果を出力する
+ */
+function printResults($results) {
+  echo &#39;page url,previews&#39; . PHP_EOL;
+  foreach ($results as $result){
+    echo $result[0] . &#39;,&#39; . $result[1] . PHP_EOL;
+  }
+}
+</code></pre><p>このPHPを実行すればページ別閲覧者数が取得できます。<br>
+取得した結果の中から該当ページの閲覧数を抜き出してページに表示すれば完了です。</p>
+<p>上記ソース内のfiltersでページURLを細かく絞ってしまえば現在取得したいページの閲覧数だけ取れますが、<br>
+Google Analytics APIの応答は数秒かかるので各ページ個別に閲覧数を取るのは現実的ではありません。<br>
+なので、上記のように閲覧数の多いものから順に取ってキャッシュに入れておき、基本的にはキャッシュから取得するようにした方が良さそうです。<br>
+(キャッシュは1分間に1度更新するなど)</p>
+<h3 id="設定する値について">設定する値について</h3>
+<p>こちらのページでmetricsやdimensionに設定できる値がまとめられています。<br>
+閲覧者数以外を取得したい場合など、参考にしてください。<br>
+<a href="https://ga-dev-tools.appspot.com/dimensions-metrics-explorer/">https://ga-dev-tools.appspot.com/dimensions-metrics-explorer/</a></p>
+<p>その他解説はこちらの公式ページをご参照ください。<br>
+<a href="https://developers.google.com/analytics/devguides/reporting/core/v3/reference">https://developers.google.com/analytics/devguides/reporting/core/v3/reference</a></p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>HP Proliant Microserver Gen 8 にCentOS7を入れる|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">HP Proliant Microserver Gen 8 にCentOS7を入れる</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2016-12-01 13:29:48 &#43;0000 UTC" class="catalogue-time">2016年12月01日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/centos/">CentOS</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<h1 id="作業環境">■作業環境</h1>
+<p>・OS X El Capitan 10.11.6</p>
+<p> </p>
+<h1 id="手順">■手順</h1>
+<h2 id="centos7の準備">CentOS7の準備</h2>
+<p>まず、CentOSのISOイメージをダウンロードします。<br>
+ここから『Everything ISO』をダウンロードしておきます。<br>
+<a href="https://www.centos.org/download/" target="_blank"><a href="https://www.centos.org/download/">https://www.centos.org/download/</a></a></p>
+<p>ダウンロードしたISOをUSBメモリに起動可能USBとして焼きます。<br>
+1.USBをMacに挿す。<br>
+2.以下コマンドにてUSBメモリのdisk番号を確認する。</p>
+<pre tabindex="0"><code>$ diskutil list
+</code></pre><p>3.以下のコマンドにてUSBメモリを初期化する。</p>
+<pre tabindex="0"><code>$ diskutil eraseDisk MS-DOS NOTITLE /dev/diskX  
+※「NOTITLE」作成するUSB名(任意)  
+※diskXは1.で確認したdisk番号
+</code></pre><p>4.焼き込みをするため、USBメモリをアンマウント</p>
+<pre tabindex="0"><code>$ diskutil unmountDisk /dev/diskX
+</code></pre><p>5.ISOを書き込む。</p>
+<pre tabindex="0"><code>$ cd {CentOSのISOがある場所}  
+$ sudo dd if=CentOS-7-x86_64-Everything-1511.iso of=/dev/diskX bs=4028  
+※処理完了まで、かなり待ちます
+</code></pre><p>6.USBメモリを取り外し可能状態にする。</p>
+<pre tabindex="0"><code>$ diskutil eject /dev/diskX
+</code></pre><h2 id="raidコントローラの準備">RAIDコントローラの準備</h2>
+<p>次にGen8用のRAIDコントローラをダウンロードします。<br>
+これがないとHPサーバが備えているのRAID機能が使えない。<br>
+<a href="http://downloads.linux.hpe.com/SDR/repo/spp/RedHat/7/x86_64/current/" target="_blank"><a href="http://downloads.linux.hpe.com/SDR/repo/spp/RedHat/7/x86_64/current/">http://downloads.linux.hpe.com/SDR/repo/spp/RedHat/7/x86_64/current/</a></a><br>
+ここから「hpvsa-1.2.14-113.rhel7u2.x86_64.dd.gz」をダウンロードします。<br>
+※『rhel7u2』の部分はインストールするCentOSに合わせて読み替えてください。</p>
+<p>ダウンロードしたら、CentOSを焼いたUSBメモリとは別のUSBメモリに焼きます。<br>
+MacはUSBメモリを挿すと自動でマウントするので、ディスクユーティリティからマウント解除して<br>
+以下コマンドを実施。<br>
+（先にUSBの初期化〜アンマウントはISO書き込みと同じ手順を実施）</p>
+<pre tabindex="0"><code>$ cd {RAIDドライバをダウンロードした場所}  
+$ gunzip hpvsa-1.2.14-113.rhel7u2.x86_64.dd.gz  
+$ sudo dd if=hpvsa-1.2.14-113.rhel7u2.x86_64.dd of=/dev/diskX  
+$ diskutil eject /dev/diskX
+</code></pre><h2 id="インストール実施">インストール実施</h2>
+<p>作成したUSBメモリ２本をサーバに刺し、サーバを起動します。<br>
+（事前にUSBブートできるようにBIOS設定はしておくこと）</p>
+<p>しばらくするとCentOSの文字が表示され、インストール方法を選択画面が表示されます。<br>
+ここでEscを押下すると「boot:」というプロンプトが現れるので、 以下を入力する。</p>
+<pre tabindex="0"><code>linux modprobe.blacklist=ahci inst.dd
+</code></pre><p>インストールが進み途中でドライバーが入ったディスクの選択画面が表示されます。<br>
+まず<code>r</code>と入力してディスク一覧の再読み込みを行ない、該当するディスクの番号を入力します。</p>
+<p>次にドライバー一覧が表示され、インストールするドライバーを選択しろと言われるので<br>
+該当するドライバの番号を入力します。<br>
+その後、<code>c</code>を入力して続行します。</p>
+<p>最後にディスク一覧が表示されるので、RAIDコントローラが入っていたUSBメモリを抜き<br>
+<code>r</code>を入力する。<br>
+するとRAIDコントローラの入ったUSBメモリが消え、ISOが入ったUSBが一番上に表示されるはずなので<br>
+そのまま<code>c</code>を入力して続行します。</p>
+<p>あとは通常のインストール通りです。<br>
+表示される質問事項を設定していけば完了です。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>

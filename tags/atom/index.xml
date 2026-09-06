@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Atom on Logical Dice 技術ブログ</title>
+		<link>https://www.logical-dice.com/tags/atom/</link>
+		<description>Recent content in Atom on Logical Dice 技術ブログ</description>
+		<generator>Hugo</generator>
+		<language>ja</language>
+		
+		
+		
+		
+			<lastBuildDate>Fri, 29 Sep 2017 19:11:15 +0000</lastBuildDate>
+		
+			<atom:link href="https://www.logical-dice.com/tags/atom/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Atom IDEの環境構築（PHP、Go）</title>
+				<link>https://www.logical-dice.com/posts/wp/708/</link>
+				<pubDate>Fri, 29 Sep 2017 19:11:15 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/708/</guid>
+				<description>■環境macOS Sierra 10.12.6Atom 1.21.0-beta2■参考にしたサイト公式サイトhttps://id&amp;hellip;</description>
+			</item>
+			<item>
+				<title>【Ubuntu】atomのインストール</title>
+				<link>https://www.logical-dice.com/posts/wp/139/</link>
+				<pubDate>Wed, 02 Dec 2015 21:37:16 +0000</pubDate>
+				<guid>https://www.logical-dice.com/posts/wp/139/</guid>
+				<description>Ubuntu環境にテキストエディタのatomをインストールする手順です。■環境ubuntu 15.04以下サイトよりインストーラ&amp;hellip;</description>
+			</item>
+	</channel>
+</rss>

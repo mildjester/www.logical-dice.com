@@ -1,0 +1,136 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>オートコンプリートデモ|Logical Dice技術ブログ</title>
+</head>
+<body>
+<h2>都道府県オートコンプリートデモ</h2>
+<input type="text" id="keyword" placeholder="都道府県名を入れてください" autocomplete="off"/>
+<ul id="outputBox"></ul>
+
+<script>
+// 都道府県一覧
+const prefectureList = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県',
+              '茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県',
+              '新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県',
+              '静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県',
+              '奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県',
+              '徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県',
+              '熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+
+// in/out要素を変数に入れておく
+const inputElm = document.getElementById('keyword');
+const outboxElm = document.getElementById('outputBox');
+
+/**
+ * テキストボックスに文字入力時
+ */
+inputElm.addEventListener('compositionend', function(e) {
+    // タブキーは次の要素に移動させるのでスルー
+    if (e.key == 'Tab') {
+        return;
+    }
+
+    outboxElm.innerHTML = '';
+    let _this = this;
+    setTimeout(function(){
+        // 入力された文字を含む都道府県を抽出する
+        prefectureList.forEach(function(prefecture){
+            if (prefecture.indexOf(_this.value) != -1) {
+                let liElm = document.createElement('li');
+                liElm.setAttribute('tabindex', '0');
+
+                // 表示する選択肢にクリックイベントを設定する
+                liElm.onclick = function() {
+                    // 選択肢をクリックしたらテキストボックスに反映する
+                    inputElm.value = this.innerHTML;
+                    outboxElm.innerHTML = '';
+                }
+
+                // キーワードを含む選択肢をulに追加する
+                let txtNode = document.createTextNode(prefecture);
+                liElm.appendChild(txtNode);
+                outboxElm.appendChild(liElm);
+            }
+        });
+    }, 10);
+});
+
+/**
+ * テキストボックスにフォーカスが当たっている時のキー操作
+ */
+inputElm.addEventListener('keydown', function(e) {
+    // 下キーを入力されたら選択肢の一番上にフォーカスを当てる
+    if (e.key == 'ArrowDown' || e.key == 'Down') {
+        let firstElm = outboxElm.getElementsByTagName('li')[0];
+        if (firstElm) {
+            firstElm.focus();
+        }
+        e.preventDefault();
+    }
+});
+
+/**
+ * 選択肢にフォーカスが当たっている時のキー操作 or Enter
+ */
+outboxElm.addEventListener('keydown', function(e) {
+    var currentElm = document.activeElement;
+
+    // 下キーを入力されたら次の選択肢にフォーカスを当てる
+    // ブラウザによりArrowDownだったりDownだったりする
+    if (e.key == 'ArrowDown' || e.key == 'Down') {
+        if (currentElm.nextElementSibling) {
+            currentElm.nextElementSibling.focus();
+        }
+        e.preventDefault();
+    }
+    // 上キーを入力されたら前の選択肢にフォーカスを当てる
+    // ブラウザによりArrowUpだったりUpだったりする
+    if (e.key == 'ArrowUp' || e.key == 'Up') {
+        if (currentElm.previousElementSibling) {
+            currentElm.previousElementSibling.focus();
+        }
+        e.preventDefault();
+    }
+    // Enterを入力されたら現在の選択肢をクリックした時と同じ挙動をする
+    if (e.key == 'Enter') {
+        currentElm.click();
+    }
+});
+</script>
+
+<style>
+body {
+    padding: 10px;
+}
+input, ul {
+    width: 200px;
+    margin: 0;
+    padding: 0;
+}
+ul {
+    list-style: none;
+}
+li {
+    border-right: 1px solid #000;
+    border-left: 1px solid #000;
+}
+li:first-of-type {
+    border-top: 1px solid #000;
+}
+li:last-of-type {
+    border-bottom: 1px solid #000;
+}
+</style>
+
+</body>
+</html>

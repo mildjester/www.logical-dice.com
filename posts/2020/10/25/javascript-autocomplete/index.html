@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+	
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-TDSD7PP');</script>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>javascriptでライブラリ無しでオートコンプリート|Logical Dice 技術ブログ</title>
+
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	
+	<link rel="icon" type="image/png" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+
+	
+	<link href="" rel="alternate" type="application/rss+xml" title="Logical Dice 技術ブログ" />
+</head>
+
+    <body>
+        
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8643910898313899"
+     crossorigin="anonymous"></script>
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDSD7PP"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+<header>
+  <nav class="nav">
+    <div class="nav-container jc-sb">
+      <a href="/" class="nav-title">
+        <img class="header-logo" src="/images/logo-banner.jpg" alt="Logical Dice 技術ブログ" />
+      </a>
+    </div>
+  </nav>
+</header>
+
+        <div class="container">
+            
+
+<main>
+	<div class="post">
+		<h1 class="post-title">javascriptでライブラリ無しでオートコンプリート</h1>
+		<div class="post-info">
+				<p class="publish-date">投稿日: <time datetime="2020-10-25 00:00:00 &#43;0000 UTC" class="catalogue-time">2020年10月25日</time></p>
+			
+				<div class="tags_list">
+					 <div class="tags_item"><a href="https://www.logical-dice.com/tags/javascript/">javascript</a></div>
+				</div>
+			
+		</div>
+		<hr />
+		<p>javascriptを使ってイチからオートコンプリートを実装しました。</p>
+<p>オートコンプリートは何もなければライブラリを使って実装するのが早いですが、
+イチから自分で実装する機会があったのでメモを残します。</p>
+<h2 id="要件">要件</h2>
+<ul>
+<li>PC(Chrome, IE, Safari), Android(Chrome), iPhone(safari)に対応する。</li>
+<li>入力したキーワードを含む都道府県を選択肢として表示する。</li>
+<li>選択肢をクリックしたら選択したこととする。</li>
+<li>PCでは選択肢からカーソルキー&amp;エンターキーでも選択できるようにする。</li>
+</ul>
+<p>この4つ目が肝です。</p>
+<h2 id="対応方法">対応方法</h2>
+<p>こちらに動くものを用意してあります。<br>
+<a href="/demo/cursor-key-autocomplete/">デモ</a></p>
+<p>HTMLは以下のようになっているとします。<br>
+テキストボックスに文字を入力するとulタグ内に選択肢が表示されるようにします。</p>
+<pre tabindex="0"><code>&lt;input type=&#34;text&#34; id=&#34;keyword&#34; placeholder=&#34;都道府県名を入れてください&#34; autocomplete=&#34;off&#34;/&gt;
+&lt;ul id=&#34;outputBox&#34;&gt;&lt;/ul&gt;
+</code></pre><p>javascriptは以下の通りです。</p>
+<pre tabindex="0"><code>// 都道府県一覧
+const prefectureList = [&#39;北海道&#39;,&#39;青森県&#39;,&#39;岩手県&#39;,&#39;宮城県&#39;,&#39;秋田県&#39;,&#39;山形県&#39;,&#39;福島県&#39;,
+              &#39;茨城県&#39;,&#39;栃木県&#39;,&#39;群馬県&#39;,&#39;埼玉県&#39;,&#39;千葉県&#39;,&#39;東京都&#39;,&#39;神奈川県&#39;,
+              &#39;新潟県&#39;,&#39;富山県&#39;,&#39;石川県&#39;,&#39;福井県&#39;,&#39;山梨県&#39;,&#39;長野県&#39;,&#39;岐阜県&#39;,
+              &#39;静岡県&#39;,&#39;愛知県&#39;,&#39;三重県&#39;,&#39;滋賀県&#39;,&#39;京都府&#39;,&#39;大阪府&#39;,&#39;兵庫県&#39;,
+              &#39;奈良県&#39;,&#39;和歌山県&#39;,&#39;鳥取県&#39;,&#39;島根県&#39;,&#39;岡山県&#39;,&#39;広島県&#39;,&#39;山口県&#39;,
+              &#39;徳島県&#39;,&#39;香川県&#39;,&#39;愛媛県&#39;,&#39;高知県&#39;,&#39;福岡県&#39;,&#39;佐賀県&#39;,&#39;長崎県&#39;,
+              &#39;熊本県&#39;,&#39;大分県&#39;,&#39;宮崎県&#39;,&#39;鹿児島県&#39;,&#39;沖縄県&#39;];
+
+// in/out要素を変数に入れておく
+const inputElm = document.getElementById(&#39;keyword&#39;);
+const outboxElm = document.getElementById(&#39;outputBox&#39;);
+
+/**
+ * テキストボックスに文字入力時
+ */
+inputElm.addEventListener(&#39;compositionend&#39;, function(e) {
+    // タブキーは次の要素に移動させるのでスルー
+    if (e.key == &#39;Tab&#39;) {
+        return;
+    }
+
+    outboxElm.innerHTML = &#39;&#39;;
+    let _this = this;
+    setTimeout(function(){
+        // 入力された文字を含む都道府県を抽出する
+        prefectureList.forEach(function(prefecture){
+            if (prefecture.indexOf(_this.value) != -1) {
+                let liElm = document.createElement(&#39;li&#39;);
+                liElm.setAttribute(&#39;tabindex&#39;, &#39;0&#39;);
+
+                // 表示する選択肢にクリックイベントを設定する
+                liElm.onclick = function() {
+                    // 選択肢をクリックしたらテキストボックスに反映する
+                    inputElm.value = this.innerHTML;
+                    outboxElm.innerHTML = &#39;&#39;;
+                }
+
+                // キーワードを含む選択肢をulに追加する
+                let txtNode = document.createTextNode(prefecture);
+                liElm.appendChild(txtNode);
+                outboxElm.appendChild(liElm);
+            }
+        });
+    }, 10);
+});
+
+/**
+ * テキストボックスにフォーカスが当たっている時のキー操作
+ */
+inputElm.addEventListener(&#39;keydown&#39;, function(e) {
+    // 下キーを入力されたら選択肢の一番上にフォーカスを当てる
+    if (e.key == &#39;ArrowDown&#39; || e.key == &#39;Down&#39;) {
+        let firstElm = outboxElm.getElementsByTagName(&#39;li&#39;)[0];
+        if (firstElm) {
+            firstElm.focus();
+        }
+        e.preventDefault();
+    }
+});
+
+/**
+ * 選択肢にフォーカスが当たっている時のキー操作 or Enter
+ */
+outboxElm.addEventListener(&#39;keydown&#39;, function(e) {
+    var currentElm = document.activeElement;
+
+    // 下キーを入力されたら次の選択肢にフォーカスを当てる
+    // ブラウザによりArrowDownだったりDownだったりする
+    if (e.key == &#39;ArrowDown&#39; || e.key == &#39;Down&#39;) {
+        if (currentElm.nextElementSibling) {
+            currentElm.nextElementSibling.focus();
+        }
+        e.preventDefault();
+    }
+    // 上キーを入力されたら前の選択肢にフォーカスを当てる
+    // ブラウザによりArrowUpだったりUpだったりする
+    if (e.key == &#39;ArrowUp&#39; || e.key == &#39;Up&#39;) {
+        if (currentElm.previousElementSibling) {
+            currentElm.previousElementSibling.focus();
+        }
+        e.preventDefault();
+    }
+    // Enterを入力されたら現在の選択肢をクリックした時と同じ挙動をする
+    if (e.key == &#39;Enter&#39;) {
+        currentElm.click();
+    }
+});
+</code></pre><p>これで基本的な挙動は実装できました。</p>
+<p>なお、これだけではキーワードをBackspaceやDeleteで削除した際に選択肢を変更する処理は入っていません。<br>
+必要であれば<code>keydown</code>イベント等を利用して文字削除時の処理を入れてください。</p>
+
+	</div>
+</main>
+
+
+            <div id="sidebar">
+	<h4>Author</h4>
+	<div>
+		<p><span class="title">Name: </span>mildjester</p>
+	</div>
+	<div class="icon">
+		<img src="/images/profile.jpg" alt="プロフィール写真" />
+	</div>
+	<div>
+		<p>
+			<span class="title">Jobs: </span>
+			<ul>
+				<li>Web system development</li>
+				<li>Project managiment</li>
+			</ul>
+		</p>
+	</div>
+	<div>
+		<span class="title">SNS:</span>
+		<div class="sns">
+				<a href="https://x.com/mildjester" target="_blank">
+				<img src="/images/x-icon.avif" alt="エックス" />
+			</a>
+			<a href="https://github.com/mildjester" target="_blank">
+				<img src="/images/github-icon.svg" alt="ギットハブ" />
+			</a>
+		</div>
+	</div>
+</div>
+
+        </div>
+        <footer>
+	<div class="footer-container">
+		
+		<span>
+		&copy; 2015 Logical Dice.
+		</span>
+	</div>
+</footer>
+
+    </body>
+</html>
